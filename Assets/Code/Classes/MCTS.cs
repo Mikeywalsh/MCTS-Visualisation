@@ -1,26 +1,55 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
 
+/// <summary>
+/// Runs the Monte Carlo Tree Search on a given game board
+/// Every time <see cref="Step"/> is called, the algorithm performs one Select, Expand, Simulate and Backpropagate cycle
+/// The algorithm will run until the search space is exhausted
+/// A graceful exit can be achieved via <see cref="FinishEarly"/>, which will result in an incomplete but still useful tree
+/// </summary>
 public class MCTS {
 
-    private System.Random rand = new System.Random();
+    /// <summary>
+    /// The random instance to use for all random number generations to ensure proper randomness
+    /// </summary>
+    private Random rand = new Random();
+
+    /// <summary>
+    /// The root node of the search tree
+    /// </summary>
     private Node root;
+
+    /// <summary>
+    /// Signals if the MCTS algorithm has finished running
+    /// </summary>
     private bool finished;
 
-    public MCTS()
-    {
-        root = new Node(null, new TTTBoard());
+    /// <summary>
+    /// The amount of playouts each node undergoes during simulation
+    /// </summary>
+    private int playoutsPerSimulation;
 
-        Simulation(root, 100);
+    /// <summary>
+    /// Creates a new Monte Carlo Tree Search with the given game board
+    /// </summary>
+    /// <param name="gameBoard">The game board to perform the MCTS with</param>
+    public MCTS(Board gameBoard, int playsPerSimulation)
+    {
+        //Create the root node of the search tree
+        root = new Node(null, gameBoard);
+
+        //Set the number of playouts to be done on each node during simulation
+        playoutsPerSimulation = playsPerSimulation;
     }
 
+    /// <summary>
+    /// Perform a step of MCTS
+    /// Selects the highest UCT value node, expands it, simulates its children and backpropagates the results up the tree
+    /// </summary>
     public void Step()
     {
         Node bestNode = Selection(root);
         if (bestNode == null)
         {
-            Debug.Log("Finished!");
             finished = true;
             return;
         }
@@ -33,12 +62,10 @@ public class MCTS {
             count++;
             if (!child.IsLeafNode)
             {
-                Simulation(child, 100);
+                Simulation(child, playoutsPerSimulation);
             }
             Backprogation(child);
         }
-        //finished = true;
-        //Debug.Log(Plays);
     }
 
     /// <summary>
@@ -60,14 +87,14 @@ public class MCTS {
         }
         else
         {
-            float highestUCB = float.MinValue;
+            double highestUCB = float.MinValue;
             Node highestUCBChild = null;
 
             foreach(Node child in n.Children)
             {
                 if (!child.AllChildrenFullyExplored)
                 {
-                    float currentUCB1 = UCB1(child, Plays);
+                    double currentUCB1 = UCB1(child, Plays);
                     if (currentUCB1 > highestUCB)
                     {
                         highestUCB = currentUCB1;
@@ -121,11 +148,19 @@ public class MCTS {
     /// <param name="n">The node to get the value of</param>
     /// <param name="totalPlays">The total amount of plays in the game so far</param>
     /// <returns>The Upper Confidence Bound 1 value of the given node</returns>
-    private float UCB1(Node n, int totalPlays)
+    private double UCB1(Node n, int totalPlays)
     {
-        return n.AverageScore + Mathf.Sqrt((2 * Mathf.Log(totalPlays)) / n.Visits);
+        if (n.Visits == 0)
+            return float.MaxValue;
+
+        return n.AverageScore + Math.Sqrt((2 * Math.Log(totalPlays)) / n.Visits);
     }
 
+    /// <summary>
+    /// Given a root node, will choose a child which maximises reward, based on the game tree constructed so far
+    /// </summary>
+    /// <param name="n">The root node to choose the best child of</param>
+    /// <returns>The best child of the given root node</returns>
     public Node BestNodeChoice(Node n)
     {
         float smallestScore = float.MinValue;
@@ -142,6 +177,14 @@ public class MCTS {
         }
 
         return chosenNode;
+    }
+
+    /// <summary>
+    /// Can be called to gracefully halt execution of the algorithm
+    /// </summary>
+    public void FinishEarly()
+    {
+        finished = true;
     }
 
     /// <summary>
@@ -167,5 +210,13 @@ public class MCTS {
     public int Plays
     {
         get { return root.Visits; }
+    }
+
+    /// <summary>
+    /// The amount of playouts each node undergoes during simulation
+    /// </summary>
+    public int PlayoutsPerSimulation
+    {
+        get { return playoutsPerSimulation; }
     }
 }

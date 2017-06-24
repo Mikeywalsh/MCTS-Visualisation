@@ -15,11 +15,13 @@ public class TTTBoard : Board {
     /// </summary>
     public TTTBoard()
     {
-        currentPlayer = 1;
+        currentPlayer = 2;
         boardContents = new int[3,3];
-        boardContents[2,2] = 2;
-        boardContents[0, 2] = 2;
-        boardContents[1, 1] = 1;
+        //boardContents[2,0] = 2;
+        //boardContents[1, 1] = 1;
+        //boardContents[2, 1] = 1;
+        //boardContents[0, 2] = 1;
+        //boardContents[2, 2] = 2;
     }
 
     /// <summary>

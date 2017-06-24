@@ -8,19 +8,26 @@ public class Test : MonoBehaviour {
     MCTS mcts;
     bool resultShown;
 
+    float lastUpdateTime;
+
 	void Start () {
         Application.runInBackground = true;
-        mcts = new MCTS();
+        mcts = new MCTS(new TTTBoard(), 100);
         Thread thread1 = new Thread(new ThreadStart(() => RunMCTS(mcts)));
         thread1.Start();
     }
 	
 	void Update () {
-        if (!mcts.Finished)
+        if (!mcts.Finished && lastUpdateTime + 1 < Time.time)
+        {
+            lastUpdateTime = Time.time;
             Debug.Log(mcts.Plays);
+        }
 
         if (!resultShown && mcts.Finished)
         {
+            Debug.Log("----------------");
+            Debug.Log("Finished!");
             Debug.Log("Total nodes: " + mcts.Plays);
             Node bestNode = mcts.Root;
 

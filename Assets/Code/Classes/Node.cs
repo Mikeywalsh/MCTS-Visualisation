@@ -53,6 +53,9 @@ public class Node {
         }
     }
 
+    /// <summary>
+    /// Creates a child for each possible move for this node and adds it to the list of children
+    /// </summary>
     public void CreateAllChildren()
     {
         if(IsLeafNode)
@@ -69,6 +72,10 @@ public class Node {
         }
     }
 
+    /// <summary>
+    /// Checks this nodes children to see if they are all fully explored
+    /// This is used so that during selection, the algorithm does not attempt to explore exhausted branches
+    /// </summary>
     public void CheckChildrenFullyExplored()
     {
         if (allChildrenFullyExplored)
@@ -96,18 +103,15 @@ public class Node {
     public void SimulatePlayouts(System.Random rand, int playoutCount)
     {
         int wins = 0;
-        int draws = 0;
 
         for (int i = 0; i < playoutCount; i++)
         {
             int winner = gameBoard.SimulateUntilEnd(rand);
             if (winner == gameBoard.PreviousPlayer)
                 wins++;
-            else if (winner == 0)
-                draws++;
         }
 
-        float simScore = (wins + (0.5f * draws)) / playoutCount;
+        float simScore = (float)wins / playoutCount;
         totalScore = simScore;
         visits = 1;
     }
@@ -124,10 +128,10 @@ public class Node {
         {
             totalScore += updateScore;
         }
-        //else
-        //{
-        //    totalScore += (1 - updateScore);
-        //}
+        else
+        {
+            totalScore += (1 - updateScore);
+        }
 
         //Increment the visits attribute
         visits++;
