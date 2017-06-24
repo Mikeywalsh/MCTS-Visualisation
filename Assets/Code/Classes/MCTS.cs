@@ -94,7 +94,7 @@ public class MCTS {
             {
                 if (!child.AllChildrenFullyExplored)
                 {
-                    double currentUCB1 = UCB1(child, Plays);
+                    double currentUCB1 = UCB1(child);
                     if (currentUCB1 > highestUCB)
                     {
                         highestUCB = currentUCB1;
@@ -138,7 +138,7 @@ public class MCTS {
     {
         if (n.Parent != null)
         {
-            n.Parent.Update(n.AverageScore, n.GameState.CurrentPlayer);
+            n.Parent.Update(n.AverageScore, n.GameBoard.CurrentPlayer);
         }
     }
 
@@ -146,14 +146,13 @@ public class MCTS {
     /// Gets the Upper Confidence Bound 1 value of a given node
     /// </summary>
     /// <param name="n">The node to get the value of</param>
-    /// <param name="totalPlays">The total amount of plays in the game so far</param>
     /// <returns>The Upper Confidence Bound 1 value of the given node</returns>
-    private double UCB1(Node n, int totalPlays)
+    private double UCB1(Node n)
     {
         if (n.Visits == 0)
             return float.MaxValue;
 
-        return n.AverageScore + Math.Sqrt((2 * Math.Log(totalPlays)) / n.Visits);
+        return n.AverageScore + (Math.Sqrt(2) * Math.Sqrt(Math.Log(n.Parent.Visits)) / n.Visits);
     }
 
     /// <summary>
@@ -205,9 +204,9 @@ public class MCTS {
     }
 
     /// <summary>
-    /// The number of total nodes that have been simulated so far
+    /// The total number of nodes that have been visited so far
     /// </summary>
-    public int Plays
+    public int NodesVisited
     {
         get { return root.Visits; }
     }

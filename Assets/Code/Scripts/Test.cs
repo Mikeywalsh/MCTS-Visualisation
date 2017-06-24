@@ -20,24 +20,24 @@ public class Test : MonoBehaviour {
 	void Update () {
         if (!mcts.Finished && lastUpdateTime + 1 < Time.time)
         {
-            if (Time.time > 25)
+            if (Time.time > 10)
             {
                 mcts.FinishEarly();
             }
             lastUpdateTime = Time.time;
-            Debug.Log(mcts.Plays);
+            Debug.Log(mcts.NodesVisited);
         }
 
         if (!resultShown && mcts.Finished)
         {
             Debug.Log("----------------");
             Debug.Log("Finished!");
-            Debug.Log("Total nodes: " + mcts.Plays);
+            Debug.Log("Total nodes: " + mcts.NodesVisited);
             Node bestNode = mcts.Root;
 
             foreach(Node c in bestNode.Children)
             {
-                Debug.Log("Score: " + c.AverageScore + "    Total: " + c.TotalScore + "     Visits: " + c.Visits + "     Children: " + c.Children.Count + c.GameState);
+                Debug.Log("Score: " + c.AverageScore + "    Total: " + c.TotalScore + "     Visits: " + c.Visits + "     Children: " + c.Children.Count + c.GameBoard);
             }
             Debug.Log("----------------");
 
@@ -47,7 +47,7 @@ public class Test : MonoBehaviour {
                 if (bestNode == null)
                     break;
 
-                Debug.Log("Choose: " + bestNode.AverageScore + bestNode.GameState);
+                Debug.Log("Choose: " + bestNode.AverageScore + bestNode.GameBoard);
             }
 
             resultShown = true;

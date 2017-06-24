@@ -1,10 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
+/// <summary>
+/// A node for use with a Monte Carlo Search Tree
+/// Contains a game state, as well as stats such as visits, score, parent and children
+/// </summary>
 public class Node {
 
+    /// <summary>
+    /// This nodes parent node
+    /// </summary>
     private Node parent;
+
+    /// <summary>
+    /// The gameboard state for this node
+    /// </summary>
     private Board gameBoard;
 
     /// <summary>
@@ -22,10 +32,22 @@ public class Node {
     /// </summary>
     private float totalScore;
 
+    /// <summary>
+    /// Signals if all this nodes children have been fully explored
+    /// Used to stop the MCTS algorithm from exploring exhausted nodes
+    /// </summary>
     private bool allChildrenFullyExplored;
 
+    /// <summary>
+    /// The depth of this node in the game tree
+    /// </summary>
     private int depth;
 
+    /// <summary>
+    /// Creates a new node with the given board and parent node
+    /// </summary>
+    /// <param name="parentNode">The parent of this node, null if this is the root node</param>
+    /// <param name="board">The game board for this node</param>
 	public Node(Node parentNode, Board board)
     {
         parent = parentNode;
@@ -50,6 +72,7 @@ public class Node {
         else
         {
             depth = parentNode.Depth + 1;
+            UnityEngine.Debug.Log("Depth: " + depth);
         }
     }
 
@@ -143,6 +166,10 @@ public class Node {
         }
     }
 
+    /// <summary>
+    /// Signals if all this nodes children have been fully explored
+    /// Used to stop the MCTS algorithm from exploring exhausted nodes
+    /// </summary>
     public bool AllChildrenFullyExplored
     {
         get { return allChildrenFullyExplored; }
@@ -157,36 +184,58 @@ public class Node {
         get { return gameBoard.Winner != -1; }
     }
 
+    /// <summary>
+    /// This nodes parent node
+    /// </summary>
     public Node Parent
     {
         get { return parent; }
     }
 
-    public Board GameState
+    /// <summary>
+    /// The gameboard state for this node
+    /// </summary>
+    public Board GameBoard
     {
         get { return gameBoard; }
     }
 
+    /// <summary>
+    /// A list of all this nodes children nodes
+    /// </summary>
     public List<Node> Children
     {
         get { return children; }
     }
 
+    /// <summary>
+    /// How many times this node has been visited
+    /// </summary>
     public int Visits
     {
         get { return visits; }
     }
 
+    /// <summary>
+    /// The total score for this node as a result of simulation and backpropagation
+    /// </summary>
     public float TotalScore
     {
         get { return totalScore; }
     }
 
+    /// <summary>
+    /// The average score for this node
+    /// Determined from the total score and number of visits
+    /// </summary>
     public float AverageScore
     {
         get { return totalScore / visits; }
     }
 
+    /// <summary>
+    /// The depth of this node in the game tree
+    /// </summary>
     public int Depth
     {
         get { return depth; }
