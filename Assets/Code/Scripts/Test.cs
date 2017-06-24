@@ -20,6 +20,10 @@ public class Test : MonoBehaviour {
 	void Update () {
         if (!mcts.Finished && lastUpdateTime + 1 < Time.time)
         {
+            if (Time.time > 25)
+            {
+                mcts.FinishEarly();
+            }
             lastUpdateTime = Time.time;
             Debug.Log(mcts.Plays);
         }
