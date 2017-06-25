@@ -16,31 +16,31 @@ public class LineDraw : MonoBehaviour
         lineMat = new Material(Resources.Load<Shader>("LineShader"));
         ball = Resources.Load<GameObject>("Ball");
 
-        #region Fibbonacci Sphere algorithm
-        List<Vector3> points = new List<Vector3>();
-        int samples = 100;
-        float offset = 2f / samples;
-        float increment = Mathf.PI * (3 - Mathf.Sqrt(5));
+        //#region Fibbonacci Sphere algorithm
+        //List<Vector3> points = new List<Vector3>();
+        //int samples = 100;
+        //float offset = 2f / samples;
+        //float increment = Mathf.PI * (3 - Mathf.Sqrt(5));
 
-        for(int i = 0; i < samples; i++)
-        {
-            float y = ((i * offset) - 1) + (offset / 2);
-            float r = Mathf.Sqrt(1 - Mathf.Pow(y, 2));
+        //for(int i = 0; i < samples; i++)
+        //{
+        //    float y = ((i * offset) - 1) + (offset / 2);
+        //    float r = Mathf.Sqrt(1 - Mathf.Pow(y, 2));
 
-            float phi = ((i + 1) % samples) * increment;
+        //    float phi = ((i + 1) % samples) * increment;
 
-            float x = Mathf.Cos(phi) * r;
-            float z = Mathf.Sin(phi) * r;
+        //    float x = Mathf.Cos(phi) * r;
+        //    float z = Mathf.Sin(phi) * r;
 
-            points.Add(new Vector3(x, y, z));
-        }
-        #endregion
+        //    points.Add(new Vector3(x, y, z));
+        //}
+        //#endregion
 
-        for (int i = 0; i < samples; i++)
-        {
-            GameObject newBall = Instantiate(ball, points[i] * 2, Quaternion.identity);
-            ballList.Add(newBall);
-        }
+        //for (int i = 0; i < samples; i++)
+        //{
+        //    //GameObject newBall = Instantiate(ball, points[i] * 2, Quaternion.identity);
+        //    //ballList.Add(newBall);
+        //}
     }
 
     // Update is called once per frame
@@ -57,10 +57,10 @@ public class LineDraw : MonoBehaviour
         GL.LoadProjectionMatrix(projection);
         GL.Color(Color.green);
         
-        for(int x = 0; x < ballList.Count; x++)
+        foreach(NodeObject n in NodeObject.AllNodes)
         {
-            GL.Vertex3(0, 0, 0);
-            GL.Vertex(ballList[x].transform.position);
+            GL.Vertex(n.Parent.transform.position);
+            GL.Vertex(n.transform.position);
         }
 
         GL.End();

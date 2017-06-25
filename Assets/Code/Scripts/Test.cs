@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class Test : MonoBehaviour {
 
+    public GameObject startObject;
+
     MCTS mcts;
     bool resultShown;
 
@@ -49,8 +51,27 @@ public class Test : MonoBehaviour {
 
                 Debug.Log("Choose: " + bestNode.AverageScore + bestNode.GameBoard);
             }
-
             resultShown = true;
+            //-------------------------------
+            startObject.GetComponent<NodeObject>().Initialise(mcts.Root);
+            StartCoroutine(GenChildren(mcts.Root, startObject));
+            //-------------------------------
+
+        }
+    }
+
+    IEnumerator GenChildren(Node root, GameObject rootObject)
+    {
+        foreach (Node child in root.Children)
+        {
+            GameObject newNode = new GameObject();
+            newNode.transform.parent = rootObject.transform;
+            newNode.name = "D" + child.Depth + " C" + newNode.transform.parent.childCount;
+            newNode.AddComponent<NodeObject>().Initialise(child);
+
+            yield return new WaitForSeconds(1f);
+
+            StartCoroutine(GenChildren(child, newNode));
         }
     }
 

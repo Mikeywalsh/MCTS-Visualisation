@@ -72,7 +72,6 @@ public class Node {
         else
         {
             depth = parentNode.Depth + 1;
-            UnityEngine.Debug.Log("Depth: " + depth);
         }
     }
 
