@@ -1,7 +1,7 @@
 ﻿using System;
 
 /// <summary>
-/// Runs the Monte Carlo Tree Search on a given game board
+/// Runs Monte Carlo Tree Search on a given game board
 /// Every time <see cref="Step"/> is called, the algorithm performs one Select, Expand, Simulate and Backpropagate cycle
 /// The algorithm will run until the search space is exhausted
 /// A graceful exit can be achieved via <see cref="FinishEarly"/>, which will result in an incomplete but still useful tree
@@ -32,6 +32,7 @@ public class MCTS {
     /// Creates a new Monte Carlo Tree Search with the given game board
     /// </summary>
     /// <param name="gameBoard">The game board to perform the MCTS with</param>
+    /// <param name="playsPerSimulation">The amount of playouts to do for each simulation</param>
     public MCTS(Board gameBoard, int playsPerSimulation)
     {
         //Create the root node of the search tree

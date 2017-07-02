@@ -13,14 +13,16 @@ public class NodeObject : MonoBehaviour {
 	public void Initialise (Node nodeInTree) {
         treeNode = nodeInTree;
 
+        //Root node, automatically starts at origin, does not require additional initialisation
         if (Depth == 0)
         {
             return;
         }
 
+        //Set the parent node
         parent = transform.parent.GetComponent<NodeObject>();
 
-        if (Depth == 1)
+        if (Depth == 1)             //If at depth 1, use the Fibonacci sphere algorithm to evenly distribute all depth 1 nodes in a sphere around the root node
         {
             #region Fibbonacci Sphere algorithm
             List<Vector3> points = new List<Vector3>();
@@ -43,7 +45,7 @@ public class NodeObject : MonoBehaviour {
             #endregion
             transform.position = points[transform.parent.childCount] * 2;
         }
-        else
+        else                        //If at any other depth, position the new node a set distance away from its parent node
         {
             transform.position = transform.parent.position + (4 * (transform.parent.position / Depth));
             //transform.localPosition += 
