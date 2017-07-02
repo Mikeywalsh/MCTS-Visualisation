@@ -61,7 +61,7 @@ public class NodeObject : MonoBehaviour {
 
             if (parent.TreeNode.Children.Count != 1)
             {
-                transform.position += tangent.normalized * Mathf.Clamp(12 - Depth, 1, 10);
+                transform.position += tangent.normalized * depthMul;
                 transform.RotateAround(rotationPoint, rotationPoint - transform.parent.position, (360 / parent.TreeNode.Children.Capacity) * parent.transform.childCount);
             }
         }
