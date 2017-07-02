@@ -19,9 +19,9 @@ public class TTTBoard : Board {
         boardContents = new int[3,3];
         boardContents[2, 0] = 1;
         boardContents[1, 1] = 1;
-        boardContents[0, 2] = 2;
-        boardContents[1, 2] = 1;
-        boardContents[2, 2] = 2;
+        //boardContents[0, 2] = 2;
+        //boardContents[1, 2] = 1;
+        //boardContents[2, 2] = 2;
     }
 
     /// <summary>
