@@ -7,43 +7,13 @@ public class LineDraw : MonoBehaviour
 {
     public Shader lineShader;
     private Material lineMat;
-    private GameObject ball;
-
-    private List<GameObject> ballList = new List<GameObject>();
+    private static Color[] lineColors = new Color[] { Color.red, Color.green, Color.blue, Color.magenta, Color.yellow, Color.white, Color.cyan };
 
     private void Awake()
     {
         lineMat = new Material(Resources.Load<Shader>("LineShader"));
-        ball = Resources.Load<GameObject>("Ball");
-
-        //#region Fibbonacci Sphere algorithm
-        //List<Vector3> points = new List<Vector3>();
-        //int samples = 100;
-        //float offset = 2f / samples;
-        //float increment = Mathf.PI * (3 - Mathf.Sqrt(5));
-
-        //for(int i = 0; i < samples; i++)
-        //{
-        //    float y = ((i * offset) - 1) + (offset / 2);
-        //    float r = Mathf.Sqrt(1 - Mathf.Pow(y, 2));
-
-        //    float phi = ((i + 1) % samples) * increment;
-
-        //    float x = Mathf.Cos(phi) * r;
-        //    float z = Mathf.Sin(phi) * r;
-
-        //    points.Add(new Vector3(x, y, z));
-        //}
-        //#endregion
-
-        //for (int i = 0; i < samples; i++)
-        //{
-        //    //GameObject newBall = Instantiate(ball, points[i] * 2, Quaternion.identity);
-        //    //ballList.Add(newBall);
-        //}
     }
 
-    // Update is called once per frame
     void Update()
     {
         transform.RotateAround(Vector3.zero, new Vector3(0, 1, 0), 1);
@@ -55,10 +25,11 @@ public class LineDraw : MonoBehaviour
         lineMat.SetPass(0);
         GL.Begin(GL.LINES); 
         GL.LoadProjectionMatrix(projection);
-        GL.Color(Color.green);
+
         
         foreach(NodeObject n in NodeObject.AllNodes)
         {
+            GL.Color(lineColors[n.Parent.Depth % lineColors.Length]);
             GL.Vertex(n.Parent.transform.position);
             GL.Vertex(n.transform.position);
         }

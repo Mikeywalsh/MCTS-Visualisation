@@ -17,12 +17,12 @@ public class TTTBoard : Board {
     {
         currentPlayer = 2;
         boardContents = new int[3,3];
-        boardContents[2, 0] = 1;
-        boardContents[1, 1] = 1;
-        boardContents[0, 2] = 2;
-        boardContents[1, 2] = 1;
-        boardContents[2, 2] = 2;
-        boardContents[0, 1] = 2;
+        //boardContents[0, 0] = 1;
+        //boardContents[2, 1] = 1;
+        //boardContents[0, 2] = 2;
+        //boardContents[1, 2] = 1;
+        //boardContents[2, 2] = 2;
+        //boardContents[2, 1] = 2;
         //boardContents[2, 2] = 2;
     }
 
