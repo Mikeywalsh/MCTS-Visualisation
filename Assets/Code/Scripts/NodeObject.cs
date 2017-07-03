@@ -1,15 +1,32 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// A <see cref="MonoBehaviour"/> class used for representing nodes of a Monte Carlo Tree Search graphically
+/// A NodeObject is created for each node the tree
+/// </summary>
 public class NodeObject : MonoBehaviour {
 
-    public static int MaxDepth;
+    /// <summary>
+    /// A list of all nodes within the scene
+    /// Active nodes in the list will be used to draw lines between them and their parent
+    /// </summary>
     public static List<NodeObject> AllNodes = new List<NodeObject>();
+
+    /// <summary>
+    /// A list of currently inactive nodes in the scene
+    /// They are stored to keep references to them, so that they can be re-enabled
+    /// </summary>
     public static List<GameObject> InactiveNodes = new List<GameObject>();
 
+    /// <summary>
+    /// This NodeObjects parent NodeObject
+    /// </summary>
     private NodeObject parentNode;
 
+    /// <summary>
+    /// This objects node in the game tree
+    /// </summary>
     private Node treeNode;
 
     //TEMP
@@ -66,7 +83,12 @@ public class NodeObject : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Initialises this <see cref=" NodeObject"/>, giving it a position in world space depending on its position in the game tree
+    /// </summary>
+    /// <param name="nodeInTree">The node in the MCTS that this NodeObject represents</param>
 	public void Initialise (Node nodeInTree) {
+        //Assign this NodeObject's treeNode
         treeNode = nodeInTree;
 
         //Play around with this value to change the structure of the tree depending on depth
