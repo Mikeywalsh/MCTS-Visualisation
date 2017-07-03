@@ -1,7 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 /// <summary>
 /// This class is responsible for the drawing of lines between nodes to the screen
@@ -73,6 +76,7 @@ public class LineDraw : MonoBehaviour
             Debug.LogError("Line shader not set");
     }
 
+    #if UNITY_EDITOR
     /// <summary>
     /// For use with drawing lines between nodes in scene view
     /// </summary>
@@ -81,4 +85,5 @@ public class LineDraw : MonoBehaviour
         if (lineMat != null)
             DrawLines(SceneView.lastActiveSceneView.camera.projectionMatrix);
     }
+    #endif
 }
