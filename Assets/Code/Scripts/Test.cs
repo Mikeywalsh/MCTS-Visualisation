@@ -41,7 +41,7 @@ public class Test : MonoBehaviour {
 	void Update () {
         if (!mcts.Finished && lastUpdateTime + 1 < Time.time)
         {
-            if (Time.time > 1)
+            if (Time.time > 3)
             {
                 mcts.FinishEarly();
             }

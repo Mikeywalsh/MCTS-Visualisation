@@ -13,7 +13,7 @@ public class NodeObject : MonoBehaviour {
 
 	public void Initialise (Node nodeInTree) {
         treeNode = nodeInTree;
-        float depthMul = Mathf.Clamp(12 - Depth, 1, 10);
+        float depthMul = Mathf.Clamp(60 - (Depth * 5), 10, 60);
 
         //Root node, automatically starts at origin, does not require additional initialisation
         if (Depth == 0)
