@@ -33,7 +33,7 @@ public class LineDraw : MonoBehaviour
     /// </summary>
     void Update()
     {
-        transform.RotateAround(Vector3.zero, new Vector3(0, 1, 0), 1);
+        transform.RotateAround(transform.parent.position, Vector3.up, 1);
     }
 
     /// <summary>
@@ -49,9 +49,12 @@ public class LineDraw : MonoBehaviour
         
         foreach(NodeObject n in NodeObject.AllNodes)
         {
-            GL.Color(lineColors[n.Parent.Depth % lineColors.Length]);
-            GL.Vertex(n.Parent.transform.position);
-            GL.Vertex(n.transform.position);
+            if (n.gameObject.activeInHierarchy)
+            {
+                GL.Color(lineColors[n.ParentNode.Depth % lineColors.Length]);
+                GL.Vertex(n.ParentNode.transform.position);
+                GL.Vertex(n.transform.position);
+            }
         }
 
         GL.End();

@@ -77,6 +77,15 @@ public class Test : MonoBehaviour {
             //-------------------------------
 
         }
+
+        //if(NodeObject.selectedNode != null)
+        //{
+        //    NodeObject.selectedNode.transform.parent.GetComponentInChildren<Transform>(true).gameObject.SetActive(false);
+        //    NodeObject.selectedNode.gameObject.GetComponentInChildren<Transform>(true).gameObject.SetActive(true);
+        //    gameObject.SetActive(false);
+        //    toggleSelected = false;
+        //    NodeObject.selectedNode = null;
+        //}
     }
 
     IEnumerator GenChildren(Node root, GameObject rootObject)

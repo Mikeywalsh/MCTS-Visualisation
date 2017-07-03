@@ -6,14 +6,71 @@ public class NodeObject : MonoBehaviour {
 
     public static int MaxDepth;
     public static List<NodeObject> AllNodes = new List<NodeObject>();
+    public static List<GameObject> InactiveNodes = new List<GameObject>();
 
-    private NodeObject parent;
+    private NodeObject parentNode;
 
     private Node treeNode;
 
+    //TEMP
+    public bool toggleSelected;
+
+    public void Update()
+    {
+        if (toggleSelected)
+        {
+            SelectNode();
+            toggleSelected = false;
+        }
+    }
+
+    /// <summary>
+    /// Selects this node, making only this node and its children visable
+    /// Should only be called if the previously selected node is 1 generation from this node
+    /// That is, if the previous node is this nodes parent or child
+    /// </summary>
+    public void SelectNode()
+    {
+        //Create a new list of inactive nodes to replace the previous list
+        List<GameObject> newInactiveNodes = new List<GameObject>();
+
+        //Cycle through each inactive node, setting them to active if they are this nodes child
+        for (int i = 0; i < InactiveNodes.Count; i++)
+        {
+            if (InactiveNodes[i].transform.parent == transform)
+            {
+                InactiveNodes[i].SetActive(true);
+            }
+            else
+            {
+                //Store the still inactive nodes in the new inactive list
+                newInactiveNodes.Add(InactiveNodes[i]);
+            }
+        }
+
+        //Replace the list of inactive nodes with the new list
+        InactiveNodes = newInactiveNodes;
+
+        //Disable all of this nodes siblings, if it has any
+        if (parentNode != null)
+        {
+            for (int i = 0; i < parentNode.transform.childCount; i++)
+            {
+                Transform child = parentNode.transform.GetChild(i);
+                if (child != transform)
+                {
+                    InactiveNodes.Add(child.gameObject);
+                    child.gameObject.SetActive(false);
+                }
+            }
+        }
+    }
+
 	public void Initialise (Node nodeInTree) {
         treeNode = nodeInTree;
-        float depthMul = Mathf.Clamp(60 - (Depth * 5), 10, 60);
+
+        //Play around with this value to change the structure of the tree depending on depth
+        float depthMul = 60;//  Mathf.Clamp(60 - (Depth * 5), 10, 60);
 
         //Root node, automatically starts at origin, does not require additional initialisation
         if (Depth == 0)
@@ -22,12 +79,12 @@ public class NodeObject : MonoBehaviour {
         }
 
         //Set the parent node
-        parent = transform.parent.GetComponent<NodeObject>();
+        parentNode = transform.parent.GetComponent<NodeObject>();
 
         if (Depth == 1)             //If at depth 1, use the Fibonacci sphere algorithm to evenly distribute all depth 1 nodes in a sphere around the root node
         {
             #region Fibbonacci Sphere algorithm
-            int samples = parent.TreeNode.Children.Capacity + 1;
+            int samples = parentNode.TreeNode.Children.Capacity + 1;
             float offset = 2f / samples;
             float increment = Mathf.PI * (3 - Mathf.Sqrt(5));
 
@@ -42,7 +99,7 @@ public class NodeObject : MonoBehaviour {
         else                        //If at any other depth, position the new node a set distance away from its parent node
         {
             transform.position = transform.parent.position;
-            transform.position += transform.parent.localPosition.normalized * depthMul;
+            transform.position += transform.parent.localPosition.normalized * depthMul * 2;
             Vector3 rotationPoint = transform.position;
 
             Vector3 normal = transform.parent.localPosition;
@@ -59,10 +116,10 @@ public class NodeObject : MonoBehaviour {
                 tangent = t2;
             }
 
-            if (parent.TreeNode.Children.Count != 1)
+            if (parentNode.TreeNode.Children.Count != 1)
             {
-                transform.position += tangent.normalized * depthMul;
-                transform.RotateAround(rotationPoint, rotationPoint - transform.parent.position, (360 / parent.TreeNode.Children.Capacity) * parent.transform.childCount);
+                transform.position += tangent.normalized * depthMul * 0.25f;
+                transform.RotateAround(rotationPoint, rotationPoint - transform.parent.position, (360 / parentNode.TreeNode.Children.Capacity) * parentNode.transform.childCount);
             }
         }
 
@@ -71,17 +128,13 @@ public class NodeObject : MonoBehaviour {
 
         AllNodes.Add(this);
 	}
-	
-	void Update () {
-		
-	}
 
     /// <summary>
     /// The parent nodeobject of this nodeobject
     /// </summary>
-    public NodeObject Parent
+    public NodeObject ParentNode
     {
-        get { return parent; }
+        get { return parentNode; }
     }
 
     /// <summary>
