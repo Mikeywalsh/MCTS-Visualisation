@@ -34,6 +34,7 @@ public class LineDraw : MonoBehaviour
     void Update()
     {
         transform.RotateAround(transform.parent.position, Vector3.up, 1);
+        transform.LookAt(transform.parent.position);
     }
 
     /// <summary>
