@@ -32,15 +32,6 @@ public class LineDraw : MonoBehaviour
     }
 
     /// <summary>
-    /// Called every frame, rotates the camera around the root node
-    /// </summary>
-    void Update()
-    {
-        transform.RotateAround(transform.parent.position, Vector3.up, 1);
-        transform.LookAt(transform.parent.position);
-    }
-
-    /// <summary>
     /// Draws lines between every connected node in the <see cref="NodeObject.AllNodes"/> list
     /// </summary>
     /// <param name="projection">The projection matrix used to draw the lines. Differs depending on if drawing to scene or game view.</param>
