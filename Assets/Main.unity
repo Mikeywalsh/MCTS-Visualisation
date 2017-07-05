@@ -604,6 +604,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startObject: {fileID: 455453794}
+  TimeToRunFor: 5
 --- !u!4 &1825339028
 Transform:
   m_ObjectHideFlags: 0

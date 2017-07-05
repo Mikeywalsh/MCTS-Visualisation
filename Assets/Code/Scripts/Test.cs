@@ -6,6 +6,8 @@ using UnityEngine;
 public class Test : MonoBehaviour {
 
     public GameObject startObject;
+    public float TimeToRunFor;
+
     MCTS mcts;
     bool resultShown;
 
@@ -41,7 +43,7 @@ public class Test : MonoBehaviour {
 	void Update () {
         if (!mcts.Finished && lastUpdateTime + 1 < Time.time)
         {
-            if (Time.time > 3)
+            if (Time.time > TimeToRunFor)
             {
                 mcts.FinishEarly();
             }
