@@ -74,6 +74,7 @@ public class Test : MonoBehaviour {
             //-------------------------------
             startObject.GetComponent<NodeObject>().Initialise(mcts.Root);
             StartCoroutine(GenChildren(mcts.Root, startObject));
+            UIController.DisplayNodeInfo(mcts.Root);
             //-------------------------------
 
         }

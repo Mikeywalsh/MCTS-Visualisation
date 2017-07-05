@@ -26,6 +26,7 @@ public class CameraControl : MonoBehaviour {
             {
                 CurrentNode = CurrentNode.transform.GetChild(inputNum - 1).GetComponent<NodeObject>();
                 CurrentNode.SelectNode();
+                UIController.DisplayNodeInfo(CurrentNode.TreeNode);
             }
         }
 
@@ -34,8 +35,8 @@ public class CameraControl : MonoBehaviour {
             if(CurrentNode.transform.parent != null)
             {
                 CurrentNode = CurrentNode.transform.parent.GetComponent<NodeObject>();
-                //transform.parent.position = CurrentNode.transform.position;
                 CurrentNode.SelectNode();
+                UIController.DisplayNodeInfo(CurrentNode.TreeNode);
             }
         }
 
