@@ -18,12 +18,13 @@ public class CameraControl : MonoBehaviour {
         transform.LookAt(transform.parent.position);
         transform.parent.position = Vector3.Lerp(transform.parent.position, CurrentNode.transform.position, 0.1f);
 
-        if(Input.GetKeyDown(KeyCode.Space))
+        int inputNum = GetNumericalInput();
+
+        if(inputNum != -1)
         {
-            if(CurrentNode.transform.childCount > 0)
+            if(CurrentNode.transform.childCount >= inputNum)
             {
-                CurrentNode = CurrentNode.transform.GetChild(0).GetComponent<NodeObject>();
-                //transform.parent.position = CurrentNode.transform.position;
+                CurrentNode = CurrentNode.transform.GetChild(inputNum - 1).GetComponent<NodeObject>();
                 CurrentNode.SelectNode();
             }
         }
@@ -50,5 +51,30 @@ public class CameraControl : MonoBehaviour {
         {
             transform.RotateAround(transform.parent.position, Vector3.up, 1);
         }
+    }
+
+    private int GetNumericalInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            return 1;
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+            return 2;
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+            return 3;
+        else if (Input.GetKeyDown(KeyCode.Alpha4))
+            return 4;
+        else if (Input.GetKeyDown(KeyCode.Alpha5))
+            return 5;
+        else if (Input.GetKeyDown(KeyCode.Alpha6))
+            return 6;
+        else if (Input.GetKeyDown(KeyCode.Alpha7))
+            return 7;
+        else if (Input.GetKeyDown(KeyCode.Alpha8))
+            return 8;
+        else if (Input.GetKeyDown(KeyCode.Alpha9))
+            return 9;
+
+
+        return -1;
     }
 }
