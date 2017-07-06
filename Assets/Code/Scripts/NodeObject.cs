@@ -29,65 +29,12 @@ public class NodeObject : MonoBehaviour {
     /// </summary>
     private Node treeNode;
 
-    //TEMP
-    public bool toggleSelected;
-
-    public void Update()
-    {
-        if (toggleSelected)
-        {
-            SelectNode();
-            toggleSelected = false;
-        }
-    }
-
-    /// <summary>
-    /// Selects this node, making only this node and its children visable
-    /// Should only be called if the previously selected node is 1 generation from this node
-    /// That is, if the previous node is this nodes parent or child
-    /// </summary>
-    public void SelectNode()
-    {
-        //Create a new list of inactive nodes to replace the previous list
-        List<GameObject> newInactiveNodes = new List<GameObject>();
-
-        //Cycle through each inactive node, setting them to active if they are this nodes child
-        for (int i = 0; i < InactiveNodes.Count; i++)
-        {
-            if (InactiveNodes[i].transform.parent == transform)
-            {
-                InactiveNodes[i].SetActive(true);
-            }
-            else
-            {
-                //Store the still inactive nodes in the new inactive list
-                newInactiveNodes.Add(InactiveNodes[i]);
-            }
-        }
-
-        //Replace the list of inactive nodes with the new list
-        InactiveNodes = newInactiveNodes;
-
-        //Disable all of this nodes siblings, if it has any
-        if (parentNode != null)
-        {
-            for (int i = 0; i < parentNode.transform.childCount; i++)
-            {
-                Transform child = parentNode.transform.GetChild(i);
-                if (child != transform)
-                {
-                    InactiveNodes.Add(child.gameObject);
-                    child.gameObject.SetActive(false);
-                }
-            }
-        }
-    }
-
     /// <summary>
     /// Initialises this <see cref=" NodeObject"/>, giving it a position in world space depending on its position in the game tree
     /// </summary>
     /// <param name="nodeInTree">The node in the MCTS that this NodeObject represents</param>
-	public void Initialise (Node nodeInTree) {
+	public void Initialise(Node nodeInTree)
+    {
         //Assign this NodeObject's treeNode
         treeNode = nodeInTree;
 
@@ -149,7 +96,49 @@ public class NodeObject : MonoBehaviour {
         transform.rotation = Quaternion.identity;
 
         AllNodes.Add(this);
-	}
+    }
+
+    /// <summary>
+    /// Selects this node, making only this node and its children visable
+    /// Should only be called if the previously selected node is 1 generation from this node
+    /// That is, if the previous node is this nodes parent or child
+    /// </summary>
+    public void SelectNode()
+    {
+        //Create a new list of inactive nodes to replace the previous list
+        List<GameObject> newInactiveNodes = new List<GameObject>();
+
+        //Cycle through each inactive node, setting them to active if they are children of this node
+        for (int i = 0; i < InactiveNodes.Count; i++)
+        {
+            if (InactiveNodes[i].transform.parent == transform)
+            {
+                InactiveNodes[i].SetActive(true);
+            }
+            else
+            {
+                //Store the still inactive nodes in the new inactive list
+                newInactiveNodes.Add(InactiveNodes[i]);
+            }
+        }
+
+        //Replace the list of inactive nodes with the new list
+        InactiveNodes = newInactiveNodes;
+
+        //Disable all of this nodes siblings, if it has any
+        if (parentNode != null)
+        {
+            for (int i = 0; i < parentNode.transform.childCount; i++)
+            {
+                Transform child = parentNode.transform.GetChild(i);
+                if (child != transform)
+                {
+                    InactiveNodes.Add(child.gameObject);
+                    child.gameObject.SetActive(false);
+                }
+            }
+        }
+    }
 
     /// <summary>
     /// The parent nodeobject of this nodeobject

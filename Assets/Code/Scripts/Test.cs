@@ -17,8 +17,9 @@ public class Test : MonoBehaviour {
         Application.runInBackground = true;
         mcts = new MCTS(new TTTBoard(), 100);
         Thread thread1 = new Thread(new ThreadStart(() => RunMCTS(mcts)));
+        thread1.IsBackground = true;
         thread1.Start();
-
+        
         #region Fibbonacci Sphere algorithm
         //List<Vector3> points = new List<Vector3>();
         //int samples = parent.TreeNode.Children.Capacity + 1;

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 /// <summary>
 /// A node for use with a Monte Carlo Search Tree

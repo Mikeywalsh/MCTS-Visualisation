@@ -20,6 +20,7 @@ public class CameraControl : MonoBehaviour {
 
         int inputNum = GetNumericalInput();
 
+        //TEMP - Allow the user to navigate the tree with number keys
         if(inputNum != -1)
         {
             if(CurrentNode.transform.childCount >= inputNum)
@@ -30,6 +31,7 @@ public class CameraControl : MonoBehaviour {
             }
         }
 
+        //TEMP - Allow the user to travel back to the parent node with the backspace key
         if(Input.GetKeyDown(KeyCode.Backspace))
         {
             if(CurrentNode.transform.parent != null)
@@ -39,7 +41,8 @@ public class CameraControl : MonoBehaviour {
                 UIController.DisplayNodeInfo(CurrentNode.TreeNode);
             }
         }
-
+         
+        //Allow the user to zoom in and out of the game tree with the scroll wheel
         if (Input.GetAxis("Mouse ScrollWheel") < 0 && transform.localPosition.magnitude > 100)
         {
             transform.position += (transform.localPosition.normalized * 75);
@@ -51,6 +54,33 @@ public class CameraControl : MonoBehaviour {
         else
         {
             transform.RotateAround(transform.parent.position, Vector3.up, 1);
+        }
+    }
+
+    /// <summary>
+    /// Changes the currently selected node to be a child of the currently selected node
+    /// </summary>
+    /// <param name="childIndex">The child index of the new selected node</param>
+    public void SelectChildNode(int childIndex)
+    {
+        if (CurrentNode.transform.childCount > childIndex)
+        {
+            CurrentNode = CurrentNode.transform.GetChild(childIndex).GetComponent<NodeObject>();
+            CurrentNode.SelectNode();
+            UIController.DisplayNodeInfo(CurrentNode.TreeNode);
+        }
+    }
+
+    /// <summary>
+    /// Changes the current node to be the parent of the current node, if it has a parent
+    /// </summary>
+    public void SelectParentNode()
+    {
+        if (CurrentNode.transform.parent != null)
+        {
+            CurrentNode = CurrentNode.transform.parent.GetComponent<NodeObject>();
+            CurrentNode.SelectNode();
+            UIController.DisplayNodeInfo(CurrentNode.TreeNode);
         }
     }
 
