@@ -13,7 +13,7 @@ public class Test : MonoBehaviour {
 
     float lastUpdateTime;
 
-	void Start () {
+	void Starrt () {
         Application.runInBackground = true;
         mcts = new MCTS(new TTTBoard(), 100);
 
@@ -43,7 +43,7 @@ public class Test : MonoBehaviour {
         #endregion
     }
 	
-	void Update () {
+	void Updaate () {
         if (!mcts.Finished && lastUpdateTime + 1 < Time.time)
         {
             if (Time.time > TimeToRunFor)
