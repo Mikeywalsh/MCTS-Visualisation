@@ -2,52 +2,45 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraControl : MonoBehaviour {
+public class CameraControl : MonoBehaviour
+{
 
+    /// <summary>
+    /// The currently selected node
+    /// Information about the current node and its children is displayed in the UI
+    /// </summary>
     public NodeObject CurrentNode;
-
-	void Start () {
-		
-	}
 
     /// <summary>
     /// Called every frame, rotates the camera around the root node
     /// </summary>
     void Update()
-    {        
+    {
+        //Make the camera always look directly at the focus point
         transform.LookAt(transform.parent.position);
+
+        //Smoothly translate the focus point towards the current node
         transform.parent.position = Vector3.Lerp(transform.parent.position, CurrentNode.transform.position, 0.1f);
 
+        //Allow the user to navigate the tree with number keys
         int inputNum = GetNumericalInput();
-
-        //TEMP - Allow the user to navigate the tree with number keys
-        if(inputNum != -1)
+        if (inputNum != -1)
         {
-            if(CurrentNode.transform.childCount >= inputNum)
-            {
-                CurrentNode = CurrentNode.transform.GetChild(inputNum - 1).GetComponent<NodeObject>();
-                CurrentNode.SelectNode();
-                UIController.DisplayNodeInfo(CurrentNode.TreeNode);
-            }
+            SelectChildNode(inputNum - 1);
         }
 
-        //TEMP - Allow the user to travel back to the parent node with the backspace key
-        if(Input.GetKeyDown(KeyCode.Backspace))
+        //Allow the user to travel back to the parent node with the backspace key
+        if (Input.GetKeyDown(KeyCode.Backspace))
         {
-            if(CurrentNode.transform.parent != null)
-            {
-                CurrentNode = CurrentNode.transform.parent.GetComponent<NodeObject>();
-                CurrentNode.SelectNode();
-                UIController.DisplayNodeInfo(CurrentNode.TreeNode);
-            }
+            SelectParentNode();
         }
-         
+
         //Allow the user to zoom in and out of the game tree with the scroll wheel
-        if (Input.GetAxis("Mouse ScrollWheel") < 0 && transform.localPosition.magnitude > 100)
+        if (Input.GetAxis("Mouse ScrollWheel") < 0 && transform.localPosition.magnitude > 250)
         {
             transform.position += (transform.localPosition.normalized * 75);
         }
-        else if(Input.GetAxis("Mouse ScrollWheel") > 0)
+        else if (Input.GetAxis("Mouse ScrollWheel") > 0)
         {
             transform.position -= (transform.localPosition.normalized * 75);
         }
@@ -84,6 +77,11 @@ public class CameraControl : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Returns an integer representing the value of the numerical key, if one has been pressed this frame
+    /// Allows the user to navigate the tree with keys instead of the on-screen buttons
+    /// </summary>
+    /// <returns>An integer representing the value of the numerical key that was pressed. -1 if no key was pressed</returns>
     private int GetNumericalInput()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))

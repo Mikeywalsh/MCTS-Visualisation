@@ -16,9 +16,11 @@ public class Test : MonoBehaviour {
 	void Start () {
         Application.runInBackground = true;
         mcts = new MCTS(new TTTBoard(), 100);
-        Thread thread1 = new Thread(new ThreadStart(() => RunMCTS(mcts)));
-        thread1.IsBackground = true;
-        thread1.Start();
+
+        //Run mcts in another thread
+        Thread mctsThread = new Thread(new ThreadStart(() => RunMCTS(mcts)));
+        mctsThread.IsBackground = true;
+        mctsThread.Start();
         
         #region Fibbonacci Sphere algorithm
         //List<Vector3> points = new List<Vector3>();
@@ -58,11 +60,6 @@ public class Test : MonoBehaviour {
             Debug.Log("Finished!");
             Debug.Log("Total nodes: " + mcts.NodesVisited);
             Node bestNode = mcts.Root;
-
-            foreach(Node c in bestNode.Children)
-            {
-                Debug.Log("Score: " + c.AverageScore + "    Total: " + c.TotalScore + "     Visits: " + c.Visits + "     Children: " + c.Children.Count + c.GameBoard);
-            }
             Debug.Log("----------------");
 
             while(true)

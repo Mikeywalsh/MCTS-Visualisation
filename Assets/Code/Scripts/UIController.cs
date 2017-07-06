@@ -62,6 +62,7 @@ public class UIController : MonoBehaviour {
         for (int i = 0; i < ChildButtonHolder.childCount; i++)
         {
             ChildButtons.Add(ChildButtonHolder.GetChild(i).GetComponent<Button>());
+            ChildButtonHolder.GetChild(i).GetComponent<Button>().gameObject.SetActive(false);
         }
     }
 
