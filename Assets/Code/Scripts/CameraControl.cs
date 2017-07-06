@@ -36,11 +36,11 @@ public class CameraControl : MonoBehaviour
         }
 
         //Allow the user to zoom in and out of the game tree with the scroll wheel
-        if (Input.GetAxis("Mouse ScrollWheel") < 0 && transform.localPosition.magnitude > 250)
+        if (Input.GetAxis("Mouse ScrollWheel") < 0 && transform.localPosition.magnitude < 2000)
         {
             transform.position += (transform.localPosition.normalized * 75);
         }
-        else if (Input.GetAxis("Mouse ScrollWheel") > 0)
+        else if (Input.GetAxis("Mouse ScrollWheel") > 0 && transform.localPosition.magnitude > 100)
         {
             transform.position -= (transform.localPosition.normalized * 75);
         }
