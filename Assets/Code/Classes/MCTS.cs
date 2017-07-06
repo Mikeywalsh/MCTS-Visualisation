@@ -182,7 +182,7 @@ public class MCTS {
     /// <summary>
     /// Can be called to gracefully halt execution of the algorithm
     /// </summary>
-    public void FinishEarly()
+    public void Finish()
     {
         finished = true;
     }

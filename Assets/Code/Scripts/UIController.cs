@@ -12,6 +12,35 @@ public class UIController : MonoBehaviour {
     /// </summary>
     private static UIController uiController;
 
+    public GameObject NavigationElements;
+
+    public GameObject MenuElements;
+
+    /// <summary>
+    /// The dropdown menu that allows the user to select which game to run MCTS on
+    /// </summary>
+    public Dropdown GameChoiceDropdown;
+
+    /// <summary>
+    /// The input field that allows the user to specify the amount of playouts per simulation
+    /// </summary>
+    public InputField PlayoutAmountInput;
+
+    /// <summary>
+    /// The button which either starts MCTS or finished it early, depending on when it is pressed
+    /// </summary>
+    public Button StartStopButton;
+
+    /// <summary>
+    /// The progress bar which displays how much progress has been made to running MCTS and visualising it
+    /// </summary>
+    public ProgressBar VisualisationProgressBar;
+
+    /// <summary>
+    /// The input field which allows the user to specify the time the MCTS will run for
+    /// </summary>
+    public InputField TimeToRunInput;
+
     /// <summary>
     /// The text box used to display information about the current node in the UI
     /// </summary>
@@ -64,6 +93,54 @@ public class UIController : MonoBehaviour {
             ChildButtons.Add(ChildButtonHolder.GetChild(i).GetComponent<Button>());
             ChildButtonHolder.GetChild(i).GetComponent<Button>().gameObject.SetActive(false);
         }
+    }
+    /// <summary>
+    /// Called when the start button has been
+    /// This will disable all forms on input on the main menu whilst MCTS runs
+    /// The start button is also changed to the stop button
+    /// </summary>
+    public static void StartButtonPressed()
+    {
+        //Change the text of the button to inform the user that the MCTS can be finished early
+        uiController.StartStopButton.GetComponentInChildren<Text>().text = "Finish Early";
+
+        //Disable every form of input on the main menu
+        uiController.GameChoiceDropdown.interactable = false;
+        uiController.PlayoutAmountInput.interactable = false;
+        uiController.TimeToRunInput.interactable = false;
+
+        //Enable the progress bar
+        uiController.VisualisationProgressBar.gameObject.SetActive(true);
+    }
+
+    /// <summary>
+    /// Called when the stop button has been pressed, signalling the early finish of the MCTS algorithm
+    /// The start/stop button is disabled whilst the program attempts to visualise the result
+    /// </summary>
+    public static void StopButtonPressed()
+    {
+        uiController.StartStopButton.interactable = false;
+    }
+
+    /// <summary>
+    /// Update the visualisation progress bar with a new progress value and message to display
+    /// </summary>
+    /// <param name="progress">The new progress value</param>
+    /// <param name="message">The message to display</param>
+    public static void UpdateProgressBar(float progress, string message)
+    {
+        uiController.VisualisationProgressBar.SetProgress(progress);
+        uiController.VisualisationProgressBar.SetText(message);
+    }
+
+    /// <summary>
+    /// Called when the MCTS visualisation is ready
+    /// Changes the main menu UI to the tree navigation UI
+    /// </summary>
+    public static void SwitchToNavigationUI()
+    {
+        uiController.MenuElements.SetActive(false);
+        uiController.NavigationElements.SetActive(true);
     }
 
     /// <summary>
@@ -125,4 +202,75 @@ public class UIController : MonoBehaviour {
         //Disable the back to parent button if the new node has no parent
         uiController.BackToParentButton.interactable = (n.Parent != null);
     }
+
+    /// <summary>
+    /// Validates the playout and time input when they are changed, so that the start button cannot be pressed until they are valid
+    /// </summary>
+    public void ValidateInput()
+    {
+        int playoutInput;
+        float timeInput;
+
+        bool validPlayoutInput = int.TryParse(PlayoutAmountInput.text, out playoutInput);
+        bool validTimeInput = float.TryParse(TimeToRunInput.text, out timeInput);
+
+        if(validPlayoutInput)
+        {
+            if (playoutInput < 1)
+            {
+                validPlayoutInput = false;
+            }
+        }
+
+        if(validTimeInput)
+        {
+            if(timeInput < 1)
+            {
+                validTimeInput = false;
+            }
+        }
+
+        if(validPlayoutInput && validTimeInput)
+        {
+            StartStopButton.interactable = true;
+        }
+        else
+        {
+            StartStopButton.interactable = false;
+        }
+    }
+
+    /// <summary>
+    /// Gets the current selected game choice and returns it as an integer index value
+    /// </summary>
+    public static int GetGameChoice
+    {
+        get
+        {
+            return uiController.GameChoiceDropdown.value;
+        }
+    }
+
+    /// <summary>
+    /// Gets the current input value from the playouts per simulation input as an integer
+    /// </summary>
+    public static int GetPlayoutInput
+    {
+        get
+        {
+            return int.Parse(uiController.PlayoutAmountInput.text);
+        }
+    }
+
+    /// <summary>
+    /// Gets the current input value from the time to run input field as a float
+    /// </summary>
+    public static float GetTimeToRunInput
+    {
+        get
+        {
+            return float.Parse(uiController.TimeToRunInput.text);
+        }
+    }
+
 }

@@ -13,6 +13,11 @@ using UnityEditor;
 public class LineDraw : MonoBehaviour
 {
     /// <summary>
+    /// Used to toggle whether or not the lines are visible
+    /// </summary>
+    public bool linesVisible;
+
+    /// <summary>
     /// The material used for the lines
     /// </summary>
     private Material lineMat;
@@ -37,6 +42,9 @@ public class LineDraw : MonoBehaviour
     /// <param name="projection">The projection matrix used to draw the lines. Differs depending on if drawing to scene or game view.</param>
     private void DrawLines(Matrix4x4 projection)
     {
+        if (!linesVisible)
+            return;
+
         GL.PushMatrix();
         lineMat.SetPass(0);
         GL.Begin(GL.LINES); 

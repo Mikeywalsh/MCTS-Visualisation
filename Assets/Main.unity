@@ -354,6 +354,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c84b5b20f2893b2499233d8fde03dffb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  NavigationElements: {fileID: 917959827}
+  MenuElements: {fileID: 607521072}
+  GameChoiceDropdown: {fileID: 262869827}
+  PlayoutAmountInput: {fileID: 1723977321}
+  StartStopButton: {fileID: 967129885}
+  VisualisationProgressBar: {fileID: 1444588842}
+  TimeToRunInput: {fileID: 1808233706}
   CurrentNodeText: {fileID: 1524565495}
   ChildButtonHolder: {fileID: 690720872}
   ChildButtons: []
@@ -772,17 +779,26 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 224329652378825226, guid: 92f273aa1d3ff8d49bcfefa825cc2d1c,
         type: 2}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224329652378825226, guid: 92f273aa1d3ff8d49bcfefa825cc2d1c,
-        type: 2}
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224329652378825226, guid: 92f273aa1d3ff8d49bcfefa825cc2d1c,
         type: 2}
-      propertyPath: m_AnchorMax.x
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1503437088273670, guid: 92f273aa1d3ff8d49bcfefa825cc2d1c, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224469355880127896, guid: 92f273aa1d3ff8d49bcfefa825cc2d1c,
+        type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224469355880127896, guid: 92f273aa1d3ff8d49bcfefa825cc2d1c,
+        type: 2}
+      propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -903,8 +919,6 @@ MonoBehaviour:
     - m_Text: Tic Tac Toe
       m_Image: {fileID: 0}
     - m_Text: Connect 4
-      m_Image: {fileID: 0}
-    - m_Text: Option C
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2564,11 +2578,22 @@ MonoBehaviour:
     m_HighlightedTrigger: Highlighted
     m_PressedTrigger: Pressed
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 967129886}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1825339027}
+        m_MethodName: StartStopButtonPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &967129886
@@ -2960,13 +2985,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1296943781}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 500, z: -1000}
+  m_LocalRotation: {x: 0.2164396, y: 0, z: 0, w: 0.97629607}
+  m_LocalPosition: {x: 0, y: 600, z: -1200}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 260104472}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 25, y: 0, z: 0}
 --- !u!114 &1296943787
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2978,6 +3003,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11b0a2dddd9d3fa4cbdc4d9759638231, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  linesVisible: 0
 --- !u!114 &1296943788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3207,6 +3233,12 @@ RectTransform:
   m_PrefabParentObject: {fileID: 224523213862492240, guid: 92f273aa1d3ff8d49bcfefa825cc2d1c,
     type: 2}
   m_PrefabInternal: {fileID: 252942535}
+--- !u!114 &1444588842 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114241489564768606, guid: 92f273aa1d3ff8d49bcfefa825cc2d1c,
+    type: 2}
+  m_PrefabInternal: {fileID: 252942535}
+  m_Script: {fileID: 11500000, guid: bdc9392a5e5d4b84aa52127a8cdc14bb, type: 3}
 --- !u!1 &1492703153
 GameObject:
   m_ObjectHideFlags: 0
@@ -3858,7 +3890,18 @@ MonoBehaviour:
       Culture=neutral, PublicKeyToken=null
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 104324687}
+        m_MethodName: ValidateInput
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.InputField+OnChangeEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
@@ -4216,7 +4259,18 @@ MonoBehaviour:
       Culture=neutral, PublicKeyToken=null
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 104324687}
+        m_MethodName: ValidateInput
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.InputField+OnChangeEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
@@ -4287,7 +4341,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startObject: {fileID: 455453794}
-  TimeToRunFor: 4
 --- !u!4 &1825339028
 Transform:
   m_ObjectHideFlags: 0

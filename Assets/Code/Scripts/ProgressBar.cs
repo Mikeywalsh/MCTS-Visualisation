@@ -33,7 +33,7 @@ public class ProgressBar : MonoBehaviour {
 
         //Change the size of the progress bar transform
         float barWidth = GetComponent<RectTransform>().sizeDelta.x;
-        progressBar.offsetMax = new Vector2((-1 + progress) * barWidth, progressBar.offsetMax.y);
+        progressBar.offsetMax = new Vector2(progress * barWidth, progressBar.offsetMax.y);
     }
 
     /// <summary>

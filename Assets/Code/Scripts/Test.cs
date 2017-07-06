@@ -6,52 +6,67 @@ using UnityEngine;
 public class Test : MonoBehaviour {
 
     public GameObject startObject;
-    public float TimeToRunFor;
+
+    private float timeToRunFor;
+    private float timeLeft;
 
     MCTS mcts;
     bool resultShown;
+    bool allNodesGenerated;
 
     float lastUpdateTime;
 
-	void Starrt () {
+    int nodesGenerated = 0;
+
+    void Start() {
         Application.runInBackground = true;
-        mcts = new MCTS(new TTTBoard(), 100);
+    }
 
-        //Run mcts in another thread
-        Thread mctsThread = new Thread(new ThreadStart(() => RunMCTS(mcts)));
-        mctsThread.IsBackground = true;
-        mctsThread.Start();
-        
-        #region Fibbonacci Sphere algorithm
-        //List<Vector3> points = new List<Vector3>();
-        //int samples = parent.TreeNode.Children.Capacity + 1;
-        //float offset = 2f / samples;
-        //float increment = Mathf.PI * (3 - Mathf.Sqrt(5));
+    /// <summary>
+    /// Called when the start/stop button is pressed
+    /// If MCTS is not running, then it will be started
+    /// If MCTS is running, this will make it finish early
+    /// </summary>
+    public void StartStopButtonPressed()
+    {
+        //Starts or ends MCTS depending on when the button is pressed
+        if (mcts == null)
+        {
+            //Initialise MCTS
+            mcts = new MCTS(new TTTBoard(), UIController.GetPlayoutInput);
 
-        //for (int i = 0; i < samples; i++)
-        //{
-        //    float y = ((i * offset) - 1) + (offset / 2);
-        //    float r = Mathf.Sqrt(1 - Mathf.Pow(y, 2));
-
-        //    float phi = ((i + 1) % samples) * increment;
-
-        //    float x = Mathf.Cos(phi) * r;
-        //    float z = Mathf.Sin(phi) * r;
-
-        //    points.Add(new Vector3(x, y, z));
-        //}
-        #endregion
+            //Run mcts in another thread
+            Thread mctsThread = new Thread(new ThreadStart(() => RunMCTS(mcts)));
+            mctsThread.IsBackground = true;
+            mctsThread.Start();
+            timeToRunFor = UIController.GetTimeToRunInput;
+            timeLeft = timeToRunFor;
+            UIController.StartButtonPressed();
+        }
+        else
+        {
+            //Stop the MCTS early
+            mcts.Finish();
+            UIController.StopButtonPressed();
+        }
     }
 	
-	void Updaate () {
-        if (!mcts.Finished && lastUpdateTime + 1 < Time.time)
+    /// <summary>
+    /// Temporary and very messy
+    /// </summary>
+	void Update () {
+        if (mcts == null)
+            return;
+
+        if (!mcts.Finished)
         {
-            if (Time.time > TimeToRunFor)
+            timeLeft -= Time.deltaTime;
+            if (timeLeft <= 0)
             {
-                mcts.FinishEarly();
+                mcts.Finish();
+                UIController.StopButtonPressed();
             }
-            lastUpdateTime = Time.time;
-            Debug.Log(mcts.NodesVisited);
+            UIController.UpdateProgressBar((1 - (timeLeft / timeToRunFor)) / 2, "Running MCTS   " + mcts.NodesVisited + " nodes     " + timeLeft.ToString("0.0") + "s/" + timeToRunFor.ToString("0.0") + "s");
         }
 
         if (!resultShown && mcts.Finished)
@@ -74,19 +89,23 @@ public class Test : MonoBehaviour {
             //-------------------------------
             startObject.GetComponent<NodeObject>().Initialise(mcts.Root);
             StartCoroutine(GenChildren(mcts.Root, startObject));
-            UIController.DisplayNodeInfo(mcts.Root);
             //-------------------------------
-
         }
 
-        //if(NodeObject.selectedNode != null)
-        //{
-        //    NodeObject.selectedNode.transform.parent.GetComponentInChildren<Transform>(true).gameObject.SetActive(false);
-        //    NodeObject.selectedNode.gameObject.GetComponentInChildren<Transform>(true).gameObject.SetActive(true);
-        //    gameObject.SetActive(false);
-        //    toggleSelected = false;
-        //    NodeObject.selectedNode = null;
-        //}
+        if (!allNodesGenerated && mcts.Finished)
+        {
+            if (nodesGenerated < mcts.NodesVisited)
+            {
+                UIController.UpdateProgressBar(0.5f + ((float)nodesGenerated / mcts.NodesVisited / 2), "Creating node objects: " + nodesGenerated + "/" + mcts.NodesVisited);
+            }
+            else if(nodesGenerated == mcts.NodesVisited)
+            {
+                UIController.SwitchToNavigationUI();
+                Camera.main.GetComponent<LineDraw>().linesVisible = true;
+                UIController.DisplayNodeInfo(mcts.Root);
+                allNodesGenerated = true;
+            }
+        }
     }
 
     IEnumerator GenChildren(Node root, GameObject rootObject)
@@ -97,6 +116,7 @@ public class Test : MonoBehaviour {
             newNode.transform.parent = rootObject.transform;
             newNode.name = "D" + child.Depth + " C" + newNode.transform.parent.childCount + "/" + root.Children.Capacity;
             newNode.AddComponent<NodeObject>().Initialise(child);
+            nodesGenerated++;
 
             yield return new WaitForSeconds(.1f);
 
