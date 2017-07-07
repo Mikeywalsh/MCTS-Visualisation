@@ -1,9 +1,13 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-public class Test : MonoBehaviour {
+/// <summary>
+/// The main script for the application
+/// Handles the running of the MCTS and the creation of <see cref="NodeObject"/>s for each node
+/// Also handles the changeover between the menu UI and navigation UI
+/// </summary>
+public class MainController : MonoBehaviour {
 
     /// <summary>
     /// The gameobject of the root node, used as a starting point for rendering the game tree
@@ -42,6 +46,9 @@ public class Test : MonoBehaviour {
     /// </summary>
     int nodesGenerated;
 
+    /// <summary>
+    /// Ensure that the application runs in the background when it is started
+    /// </summary>
     void Start() {
         Application.runInBackground = true;
     }
