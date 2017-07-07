@@ -5,18 +5,42 @@ using UnityEngine;
 
 public class Test : MonoBehaviour {
 
-    public GameObject startObject;
+    /// <summary>
+    /// The gameobject of the root node, used as a starting point for rendering the game tree
+    /// </summary>
+    public NodeObject RootNodeObject;
 
+    /// <summary>
+    /// The MCTS instance used to create the game tree
+    /// Should be ran on another thread to avoid freezing of the application
+    /// </summary>
+    private MCTS mcts;
+
+    /// <summary>
+    /// The time to run MCTS for, input by the user
+    /// </summary>
     private float timeToRunFor;
+
+    /// <summary>
+    /// The time left to run the MCTS for
+    /// Starts at <see cref="timeToRunFor"/> and counts down to zero
+    /// </summary>
     private float timeLeft;
 
-    MCTS mcts;
-    bool resultShown;
+    /// <summary>
+    /// Used as a toggle to start the visualisation process of assigning each node a gameobject
+    /// </summary>
+    bool startedVisualisation;
+
+    /// <summary>
+    /// Used as a flag to display progress made on the visualisation process whilst each nodes does not have a gameobject assigned
+    /// </summary>
     bool allNodesGenerated;
 
-    float lastUpdateTime;
-
-    int nodesGenerated = 0;
+    /// <summary>
+    /// The current amount of node objects that have been created
+    /// </summary>
+    int nodesGenerated;
 
     void Start() {
         Application.runInBackground = true;
@@ -55,9 +79,11 @@ public class Test : MonoBehaviour {
     /// Temporary and very messy
     /// </summary>
 	void Update () {
+        //Don't do anything until the user has started running the MCTS
         if (mcts == null)
             return;
 
+        //While the MCTS is still running, display progress information about the time remaining and the amounts of nodes created to the user
         if (!mcts.Finished)
         {
             timeLeft -= Time.deltaTime;
@@ -69,30 +95,20 @@ public class Test : MonoBehaviour {
             UIController.UpdateProgressBar((1 - (timeLeft / timeToRunFor)) / 2, "Running MCTS   " + mcts.NodesVisited + " nodes     " + timeLeft.ToString("0.0") + "s/" + timeToRunFor.ToString("0.0") + "s");
         }
 
-        if (!resultShown && mcts.Finished)
+        //Return if the MCTS has not finished being created
+        if (!mcts.Finished)
+            return;
+
+        //If the MCTS has finished being computed, start to create gameobjects for each node in the tree
+        if (!startedVisualisation)
         {
-            Debug.Log("----------------");
-            Debug.Log("Finished!");
-            Debug.Log("Total nodes: " + mcts.NodesVisited);
-            Node bestNode = mcts.Root;
-            Debug.Log("----------------");
-
-            while(true)
-            {
-                bestNode = mcts.BestNodeChoice(bestNode);
-                if (bestNode == null)
-                    break;
-
-                Debug.Log("Choose: " + bestNode.AverageScore + bestNode.GameBoard);
-            }
-            resultShown = true;
-            //-------------------------------
-            startObject.GetComponent<NodeObject>().Initialise(mcts.Root);
-            StartCoroutine(GenChildren(mcts.Root, startObject));
-            //-------------------------------
+            RootNodeObject.Initialise(mcts.Root);
+            StartCoroutine(GenChildren(mcts.Root, RootNodeObject.gameObject));
+            startedVisualisation = true;
         }
 
-        if (!allNodesGenerated && mcts.Finished)
+        //Display information on the progress bar about how many node objects have been created, until every node in the tree has its own gameobject
+        if (!allNodesGenerated)
         {
             if (nodesGenerated < mcts.NodesVisited)
             {
@@ -100,6 +116,7 @@ public class Test : MonoBehaviour {
             }
             else if(nodesGenerated == mcts.NodesVisited)
             {
+                //If every node has had a gameobject created for it, then switch to the navigation UI and start to render the game tree
                 UIController.SwitchToNavigationUI();
                 Camera.main.GetComponent<LineDraw>().linesVisible = true;
                 UIController.DisplayNodeInfo(mcts.Root);
@@ -108,13 +125,20 @@ public class Test : MonoBehaviour {
         }
     }
 
-    IEnumerator GenChildren(Node root, GameObject rootObject)
+    /// <summary>
+    /// Creates child gameobjects for a nodes children, recursively
+    /// If the root node is passed in as the parent node, then the entire tree will be created
+    /// This method is an <see cref="IEnumerator"/> so the tree is given time to be created, instead of the program freezing whilst it creates the tree in one frame
+    /// </summary>
+    /// <param name="parentNode">The starting node to create a child object hierarchy of </param>
+    /// <param name="parentNodeObject">The gameobject of the parent node</param>
+    IEnumerator GenChildren(Node parentNode, GameObject parentNodeObject)
     {
-        foreach (Node child in root.Children)
+        foreach (Node child in parentNode.Children)
         {
             GameObject newNode = Instantiate(Resources.Load<GameObject>("Ball"));
-            newNode.transform.parent = rootObject.transform;
-            newNode.name = "D" + child.Depth + " C" + newNode.transform.parent.childCount + "/" + root.Children.Capacity;
+            newNode.transform.parent = parentNodeObject.transform;
+            newNode.name = "D" + child.Depth + " C" + newNode.transform.parent.childCount + "/" + parentNode.Children.Capacity;
             newNode.AddComponent<NodeObject>().Initialise(child);
             nodesGenerated++;
 
@@ -124,6 +148,11 @@ public class Test : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Runs MCTS until completion
+    /// Should be ran on another thread to avoid freezing of the application
+    /// </summary>
+    /// <param name="m">The MCTS instance to run</param>
     static void RunMCTS(MCTS m)
     {
         while (!m.Finished)

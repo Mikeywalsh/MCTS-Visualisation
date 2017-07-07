@@ -1,10 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CameraControl : MonoBehaviour
 {
-
     /// <summary>
     /// The currently selected node
     /// Information about the current node and its children is displayed in the UI

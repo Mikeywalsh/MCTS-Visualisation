@@ -4340,7 +4340,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a91e573c1d597a64a90a02b0c3776f5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startObject: {fileID: 455453794}
+  RootNodeObject: {fileID: 455453799}
 --- !u!4 &1825339028
 Transform:
   m_ObjectHideFlags: 0

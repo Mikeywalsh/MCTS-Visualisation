@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -80,9 +81,12 @@ public class UIController : MonoBehaviour {
     /// </summary>
     public void Start()
     {
-        //Set the singleton reference when the program is first run
-        if (uiController == null)
-            uiController = this;
+        //If the singleton reference is not null, then there are more than one UIcontrollers, which is not allowed
+        if (uiController != null)
+            throw new Exception("UIController is a Singleton, there cannot be more than one instance");
+
+        //Set the singleton static reference to be this instance
+        uiController = this;
 
         //Setup the list of child buttons to use for displaying child node information
         ChildButtons = new List<Button>();
