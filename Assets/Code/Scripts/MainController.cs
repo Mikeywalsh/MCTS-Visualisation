@@ -63,10 +63,10 @@ public class MainController : MonoBehaviour {
         //Starts or ends MCTS depending on when the button is pressed
         if (mcts == null)
         {
-            //Create an empty board instance, which will use whatever game the user chooses assigned to it
+            //Create an empty board instance, which will have whatever game the user chooses assigned to it
             Board board;
 
-            //Depending on what game the user selected, assign different games to the board instance
+            //Assign whatever game board the user has chosen to the board instance
             switch(UIController.GetGameChoice)
             {
                 case 0:
