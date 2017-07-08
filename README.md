@@ -1,5 +1,5 @@
 # MonteCarlo
-This project, being undertook as part of my third and final year at the University of York, aims to visulalise the Monte Carlo Tree Search for different board, using the Unity Engine.
+This project, being undertook as part of my third and final year at the University of York, aims to visulalise the Monte Carlo Tree Search for different board games, using the Unity Engine.
 Whilst still very early in development, screenshots of the visualisation of Tic Tac Toe and Connect 4 can be seen below:
 
 ## Tic Tac Toe
