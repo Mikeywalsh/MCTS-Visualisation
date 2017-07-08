@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -8,7 +6,7 @@ using UnityEditor;
 
 /// <summary>
 /// This class is responsible for the drawing of lines between nodes to the screen
-/// This should be attached to a camera being used to view the 
+/// This should be attached to a camera being used to view the game tree
 /// </summary>
 public class LineDraw : MonoBehaviour
 {
@@ -29,7 +27,7 @@ public class LineDraw : MonoBehaviour
 
     /// <summary>
     /// Called as soon as this object is created
-    /// Lo
+    /// Creates the material used to render lines from the shader located in the Resources folder
     /// </summary>
     private void Awake()
     {
