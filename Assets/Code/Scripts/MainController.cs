@@ -76,9 +76,7 @@ public class MainController : MonoBehaviour {
                     board = new C4Board();
                     break;
                 default:
-                    //Have to have a default case, although this should never happen
-                    board = new TTTBoard();
-                    break;
+                    throw new System.Exception("Unknown game type index has been input");
             }
 
             //Initialise MCTS on the given game board
