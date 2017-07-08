@@ -63,8 +63,26 @@ public class MainController : MonoBehaviour {
         //Starts or ends MCTS depending on when the button is pressed
         if (mcts == null)
         {
-            //Initialise MCTS
-            mcts = new MCTS(new C4Board(), UIController.GetPlayoutInput);
+            //Create an empty board instance, which will use whatever game the user chooses assigned to it
+            Board board;
+
+            //Depending on what game the user selected, assign different games to the board instance
+            switch(UIController.GetGameChoice)
+            {
+                case 0:
+                    board = new TTTBoard();
+                    break;
+                case 1:
+                    board = new C4Board();
+                    break;
+                default:
+                    //Have to have a default case, although this should never happen
+                    board = new TTTBoard();
+                    break;
+            }
+
+            //Initialise MCTS on the given game board
+            mcts = new MCTS(board, UIController.GetPlayoutInput);
 
             //Run mcts in another thread
             Thread mctsThread = new Thread(new ThreadStart(() => RunMCTS(mcts)));
