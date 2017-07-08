@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
+/// <summary>
+/// A Tic-Tac-Toe game board, which allows a game of Tic-Tac-Toe to be played out on it
+/// </summary>
 public class TTTBoard : Board {
 
     /// <summary>
@@ -15,7 +15,7 @@ public class TTTBoard : Board {
     /// </summary>
     public TTTBoard()
     {
-        currentPlayer = 2;
+        currentPlayer = 1;
         boardContents = new int[3,3];
         //boardContents[0, 0] = 1;
         //boardContents[2, 1] = 1;
@@ -45,6 +45,11 @@ public class TTTBoard : Board {
         return new TTTBoard(this);
     }
 
+    /// <summary>
+    /// Makes a move on this Tic-Tac-Toe board at the specified move position
+    /// </summary>
+    /// <param name="move">The move to make</param>
+    /// <returns>A reference to this Tic-Tac-Toe board</returns>
     public override Board MakeMove(Move move)
     {
         TTTMove m = (TTTMove)move;
@@ -127,10 +132,6 @@ public class TTTBoard : Board {
         if(PossibleMoves().Count == 0)
         {
             winner = 0;
-        }
-        else
-        {
-            winner = -1;
         }
     }
 

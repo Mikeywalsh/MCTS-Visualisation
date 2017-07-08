@@ -64,7 +64,7 @@ public class MainController : MonoBehaviour {
         if (mcts == null)
         {
             //Initialise MCTS
-            mcts = new MCTS(new TTTBoard(), UIController.GetPlayoutInput);
+            mcts = new MCTS(new C4Board(), UIController.GetPlayoutInput);
 
             //Run mcts in another thread
             Thread mctsThread = new Thread(new ThreadStart(() => RunMCTS(mcts)));
