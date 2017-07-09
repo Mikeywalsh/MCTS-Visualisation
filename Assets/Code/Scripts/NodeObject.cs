@@ -3,7 +3,7 @@ using UnityEngine;
 
 /// <summary>
 /// A <see cref="MonoBehaviour"/> class used for representing nodes of a Monte Carlo Tree Search graphically
-/// A NodeObject is created for each node the tree
+/// A NodeObject is created for each node of the tree
 /// </summary>
 public class NodeObject : MonoBehaviour {
 
