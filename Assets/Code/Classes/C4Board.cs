@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 /// <summary>
 /// A Connect 4 game board, which allows a game of Connect 4 to be played out on it
@@ -55,8 +56,10 @@ public class C4Board : Board {
                 //Make the move on this board
                 boardContents[m.x, y] = currentPlayer;
 
+                m.y = y;
+
                 //Determine if there is a winner
-                DetermineWinner();
+                DetermineWinner(m);
 
                 //Swap out the current player
                 currentPlayer = NextPlayer;
@@ -117,7 +120,7 @@ public class C4Board : Board {
                 }
 
                 //Check for a horizontal win
-                if (x < boardContents.GetLength(0) - 4)
+                if (x < boardContents.GetLength(0) - 3)
                 {
                     if (boardContents[x + 1, y] == currentCell && boardContents[x + 2, y] == currentCell && boardContents[x + 3, y] == currentCell)
                     {
@@ -127,7 +130,7 @@ public class C4Board : Board {
                 }
 
                 //Check for a vertical win
-                if (y < boardContents.GetLength(1) - 4)
+                if (y < boardContents.GetLength(1) - 3)
                 {
                     if (boardContents[x, y + 1] == currentCell && boardContents[x, y + 2] == currentCell && boardContents[x, y + 3] == currentCell)
                     {
@@ -137,7 +140,7 @@ public class C4Board : Board {
                 }
 
                 //Check for an upwards diagonal win
-                if (x < boardContents.GetLength(0) - 4 && y < boardContents.GetLength(1) - 4)
+                if (x < boardContents.GetLength(0) - 3 && y < boardContents.GetLength(1) - 3)
                 {
                     if (boardContents[x + 1, y + 1] == currentCell && boardContents[x + 2, y + 2] == currentCell && boardContents[x + 3, y + 3] == currentCell)
                     {
@@ -147,7 +150,7 @@ public class C4Board : Board {
                 }
 
                 //Check for a downwards diagonal win
-                if (x < boardContents.GetLength(0) - 4 && y > 2)
+                if (x < boardContents.GetLength(0) - 3 && y > 2)
                 {
                     if (boardContents[x + 1, y - 1] == currentCell && boardContents[x + 2, y - 2] == currentCell && boardContents[x + 3, y - 3] == currentCell)
                     {
@@ -156,12 +159,71 @@ public class C4Board : Board {
                     }
                 }
 
-                //If there are no possible moves left, the game is a draw
-                if(PossibleMoves().Count == 0)
+                //If there are no possible moves left and there is still no winner, the game is a draw
+                if (PossibleMoves().Count == 0)
                 {
                     winner = 0;
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// Determine if the current game is over
+    /// Uses knowledge of the last move to save computation time
+    /// </summary>
+    /// <param name="move">The last move made</param>
+    protected override void DetermineWinner(Move move)
+    {
+        C4Move m = (C4Move)move;
+
+        //Get the current cells value
+        int currentCell = boardContents[m.x, m.y];
+
+        //Check for a horizontal win
+        if (m.x < boardContents.GetLength(0) - 3)
+        {
+            if (boardContents[m.x + 1, m.y] == currentCell && boardContents[m.x + 2, m.y] == currentCell && boardContents[m.x + 3, m.y] == currentCell)
+            {
+                winner = CurrentPlayer;
+                return;
+            }
+        }
+
+        //Check for a vertical win
+        if (m.y < boardContents.GetLength(1) - 3)
+        {
+            if (boardContents[m.x, m.y + 1] == currentCell && boardContents[m.x, m.y + 2] == currentCell && boardContents[m.x, m.y + 3] == currentCell)
+            {
+                winner = CurrentPlayer;
+                return;
+            }
+        }
+
+        //Check for an upwards diagonal win
+        if (m.x < boardContents.GetLength(0) - 3 && m.y < boardContents.GetLength(1) - 3)
+        {
+            if (boardContents[m.x + 1, m.y + 1] == currentCell && boardContents[m.x + 2, m.y + 2] == currentCell && boardContents[m.x + 3, m.y + 3] == currentCell)
+            {
+                winner = CurrentPlayer;
+                return;
+            }
+        }
+
+        //Check for a downwards diagonal win
+        if (m.x < boardContents.GetLength(0) - 3 && m.y > 2)
+        {
+            if (boardContents[m.x + 1, m.y - 1] == currentCell && boardContents[m.x + 2, m.y - 2] == currentCell && boardContents[m.x + 3, m.y - 3] == currentCell)
+            {
+                winner = CurrentPlayer;
+                return;
+            }
+        }
+
+        //If there are no possible moves left and there is still no winner, the game is a draw
+        if (PossibleMoves().Count == 0)
+        {
+            winner = 0;
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 /// <summary>
 /// A Tic-Tac-Toe game board, which allows a game of Tic-Tac-Toe to be played out on it
@@ -54,7 +55,7 @@ public class TTTBoard : Board {
             boardContents[m.x, m.y] = currentPlayer;
 
             //Determine if there is a winner
-            DetermineWinner();
+            DetermineWinner(move);
 
             //Swap out the current player
             currentPlayer = NextPlayer;
@@ -123,6 +124,36 @@ public class TTTBoard : Board {
 
         //If there is still no winner and the board is full, the game is a tie, otherwise no winner yet
         if(PossibleMoves().Count == 0)
+        {
+            winner = 0;
+        }
+    }
+
+    /// <summary>
+    /// Determine if the current game is over
+    /// Uses knowledge of the last move to save computation time
+    /// </summary>
+    /// <param name="move">The last move made</param>
+    protected override void DetermineWinner(Move move)
+    {
+        TTTMove m = (TTTMove)move;
+
+        //Check the row and column of the last move
+        if (boardContents[0, m.y] == boardContents[1, m.y] && boardContents[1, m.y] == boardContents[2, m.y] || boardContents[m.x, 0] == boardContents[m.x, 1] && boardContents[m.x, 1] == boardContents[m.x, 2])
+        {
+            winner = currentPlayer;
+            return;
+        }
+
+        //Then check each diagonal
+        if (boardContents[0, 0] != 0 && boardContents[0, 0] == boardContents[1, 1] && boardContents[0, 0] == boardContents[2, 2] || boardContents[0, 2] != 0 && boardContents[0, 2] == boardContents[1, 1] && boardContents[0, 2] == boardContents[2, 0])
+        {
+            winner = currentPlayer;
+            return;
+        }
+
+        //If there is still no winner and the board is full, the game is a tie, otherwise no winner yet
+        if (PossibleMoves().Count == 0)
         {
             winner = 0;
         }

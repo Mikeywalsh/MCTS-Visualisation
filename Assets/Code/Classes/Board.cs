@@ -127,4 +127,11 @@ public abstract class Board {
     /// Determines if there is a winner or not for this board state and updates the winner integer accordingly
     /// </summary>
     protected abstract void DetermineWinner();
+
+    /// <summary>
+    /// A more efficient method of determining if there is a winner
+    /// Saves time by using knowledge of the last move to remove unnessessary computation
+    /// </summary>
+    /// <param name="move">The last move made before calling this method</param>
+    protected abstract void DetermineWinner(Move move);
 }

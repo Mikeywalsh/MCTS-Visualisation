@@ -13,6 +13,12 @@ public class C4Move : Move
     public int x;
 
     /// <summary>
+    /// Y position of this move
+    /// Not chosen by the user, instead it is calculated when the move is made
+    /// </summary>
+    public int y;
+
+    /// <summary>
     /// Creates a new Connect 4 move with the given x position
     /// </summary>
     /// <param name="xPos">X position of the move to make</param>
