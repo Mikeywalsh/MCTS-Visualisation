@@ -24,7 +24,7 @@ public class C4Move : Move
     /// <param name="xPos">X position of the move to make</param>
     public C4Move(int xPos)
     {
-        if (xPos > 7 || xPos < 0)
+        if (xPos > 6 || xPos < 0)
         {
             throw new InvalidMoveException("Move: " + "(" + xPos + ")" + " is out of bounds of the 0-7 board space");
         }
