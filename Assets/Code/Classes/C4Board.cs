@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 /// <summary>
 /// A Connect 4 game board, which allows a game of Connect 4 to be played out on it
 /// </summary>
+[assembly: InternalsVisibleTo("Editor.C4BoardTest")]
 public class C4Board : Board {
 
     /// <summary>
@@ -93,12 +95,18 @@ public class C4Board : Board {
     }
 
     /// <summary>
-    /// Returns the contents of this Connect 4 board
+    /// Returns the contents of this Connect 4 game board cell at the given indices
     /// </summary>
-    /// <returns>The contents of this Connect 4 board</returns>
-    public int[,] BoardContents
+    /// <param name="x">The x index of the cell to get</param>
+    /// <param name="y">The y index of the cell to get</param>
+    /// <returns>The contents of this connect 4 game board cell at the index [x,y]</returns>
+    public int GetCell(int x, int y)
     {
-        get { return boardContents; }
+        if (x < 0 || x >= Width || y < 0 || y >= Height)
+        {
+            throw new IndexOutOfRangeException("Cell (" + x + "," + y + ") is out of range of the " + Width + "*" + Height + " game board area");
+        }
+        return boardContents[x, y];
     }
 
     /// <summary>
@@ -280,5 +288,27 @@ public class C4Board : Board {
         }
 
         return result;
+    }
+
+    /// <summary>
+    /// The width of this Connect 4 game board
+    /// </summary>
+    public int Width
+    {
+        get
+        {
+            return boardContents.GetLength(0);
+        }
+    }
+
+    /// <summary>
+    /// The height of this Connect 4 game board
+    /// </summary>
+    public int Height
+    {
+        get
+        {
+            return boardContents.GetLength(1);
+        }
     }
 }
