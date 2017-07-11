@@ -6,14 +6,17 @@
 /// </summary>
 public abstract class GridBasedBoard : Board {
 
-    int[,] boardContents;
+    /// <summary>
+    /// The contents of this game board
+    /// </summary>
+    protected int[,] boardContents;
 
     /// <summary>
-    /// Returns the contents of this Connect 4 game board cell at the given indices
+    /// Returns the contents of this board cell at the given indices
     /// </summary>
     /// <param name="x">The x index of the cell to get</param>
     /// <param name="y">The y index of the cell to get</param>
-    /// <returns>The contents of this connect 4 game board cell at the index [x,y]</returns>
+    /// <returns>The contents of this board cell at the index [x,y]</returns>
     public int GetCell(int x, int y)
     {
         if (x < 0 || x >= Width || y < 0 || y >= Height)
@@ -24,7 +27,7 @@ public abstract class GridBasedBoard : Board {
     }
 
     /// <summary>
-    /// The width of this Connect 4 game board
+    /// The width of this game board
     /// </summary>
     public int Width
     {
@@ -35,7 +38,7 @@ public abstract class GridBasedBoard : Board {
     }
 
     /// <summary>
-    /// The height of this Connect 4 game board
+    /// The height of this game board
     /// </summary>
     public int Height
     {

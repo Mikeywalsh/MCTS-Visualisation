@@ -7,11 +7,6 @@ using System.Collections.Generic;
 public class TTTBoard : GridBasedBoard {
 
     /// <summary>
-    /// The contents of the game board
-    /// </summary>
-    private int[,] boardContents;
-
-    /// <summary>
     /// Creates a new Tic-Tac-Toe board representing an empty game
     /// </summary>
     public TTTBoard()

@@ -5,13 +5,8 @@ using System.Runtime.CompilerServices;
 /// <summary>
 /// A Connect 4 game board, which allows a game of Connect 4 to be played out on it
 /// </summary>
-[assembly: InternalsVisibleTo("Editor.C4BoardTest")]
+[assembly: InternalsVisibleTo("Assembly-CSharp-Editor.C4BoardTest")]
 public class C4Board : GridBasedBoard {
-
-    /// <summary>
-    /// The contents of the game board
-    /// </summary>
-    private int[,] boardContents;
 
     /// <summary>
     /// Creates a new Connect 4 board representing an empty game
