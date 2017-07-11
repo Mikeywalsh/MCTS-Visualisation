@@ -4,7 +4,7 @@ using System.Collections.Generic;
 /// <summary>
 /// A Tic-Tac-Toe game board, which allows a game of Tic-Tac-Toe to be played out on it
 /// </summary>
-public class TTTBoard : Board {
+public class TTTBoard : GridBasedBoard {
 
     /// <summary>
     /// The contents of the game board
@@ -89,21 +89,6 @@ public class TTTBoard : Board {
         }
 
         return moves;
-    }
-
-    /// <summary>
-    /// Returns the contents of this Tic-Tac-Toe game board cell at the given indices
-    /// </summary>
-    /// <param name="x">The x index of the cell to get</param>
-    /// <param name="y">The y index of the cell to get</param>
-    /// <returns>The contents of this Tic-Tac-Toe game board cell at the index [x,y]</returns>
-    public int GetCell(int x, int y)
-    {
-        if (x < 0 || x >= Width || y < 0 || y >= Height)
-        {
-            throw new IndexOutOfRangeException("Cell (" + x + "," + y + ") is out of range of the " + Width + "*" + Height + " game board area");
-        }
-        return boardContents[x, y];
     }
 
     /// <summary>
@@ -196,27 +181,5 @@ public class TTTBoard : Board {
         }
 
         return result;
-    }
-
-    /// <summary>
-    /// The width of this Tic-Tac-Toe game board
-    /// </summary>
-    public int Width
-    {
-        get
-        {
-            return boardContents.GetLength(0);
-        }
-    }
-
-    /// <summary>
-    /// The height of this Tic-Tac-Toe game board
-    /// </summary>
-    public int Height
-    {
-        get
-        {
-            return boardContents.GetLength(1);
-        }
     }
 }
