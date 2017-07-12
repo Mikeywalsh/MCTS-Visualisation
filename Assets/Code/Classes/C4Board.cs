@@ -5,7 +5,6 @@ using System.Runtime.CompilerServices;
 /// <summary>
 /// A Connect 4 game board, which allows a game of Connect 4 to be played out on it
 /// </summary>
-[assembly: InternalsVisibleTo("Assembly-CSharp-Editor.C4BoardTest")]
 public class C4Board : GridBasedBoard {
 
     /// <summary>
@@ -52,7 +51,8 @@ public class C4Board : GridBasedBoard {
             {
                 //Make the move on this board
                 boardContents[m.x, y] = currentPlayer;
-
+                
+                //Set the y position of the move
                 m.y = y;
 
                 //Determine if there is a winner
@@ -73,7 +73,6 @@ public class C4Board : GridBasedBoard {
     /// Get a list of all possible moves for this Connect 4 board instance
     /// </summary>
     /// <returns>A list of all possible moves for this Connect 4 board instance</returns>
-
     public override List<Move> PossibleMoves()
     {
         List<Move> moves = new List<Move>();
@@ -159,6 +158,7 @@ public class C4Board : GridBasedBoard {
     /// <summary>
     /// Determine if the current game is over
     /// Uses knowledge of the last move to save computation time
+    /// This method seems a bit confusing, but it is just changing the worst case number of win checks from 196 to 16
     /// </summary>
     /// <param name="move">The last move made</param>
     protected override void DetermineWinner(Move move)
@@ -166,45 +166,65 @@ public class C4Board : GridBasedBoard {
         C4Move m = (C4Move)move;
 
         //Get the current cells value
-        int currentCell = boardContents[m.x, m.y];
+        int currentCell;
 
         //Check for a horizontal win
-        if (m.x < boardContents.GetLength(0) - 3)
+        //Check 3 cells infront and behind of this cell to determine if there is a winner
+        for (int x = m.x; x >= m.x - 3 && x >= 0; x--)
         {
-            if (boardContents[m.x + 1, m.y] == currentCell && boardContents[m.x + 2, m.y] == currentCell && boardContents[m.x + 3, m.y] == currentCell)
+            currentCell = boardContents[x, m.y];
+            if (x < boardContents.GetLength(0) - 3)
             {
-                winner = CurrentPlayer;
-                return;
+                if (boardContents[x + 1, m.y] == currentCell && boardContents[x + 2, m.y] == currentCell && boardContents[x + 3, m.y] == currentCell)
+                {
+                    winner = CurrentPlayer;
+                    return;
+                }
             }
         }
 
         //Check for a vertical win
-        if (m.y < boardContents.GetLength(1) - 3)
+        //Check 3 cells up and down from this cell to determine if there is a winner
+        for (int y = m.y; y >= m.y - 3 && y >= 0; y--)
         {
-            if (boardContents[m.x, m.y + 1] == currentCell && boardContents[m.x, m.y + 2] == currentCell && boardContents[m.x, m.y + 3] == currentCell)
+            currentCell = boardContents[m.x, y];
+            if (m.y < boardContents.GetLength(1) - 3)
             {
-                winner = CurrentPlayer;
-                return;
+                if (boardContents[m.x, y + 1] == currentCell && boardContents[m.x, y + 2] == currentCell && boardContents[m.x, y + 3] == currentCell)
+                {
+                    winner = CurrentPlayer;
+                    return;
+                }
             }
         }
 
         //Check for an upwards diagonal win
-        if (m.x < boardContents.GetLength(0) - 3 && m.y < boardContents.GetLength(1) - 3)
+        //Check 3 cells down and left and 3 cells up and right from this cell to determine if there is a winner
+        for (int y = m.y, x = m.x; x >= m.x - 3 && y >= m.y - 3 && x >= 0 && y >= 0; x--, y--)
         {
-            if (boardContents[m.x + 1, m.y + 1] == currentCell && boardContents[m.x + 2, m.y + 2] == currentCell && boardContents[m.x + 3, m.y + 3] == currentCell)
+            currentCell = boardContents[x, y];
+            if (x < boardContents.GetLength(0) - 3 && y < boardContents.GetLength(1) - 3)
             {
-                winner = CurrentPlayer;
-                return;
+                if (boardContents[x + 1, y + 1] == currentCell && boardContents[x + 2, y + 2] == currentCell && boardContents[x + 3, y + 3] == currentCell)
+                {
+                    winner = CurrentPlayer;
+                    return;
+                }
             }
-        }
+        }        
 
         //Check for a downwards diagonal win
-        if (m.x < boardContents.GetLength(0) - 3 && m.y > 2)
+        //Check 3 cells up and left and 3 cells down and right from this cell to determine if there is a winner
+        for (int y = m.y, x = m.x; x >= m.x - 3 && y >= m.y + 3 && x >= 0 && y < Height; x--, y++)
         {
-            if (boardContents[m.x + 1, m.y - 1] == currentCell && boardContents[m.x + 2, m.y - 2] == currentCell && boardContents[m.x + 3, m.y - 3] == currentCell)
+            currentCell = boardContents[x, y];
+            if (x < boardContents.GetLength(0) - 3 && y > 2)
             {
-                winner = CurrentPlayer;
-                return;
+                if (boardContents[x + 1, y - 1] == currentCell && boardContents[x + 2, y - 2] == currentCell && boardContents[x + 3, y - 3] == currentCell)
+                {
+                    winner = CurrentPlayer;
+                    return;
+                }
             }
         }
 
