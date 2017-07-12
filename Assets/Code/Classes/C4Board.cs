@@ -47,13 +47,13 @@ public class C4Board : GridBasedBoard {
         //Make a move in the first available row in the column
         for (int y = 0; y < boardContents.GetLength(1); y++)
         {
-            if (boardContents[m.x, y] == 0)
+            if (boardContents[m.X, y] == 0)
             {
                 //Make the move on this board
-                boardContents[m.x, y] = currentPlayer;
+                boardContents[m.X, y] = currentPlayer;
                 
                 //Set the y position of the move
-                m.y = y;
+                m.SetY(y);
 
                 //Determine if there is a winner
                 DetermineWinner(m);
@@ -158,11 +158,11 @@ public class C4Board : GridBasedBoard {
     /// <summary>
     /// Determine if the current game is over
     /// Uses knowledge of the last move to save computation time
-    /// This method seems a bit confusing, but it is just changing the worst case number of win checks from 196 to 16
     /// </summary>
     /// <param name="move">The last move made</param>
     protected override void DetermineWinner(Move move)
     {
+        //This method seems a bit confusing, but it is just changing the worst case number of win checks from 196 to 16
         C4Move m = (C4Move)move;
 
         //Get the current cells value
@@ -170,12 +170,12 @@ public class C4Board : GridBasedBoard {
 
         //Check for a horizontal win
         //Check 3 cells infront and behind of this cell to determine if there is a winner
-        for (int x = m.x; x >= m.x - 3 && x >= 0; x--)
+        for (int x = m.X; x >= m.X- 3 && x >= 0; x--)
         {
-            currentCell = boardContents[x, m.y];
+            currentCell = boardContents[x, m.Y];
             if (x < boardContents.GetLength(0) - 3)
             {
-                if (boardContents[x + 1, m.y] == currentCell && boardContents[x + 2, m.y] == currentCell && boardContents[x + 3, m.y] == currentCell)
+                if (boardContents[x + 1, m.Y] == currentCell && boardContents[x + 2, m.Y] == currentCell && boardContents[x + 3, m.Y] == currentCell)
                 {
                     winner = CurrentPlayer;
                     return;
@@ -185,12 +185,12 @@ public class C4Board : GridBasedBoard {
 
         //Check for a vertical win
         //Check 3 cells up and down from this cell to determine if there is a winner
-        for (int y = m.y; y >= m.y - 3 && y >= 0; y--)
+        for (int y = m.Y; y >= m.Y - 3 && y >= 0; y--)
         {
-            currentCell = boardContents[m.x, y];
-            if (m.y < boardContents.GetLength(1) - 3)
+            currentCell = boardContents[m.X, y];
+            if (m.Y < boardContents.GetLength(1) - 3)
             {
-                if (boardContents[m.x, y + 1] == currentCell && boardContents[m.x, y + 2] == currentCell && boardContents[m.x, y + 3] == currentCell)
+                if (boardContents[m.X, y + 1] == currentCell && boardContents[m.X, y + 2] == currentCell && boardContents[m.X, y + 3] == currentCell)
                 {
                     winner = CurrentPlayer;
                     return;
@@ -200,7 +200,7 @@ public class C4Board : GridBasedBoard {
 
         //Check for an upwards diagonal win
         //Check 3 cells down and left and 3 cells up and right from this cell to determine if there is a winner
-        for (int y = m.y, x = m.x; x >= m.x - 3 && y >= m.y - 3 && x >= 0 && y >= 0; x--, y--)
+        for (int y = m.Y, x = m.X; x >= m.X - 3 && y >= m.Y - 3 && x >= 0 && y >= 0; x--, y--)
         {
             currentCell = boardContents[x, y];
             if (x < boardContents.GetLength(0) - 3 && y < boardContents.GetLength(1) - 3)
@@ -215,7 +215,7 @@ public class C4Board : GridBasedBoard {
 
         //Check for a downwards diagonal win
         //Check 3 cells up and left and 3 cells down and right from this cell to determine if there is a winner
-        for (int y = m.y, x = m.x; x >= m.x - 3 && y >= m.y + 3 && x >= 0 && y < Height; x--, y++)
+        for (int y = m.Y, x = m.X; x >= m.X - 3 && y <= m.Y + 3 && x >= 0 && y < Height; x--, y++)
         {
             currentCell = boardContents[x, y];
             if (x < boardContents.GetLength(0) - 3 && y > 2)

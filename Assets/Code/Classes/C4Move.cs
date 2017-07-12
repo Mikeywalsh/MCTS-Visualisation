@@ -10,13 +10,13 @@ public class C4Move : Move
     /// <summary>
     /// X position of this move
     /// </summary>
-    public int x;
+    private int x;
 
     /// <summary>
     /// Y position of this move
     /// Not chosen by the user, instead it is calculated when the move is made
     /// </summary>
-    public int y;
+    private int y;
 
     /// <summary>
     /// Creates a new Connect 4 move with the given x position
@@ -67,5 +67,42 @@ public class C4Move : Move
     public override int GetHashCode()
     {
         return x;
+    }
+
+    /// <summary>
+    /// Set the Y position of this move
+    /// Used when calculating what cell this move can be played in
+    /// </summary>
+    public void SetY(int val)
+    {
+        if(val < 0 || val > 6)
+        {
+            throw new InvalidMoveException("Position " + val + " is out of bounds of the 0-7 board space");
+        }
+
+        y = val;
+    }
+
+    /// <summary>
+    /// The X position of this move
+    /// </summary>
+    public int X
+    {
+        get
+        {
+            return x;
+        }
+    }
+
+    /// <summary>
+    /// Y position of this move
+    /// Not chosen by the user, instead it is calculated when the move is made
+    /// </summary>
+    public int Y
+    {
+        get
+        {
+            return y;
+        }
     }
 }

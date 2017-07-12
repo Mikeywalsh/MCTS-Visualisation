@@ -109,15 +109,13 @@ public class C4BoardTest {
     [Test]
     public void WinTestHorizonatal()
     {
-        C4Board board = new C4Board();
+        C4TestingBoard board = new C4TestingBoard();
 
-        board.MakeMove(new C4Move(1));
-        board.MakeMove(new C4Move(1));
-        board.MakeMove(new C4Move(2));
-        board.MakeMove(new C4Move(2));
-        board.MakeMove(new C4Move(3));
-        board.MakeMove(new C4Move(3));
-        board.MakeMove(new C4Move(4));
+        //Make 4 moves in a horizonal line
+        board.MakeMove(CreateMove(2, 0));
+        board.MakeMove(CreateMove(3, 0));
+        board.MakeMove(CreateMove(4, 0));
+        board.MakeMove(CreateMove(5, 0));
 
         //Player 1 should have won the game
         Assert.AreEqual(1, board.Winner);
@@ -126,37 +124,29 @@ public class C4BoardTest {
     [Test]
     public void WinTestVertical()
     {
-        C4Board board = new C4Board();
+        C4TestingBoard board = new C4TestingBoard();
 
-        board.MakeMove(new C4Move(1));
-        board.MakeMove(new C4Move(2));
-        board.MakeMove(new C4Move(1));
-        board.MakeMove(new C4Move(2));
-        board.MakeMove(new C4Move(1));
-        board.MakeMove(new C4Move(2));
-        board.MakeMove(new C4Move(3));
-        board.MakeMove(new C4Move(2));
+        //Make 4 moves in a vertical line
+        board.MakeMove(CreateMove(6, 0));
+        board.MakeMove(CreateMove(6, 1));
+        board.MakeMove(CreateMove(6, 2));
+        board.MakeMove(CreateMove(6, 3));
 
-        //Player 2 should have won the game
-        Assert.AreEqual(2, board.Winner);
+        Debug.Log(board);
+        //Player 1 should have won the game
+        Assert.AreEqual(1, board.Winner);
     }
 
     [Test]
     public void WinTestUpwardsDiagonal()
     {
-        C4Board board = new C4Board();
+        C4TestingBoard board = new C4TestingBoard();
 
-        board.MakeMove(new C4Move(1));
-        board.MakeMove(new C4Move(2));
-        board.MakeMove(new C4Move(2));
-        board.MakeMove(new C4Move(3));
-        board.MakeMove(new C4Move(3));
-        board.MakeMove(new C4Move(4));
-        board.MakeMove(new C4Move(3));
-        board.MakeMove(new C4Move(4));
-        board.MakeMove(new C4Move(4));
-        board.MakeMove(new C4Move(4));
-        board.MakeMove(new C4Move(4));
+        //Make 4 moves in an upwards diagonal line
+        board.MakeMove(CreateMove(0, 0));
+        board.MakeMove(CreateMove(1, 1));
+        board.MakeMove(CreateMove(2, 2));
+        board.MakeMove(CreateMove(3, 3));
 
         Debug.Log(board.ToString());
 
@@ -164,4 +154,33 @@ public class C4BoardTest {
         Assert.AreEqual(1, board.Winner);
     }
 
+    [Test]
+    public void WinTestDownwardsDiagonal()
+    {
+        C4TestingBoard board = new C4TestingBoard();
+
+        //Make 4 moves in a downwards diagonal line
+        board.MakeMove(CreateMove(3, 6));
+        board.MakeMove(CreateMove(4, 5));
+        board.MakeMove(CreateMove(5, 4));
+        board.MakeMove(CreateMove(6, 3));
+
+        Debug.Log(board.ToString());
+
+        //Player 1 should have won the game
+        Assert.AreEqual(1, board.Winner);
+    }
+
+    /// <summary>
+    /// Convienence method used for creating moves with y positions for <see cref="C4TestingBoard"/>
+    /// </summary>
+    /// <param name="x">The x position of the move</param>
+    /// <param name="y">The y position of the move</param>
+    /// <returns>A <see cref="C4Move"/> with the x and y positions set to the passed in values</returns>
+    private C4Move CreateMove(int x, int y)
+    {
+        C4Move result = new C4Move(x);
+        result.SetY(y);
+        return result;
+    }
 }

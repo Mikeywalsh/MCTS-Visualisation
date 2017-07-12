@@ -11,8 +11,8 @@ public class C4MoveTest {
         try
         {
             C4Move move = CreateMove(4);
-            Assert.AreEqual(4, move.x);
-            Assert.AreEqual(0, move.y);
+            Assert.AreEqual(4, move.X);
+            Assert.AreEqual(0, move.Y);
         }
         catch(InvalidMoveException)
         {
@@ -34,6 +34,24 @@ public class C4MoveTest {
         //Attempt to create a move with an x position of 7, which is the 8th position on the board
         //this should throw an InvalidMoveException as the board is only 7 columns wide
         Assert.Throws<InvalidMoveException>(() => CreateMove(7));
+    }
+
+    [Test]
+    public void SetValidYPositionTest()
+    {
+        //Attempt to assign a y position of 5 to a move, which should be valid
+        C4Move move = new C4Move(2);
+        move.SetY(5);
+        Assert.AreEqual(5, move.Y);
+    }
+
+    [Test]
+    public void SetInvalidYPositionTest()
+    {
+        //Attempt to set a y position of 100 to a move, which should not work
+        //This should throw an InvalidMoveException
+        C4Move move = new C4Move(0);
+        Assert.Throws<InvalidMoveException>(() => move.SetY(100));
     }
 
     [Test]
