@@ -8,16 +8,9 @@ public class C4MoveTest {
     [Test]
 	public void CreateValidMoveTest()
     {
-        try
-        {
-            C4Move move = CreateMove(4);
-            Assert.AreEqual(4, move.X);
-            Assert.AreEqual(0, move.Y);
-        }
-        catch(InvalidMoveException)
-        {
-            Assert.Fail();
-        }
+        C4Move move = CreateMove(4);
+        Assert.AreEqual(4, move.X);
+        Assert.AreEqual(0, move.Y);
     }
 
     [Test]
@@ -84,9 +77,8 @@ public class C4MoveTest {
     public void ToStringTest()
     {
         C4Move move = CreateMove(2);
-        string moveString = move.ToString();
 
-        Assert.AreEqual("(2)", moveString);
+        Assert.AreEqual("(2)", move.ToString());
     }
 
     /// <summary>

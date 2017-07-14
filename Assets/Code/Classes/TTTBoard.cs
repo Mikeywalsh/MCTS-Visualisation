@@ -44,10 +44,10 @@ public class TTTBoard : GridBasedBoard {
         TTTMove m = (TTTMove)move;
 
         //Make the move if possible, if a move has already been made at this position then throw an invalid move exception
-        if(boardContents[m.x, m.y] == 0)
+        if(boardContents[m.X, m.Y] == 0)
         {
             //Make the move on this board
-            boardContents[m.x, m.y] = currentPlayer;
+            boardContents[m.X, m.Y] = currentPlayer;
 
             //Determine if there is a winner
             DetermineWinner(move);
@@ -125,7 +125,7 @@ public class TTTBoard : GridBasedBoard {
         TTTMove m = (TTTMove)move;
 
         //Check the row and column of the last move
-        if (boardContents[0, m.y] == boardContents[1, m.y] && boardContents[1, m.y] == boardContents[2, m.y] || boardContents[m.x, 0] == boardContents[m.x, 1] && boardContents[m.x, 1] == boardContents[m.x, 2])
+        if (boardContents[0, m.Y] == boardContents[1, m.Y] && boardContents[1, m.Y] == boardContents[2, m.Y] || boardContents[m.X, 0] == boardContents[m.X, 1] && boardContents[m.X, 1] == boardContents[m.X, 2])
         {
             winner = currentPlayer;
             return;

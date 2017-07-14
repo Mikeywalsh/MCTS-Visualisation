@@ -6,12 +6,12 @@ public class TTTMove : Move {
     /// <summary>
     /// X position of this move
     /// </summary>
-    public int x;
+    private int x;
 
     /// <summary>
     /// Y position of this move
     /// </summary>
-    public int y;
+    private int y;
 
     /// <summary>
     /// Creates a new Tic-Tac-Toe move with the given x and y positions
@@ -64,5 +64,27 @@ public class TTTMove : Move {
     public override int GetHashCode()
     {
         return int.Parse(x.ToString() + y.ToString());
+    }
+
+    /// <summary>
+    /// The X position of this move
+    /// </summary>
+    public int X
+    {
+        get
+        {
+            return x;
+        }
+    }
+
+    /// <summary>
+    /// Y position of this move
+    /// </summary>
+    public int Y
+    {
+        get
+        {
+            return y;
+        }
     }
 }
