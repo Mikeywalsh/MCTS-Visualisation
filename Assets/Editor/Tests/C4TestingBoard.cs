@@ -21,4 +21,29 @@ public class C4TestingBoard : C4Board {
 
         return this;
     }
+
+    /// <summary>
+    /// Factory method used to create a full <see cref="C4TestingBoard"/> with no winner, for testing
+    /// </summary>
+    /// <returns>A full <see cref="C4TestingBoard"/> with no winner</returns>
+    public static C4TestingBoard CreateFullBoardNoWinner()
+    {
+        //Create an empty board
+        C4TestingBoard board = new C4TestingBoard();
+        
+        //Fill the board up, such that it is full and there are no winners
+        for(int y = 0; y < board.Height; y++)
+        {
+            for(int x = 0; x < board.Width; x++)
+            {
+                board.boardContents[x, y] = (x % 4 < 2 ? (y % 2 == 0? 1 : 2) : (y % 2 == 0? 2 : 1));
+            }
+        }
+
+        //Determine if there is a winner for the board and set the Winner flag accordingly
+        board.DetermineWinner();
+
+        //Return the board
+        return board;
+    }
 }

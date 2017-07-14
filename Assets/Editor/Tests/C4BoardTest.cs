@@ -107,6 +107,28 @@ public class C4BoardTest {
     }
 
     [Test]
+    public void NoWinnerTest()
+    {
+        C4Board board = new C4Board();
+
+        //Make a move, if there is a winner, the winner flag will be set, but there is no winner, so it shouldn't
+        board.MakeMove(new C4Move(1));
+
+        //Check that the winner flag has not been set, as there is no winner
+        Assert.AreEqual(-1, board.Winner);
+    }
+
+    [Test]
+    public void DrawTest()
+    {
+        //Create a full board with no winner
+        C4TestingBoard board = C4TestingBoard.CreateFullBoardNoWinner();
+
+        //Check that the game has ended in a draw
+        Assert.AreEqual(0, board.Winner);
+    }
+
+    [Test]
     public void WinTestHorizonatal()
     {
         C4TestingBoard board = new C4TestingBoard();
@@ -132,7 +154,6 @@ public class C4BoardTest {
         board.MakeMove(CreateMove(6, 2));
         board.MakeMove(CreateMove(6, 3));
 
-        Debug.Log(board);
         //Player 1 should have won the game
         Assert.AreEqual(1, board.Winner);
     }
@@ -148,8 +169,6 @@ public class C4BoardTest {
         board.MakeMove(CreateMove(2, 2));
         board.MakeMove(CreateMove(3, 3));
 
-        Debug.Log(board.ToString());
-
         //Player 1 should have won the game
         Assert.AreEqual(1, board.Winner);
     }
@@ -164,8 +183,6 @@ public class C4BoardTest {
         board.MakeMove(CreateMove(4, 5));
         board.MakeMove(CreateMove(5, 4));
         board.MakeMove(CreateMove(6, 3));
-
-        Debug.Log(board.ToString());
 
         //Player 1 should have won the game
         Assert.AreEqual(1, board.Winner);
