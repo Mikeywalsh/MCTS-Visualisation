@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using NUnit.Framework;
-using System.Reflection;
+﻿using NUnit.Framework;
 
+/// <summary>
+/// This class tests all aspects of the <see cref="C4Board"/> class
+/// </summary>
 public class C4BoardTest {
 
     [Test]
@@ -34,7 +33,14 @@ public class C4BoardTest {
         C4Board board = new C4Board();
         board.MakeMove(new C4Move(2));
 
+        //Check that the move was made correctly
         Assert.AreEqual(1, board.GetCell(2, 0));
+
+        //Make a move on the board for the second player
+        board.MakeMove(new C4Move(2));
+
+        //Check that the move was made correctly
+        Assert.AreEqual(2, board.GetCell(2, 1));
     }
 
     [Test]
@@ -42,11 +48,13 @@ public class C4BoardTest {
     {
         C4Board board = new C4Board();
 
+        //Fill a column up, so that any future moves in the column should cause an InvalidMoveException
         for(int i = 0; i < board.Height; i++)
         {
             board.MakeMove(new C4Move(1));
         }
 
+        //Attempt to make a move in the full column, which should throw an InvalidMoveException
         Assert.Throws<InvalidMoveException>(() => board.MakeMove(new C4Move(1)));
     }
 
@@ -129,7 +137,7 @@ public class C4BoardTest {
     }
 
     [Test]
-    public void WinTestHorizonatal()
+    public void WinTestHorizontal()
     {
         C4TestingBoard board = new C4TestingBoard();
 
