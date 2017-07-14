@@ -57,10 +57,8 @@ public class MCTS {
 
         Expansion(bestNode);
 
-        int count = 0;
         foreach (Node child in bestNode.Children)
         {
-            count++;
             if (!child.IsLeafNode)
             {
                 Simulation(child, playoutsPerSimulation);
@@ -77,7 +75,6 @@ public class MCTS {
     /// <returns>The best node to expand, obtained using Upper Confidence Bound 1</returns>
     private Node Selection(Node n)
     {
-        //Debug.Log("Selection depth: " + n.Depth);
         if(n == null)
         {
             return null;
