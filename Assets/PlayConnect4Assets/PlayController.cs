@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,7 +18,7 @@ public class PlayController : MonoBehaviour {
     public GameObject moveButtons;
     public Text boardDisplayText;
     public Text winnerText;
-    public Text AITurnProgressText;
+    public Text aiTurnProgressText;
 
 	void Start () {
         Application.runInBackground = true;
@@ -41,7 +39,7 @@ public class PlayController : MonoBehaviour {
                 {
                     mcts.Finish();
                 }
-                AITurnProgressText.text = mcts.NodesVisited + " nodes       " + timeLeft.ToString("0.00") + "s/" + timeToRunFor + "s";
+                aiTurnProgressText.text = mcts.NodesVisited + " nodes       " + timeLeft.ToString("0.00") + "s/" + timeToRunFor + "s";
                 return;
             }
 
@@ -104,6 +102,11 @@ public class PlayController : MonoBehaviour {
 
     public void MakeMoveOnBoard(int xPos)
     {
+        if(board.CurrentPlayer == 2)
+        {
+            aiTurnProgressText.text = "";
+        }
+
         board.MakeMove(new C4Move(xPos));
         boardDisplayText.text = board.ToString();
 
