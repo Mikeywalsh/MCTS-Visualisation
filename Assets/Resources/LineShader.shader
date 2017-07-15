@@ -6,7 +6,7 @@
 		{
 			Blend SrcAlpha
 			OneMinusSrcAlpha
-			ZWrite Off
+			ZWrite On
 			Cull Off
 			Fog
 			{
