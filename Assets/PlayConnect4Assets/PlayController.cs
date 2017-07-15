@@ -23,6 +23,9 @@ public class PlayController : MonoBehaviour {
     public Text AITurnProgressText;
 
 	void Start () {
+        Application.runInBackground = true;
+
+        //Initialise the game board and display
         board = new C4Board();
         boardDisplayText.text = board.ToString();
 	}
@@ -38,7 +41,7 @@ public class PlayController : MonoBehaviour {
                 {
                     mcts.Finish();
                 }
-                AITurnProgressText.text = mcts.NodesVisited + " nodes       " + timeLeft + "/" + timeToRunFor + "s";
+                AITurnProgressText.text = mcts.NodesVisited + " nodes       " + timeLeft.ToString("0.00") + "s/" + timeToRunFor + "s";
                 return;
             }
 
@@ -84,13 +87,6 @@ public class PlayController : MonoBehaviour {
         aiThread.Start();
         timeToRunFor = 10;
         timeLeft = timeToRunFor;
-        //}
-        //else
-        //{
-        //    //Stop the MCTS early
-        //    mcts.Finish();
-        //    UIController.StopButtonPressed();
-        //}
     }
 
     /// <summary>
