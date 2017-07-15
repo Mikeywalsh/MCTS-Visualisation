@@ -110,12 +110,6 @@ public class PlayController : MonoBehaviour {
         board.MakeMove(new C4Move(xPos));
         boardDisplayText.text = board.ToString();
 
-        if(board.CurrentPlayer == 2)
-        {
-            moveButtons.SetActive(false);
-            StartAITurn();
-        }
-
         if(board.Winner != -1)
         {
             if(board.Winner == 0)
@@ -126,6 +120,14 @@ public class PlayController : MonoBehaviour {
             {
                 winnerText.text = "WINNER IS PLAYER " + board.Winner;
             }
+            moveButtons.SetActive(false);
+            return;
+        }
+
+        if (board.CurrentPlayer == 2)
+        {
+            moveButtons.SetActive(false);
+            StartAITurn();
         }
     }
 }

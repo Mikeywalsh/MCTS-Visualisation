@@ -1202,7 +1202,7 @@ MonoBehaviour:
   moveButtons: {fileID: 821825112}
   boardDisplayText: {fileID: 2031360479}
   winnerText: {fileID: 556880136}
-  AITurnProgressText: {fileID: 542437980}
+  aiTurnProgressText: {fileID: 542437980}
 --- !u!1 &1631253313
 GameObject:
   m_ObjectHideFlags: 0
