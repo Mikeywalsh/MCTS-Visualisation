@@ -188,7 +188,7 @@ public class C4Board : GridBasedBoard {
         for (int y = m.Y; y >= m.Y - 3 && y >= 0; y--)
         {
             currentCell = boardContents[m.X, y];
-            if (m.Y < boardContents.GetLength(1) - 3)
+            if (y < boardContents.GetLength(1) - 3)
             {
                 if (boardContents[m.X, y + 1] == currentCell && boardContents[m.X, y + 2] == currentCell && boardContents[m.X, y + 3] == currentCell)
                 {

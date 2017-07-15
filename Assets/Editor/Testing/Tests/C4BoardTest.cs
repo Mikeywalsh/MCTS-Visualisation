@@ -142,10 +142,10 @@ public class C4BoardTest {
         C4TestingBoard board = new C4TestingBoard();
 
         //Make 4 moves in a horizonal line
-        board.MakeMove(CreateMove(2, 0));
-        board.MakeMove(CreateMove(3, 0));
-        board.MakeMove(CreateMove(4, 0));
-        board.MakeMove(CreateMove(5, 0));
+        board.MakeMove(CreateMove(2, 1));
+        board.MakeMove(CreateMove(3, 1));
+        board.MakeMove(CreateMove(4, 1));
+        board.MakeMove(CreateMove(5, 1));
 
         //Player 1 should have won the game
         Assert.AreEqual(1, board.Winner);
@@ -157,10 +157,10 @@ public class C4BoardTest {
         C4TestingBoard board = new C4TestingBoard();
 
         //Make 4 moves in a vertical line
-        board.MakeMove(CreateMove(6, 0));
         board.MakeMove(CreateMove(6, 1));
         board.MakeMove(CreateMove(6, 2));
         board.MakeMove(CreateMove(6, 3));
+        board.MakeMove(CreateMove(6, 4));
 
         //Player 1 should have won the game
         Assert.AreEqual(1, board.Winner);
@@ -172,10 +172,10 @@ public class C4BoardTest {
         C4TestingBoard board = new C4TestingBoard();
 
         //Make 4 moves in an upwards diagonal line
-        board.MakeMove(CreateMove(0, 0));
-        board.MakeMove(CreateMove(1, 1));
         board.MakeMove(CreateMove(2, 2));
         board.MakeMove(CreateMove(3, 3));
+        board.MakeMove(CreateMove(4, 4));
+        board.MakeMove(CreateMove(5, 5));
 
         //Player 1 should have won the game
         Assert.AreEqual(1, board.Winner);
