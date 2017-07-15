@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
 
 /// <summary>
 /// A Connect 4 game board, which allows a game of Connect 4 to be played out on it
@@ -14,6 +12,15 @@ public class C4Board : GridBasedBoard {
     {
         currentPlayer = 1;
         boardContents = new int[7, 7];
+
+        //Create the list of possible moves
+        possibleMoves = new List<Move>();
+
+        //Add a move for every column, since this is an empty game board
+        for(int x = 0; x < Width; x++)
+        {
+            possibleMoves.Add(new C4Move(x));
+        }
     }
 
     /// <summary>
@@ -24,6 +31,7 @@ public class C4Board : GridBasedBoard {
     {
         currentPlayer = board.CurrentPlayer;
         boardContents = (int[,])board.boardContents.Clone();
+        possibleMoves = new List<Move>(board.possibleMoves);
     }
 
     /// <summary>
@@ -55,11 +63,17 @@ public class C4Board : GridBasedBoard {
                 //Set the y position of the move
                 m.SetY(y);
 
+                //If this move made a column full, remove this column from the list of possible moves
+                if(y == Height - 1)
+                {
+                    possibleMoves.Remove(m);
+                }
+
                 //Determine if there is a winner
                 DetermineWinner(m);
 
                 //Swap out the current player
-                currentPlayer = NextPlayer;
+                currentPlayer = NextPlayer;                
 
                 return this;
             }
@@ -75,17 +89,7 @@ public class C4Board : GridBasedBoard {
     /// <returns>A list of all possible moves for this Connect 4 board instance</returns>
     public override List<Move> PossibleMoves()
     {
-        List<Move> moves = new List<Move>();
-        
-        for(int column = 0; column < boardContents.GetLength(0); column++)
-        {
-            if(!ColumnFull(column))
-            {
-                moves.Add(new C4Move(column));
-            }
-        }
-
-        return moves;
+        return possibleMoves;
     }
 
     /// <summary>
@@ -147,7 +151,7 @@ public class C4Board : GridBasedBoard {
                 }
 
                 //If there are no possible moves left and there is still no winner, the game is a draw
-                if (PossibleMoves().Count == 0)
+                if (possibleMoves.Count == 0)
                 {
                     winner = 0;
                 }
@@ -229,7 +233,7 @@ public class C4Board : GridBasedBoard {
         }
 
         //If there are no possible moves left and there is still no winner, the game is a draw
-        if (PossibleMoves().Count == 0)
+        if (possibleMoves.Count == 0)
         {
             winner = 0;
         }
@@ -242,28 +246,6 @@ public class C4Board : GridBasedBoard {
     protected override int PlayerCount()
     {
         return 2;
-    }
-
-    /// <summary>
-    /// A convenience method used to determine if a given column is full
-    /// Used when calculating possible moves
-    /// </summary>
-    /// <param name="column">The column to check if it is full or not</param>
-    /// <returns>True if the column is full, false if not</returns>
-    private bool ColumnFull(int column)
-    {
-        if(column < 0 || column > boardContents.GetLength(0))
-        {
-            throw new InvalidMoveException("The selected column is out of bounds of the " + boardContents.GetLength(0) + " column wide game area");
-        }
-
-        for(int y = 0; y < boardContents.GetLength(1); y++)
-        {
-            if (boardContents[column, y] == 0)
-                return false;
-        }
-
-        return true;
     }
 
     /// <summary>
