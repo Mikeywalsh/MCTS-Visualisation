@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 /// <summary>
 /// A Tic-Tac-Toe game board, which allows a game of Tic-Tac-Toe to be played out on it
@@ -13,6 +12,18 @@ public class TTTBoard : GridBasedBoard {
     {
         currentPlayer = 1;
         boardContents = new int[3,3];
+
+        //Create the list of possible moves
+        possibleMoves = new List<Move>();
+
+        //Add a move for every cell, since this is an empty game board
+        for(int y = 0; y < Height; y++)
+        {
+            for(int x = 0; x < Width; x++)
+            {
+                possibleMoves.Add(new TTTMove(x, y));
+            }
+        }
     }
 
     /// <summary>
@@ -23,6 +34,7 @@ public class TTTBoard : GridBasedBoard {
     {
         currentPlayer = board.CurrentPlayer;
         boardContents = (int[,])board.boardContents.Clone();
+        possibleMoves = new List<Move>(board.possibleMoves);
     }
 
     /// <summary>
@@ -49,6 +61,9 @@ public class TTTBoard : GridBasedBoard {
             //Make the move on this board
             boardContents[m.X, m.Y] = currentPlayer;
 
+            //Remove the move just performed from the list of possible moves
+            possibleMoves.Remove(m);
+
             //Determine if there is a winner
             DetermineWinner(move);
 
@@ -69,21 +84,7 @@ public class TTTBoard : GridBasedBoard {
     /// <returns>A list of all possible moves for this Tic-Tac-Toe board instance</returns>
     public override List<Move> PossibleMoves()
     {
-        List<Move> moves = new List<Move>();
-
-        //Search the board for any cells containing a value of 0, which are areas in which moves can be made
-        for(int y = 0; y < 3; y++)
-        {
-            for(int x = 0; x < 3; x++)
-            {
-                if(boardContents[x,y] == 0)
-                {
-                    moves.Add(new TTTMove(x, y));
-                }
-            }
-        }
-
-        return moves;
+        return possibleMoves;
     }
 
     /// <summary>

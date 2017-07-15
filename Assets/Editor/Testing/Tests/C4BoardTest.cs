@@ -130,7 +130,19 @@ public class C4BoardTest {
     public void DrawTest()
     {
         //Create a full board with no winner
-        C4TestingBoard board = C4TestingBoard.CreateFullBoardNoWinner();
+        C4Board board = new C4Board();
+
+        //Make moves until the board is full and there are no winners
+        for (int y = 0; y < board.Height; y++)
+        {
+            board.MakeMove(new C4Move(0));
+            board.MakeMove(new C4Move(2));
+            board.MakeMove(new C4Move(1));
+            board.MakeMove(new C4Move(3));
+            board.MakeMove(new C4Move(4));
+            board.MakeMove(new C4Move(6));
+            board.MakeMove(new C4Move(5));
+        }
 
         //Check that the game has ended in a draw
         Assert.AreEqual(0, board.Winner);

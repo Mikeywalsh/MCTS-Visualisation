@@ -21,6 +21,11 @@ public abstract class Board {
     protected int winner = -1;
 
     /// <summary>
+    /// A list of all possible moves that can follow from this board state
+    /// </summary>
+    protected List<Move> possibleMoves;
+
+    /// <summary>
     /// Simulates random plays on this board until the game has ended
     /// </summary>
     /// <param name="r">The random instance used to choose proper random elements from the list of possible moves</param>
@@ -31,7 +36,7 @@ public abstract class Board {
 
         while (temp.Winner == -1)
         {
-            temp.MakeMove(temp.PossibleMoves().PickRandom(r));
+            temp.MakeMove(temp.possibleMoves.PickRandom(r));
         }
 
         return temp.winner;
