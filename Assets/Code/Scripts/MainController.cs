@@ -99,7 +99,9 @@ public class MainController : MonoBehaviour {
     }
 	
     /// <summary>
-    /// Temporary and very messy
+    /// If the user has started running MCTS, then display information about it to the UI whilst it generates
+    /// When the MCTS has finished generating, start created a <see cref="NodeObject"/> for each <see cref="Node"/>, so that they can be rendered on-screen
+    /// When each Node has a corresponding NodeObject, switch to the tree navigation UI
     /// </summary>
 	void Update () {
         //Don't do anything until the user has started running the MCTS
