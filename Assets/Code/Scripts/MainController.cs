@@ -161,7 +161,7 @@ public class MainController : MonoBehaviour {
     {
         foreach (Node child in parentNode.Children)
         {
-            GameObject newNode = Instantiate(Resources.Load<GameObject>("Ball"));
+            GameObject newNode = Instantiate(Resources.Load<GameObject>("Node"));
             newNode.transform.parent = parentNodeObject.transform;
             newNode.name = "D" + child.Depth + " C" + newNode.transform.parent.childCount + "/" + parentNode.Children.Capacity;
             newNode.AddComponent<NodeObject>().Initialise(child);
