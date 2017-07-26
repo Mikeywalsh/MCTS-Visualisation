@@ -199,10 +199,10 @@ public class C4BoardTest {
         C4TestingBoard board = new C4TestingBoard();
 
         //Make 4 moves in a downwards diagonal line
-        board.MakeMove(CreateMove(3, 6));
-        board.MakeMove(CreateMove(4, 5));
-        board.MakeMove(CreateMove(5, 4));
-        board.MakeMove(CreateMove(6, 3));
+        board.MakeMove(CreateMove(3, 5));
+        board.MakeMove(CreateMove(4, 4));
+        board.MakeMove(CreateMove(5, 3));
+        board.MakeMove(CreateMove(6, 2));
 
         //Player 1 should have won the game
         Assert.AreEqual(1, board.Winner);

@@ -11,7 +11,15 @@ public class C4Board : GridBasedBoard {
     public C4Board()
     {
         currentPlayer = 1;
-        boardContents = new int[7, 7];
+        boardContents = new int[7,6];
+        //boardContents = new int[,] {
+        //    {1,1,2,0,0,0 },
+        //    {2,1,0,0,0,0 },
+        //    {1,2,1,2,2,2 },
+        //    {2,2,1,2,1,1 },
+        //    {1,2,1,2,2,1 },
+        //    {0,0,0,0,0,0 },
+        //    {1,1,1,2,2,0 } };
 
         //Create the list of possible moves
         possibleMoves = new List<Move>();
@@ -19,7 +27,10 @@ public class C4Board : GridBasedBoard {
         //Add a move for every column, since this is an empty game board
         for(int x = 0; x < Width; x++)
         {
-            possibleMoves.Add(new C4Move(x));
+            //if (boardContents[x, Height - 1] == 0)
+            //{
+                possibleMoves.Add(new C4Move(x));
+            //}
         }
     }
 
@@ -53,7 +64,7 @@ public class C4Board : GridBasedBoard {
         C4Move m = (C4Move)move;
 
         //Make a move in the first available row in the column
-        for (int y = 0; y < boardContents.GetLength(1); y++)
+        for (int y = 0; y < Height; y++)
         {
             if (boardContents[m.X, y] == 0)
             {
@@ -97,9 +108,9 @@ public class C4Board : GridBasedBoard {
     /// </summary>
     protected override void DetermineWinner()
     {
-        for(int y = 0; y < boardContents.GetLength(1); y++)
+        for(int y = 0; y < Height; y++)
         {
-            for (int x = 0; x < boardContents.GetLength(0); x++)
+            for (int x = 0; x < Width; x++)
             {
                 //Get the current cells value
                 int currentCell = boardContents[x, y];
@@ -111,7 +122,7 @@ public class C4Board : GridBasedBoard {
                 }
 
                 //Check for a horizontal win
-                if (x < boardContents.GetLength(0) - 3)
+                if (x < Width - 3)
                 {
                     if (boardContents[x + 1, y] == currentCell && boardContents[x + 2, y] == currentCell && boardContents[x + 3, y] == currentCell)
                     {
@@ -121,7 +132,7 @@ public class C4Board : GridBasedBoard {
                 }
 
                 //Check for a vertical win
-                if (y < boardContents.GetLength(1) - 3)
+                if (y < Height - 3)
                 {
                     if (boardContents[x, y + 1] == currentCell && boardContents[x, y + 2] == currentCell && boardContents[x, y + 3] == currentCell)
                     {
@@ -131,7 +142,7 @@ public class C4Board : GridBasedBoard {
                 }
 
                 //Check for an upwards diagonal win
-                if (x < boardContents.GetLength(0) - 3 && y < boardContents.GetLength(1) - 3)
+                if (x < Width - 3 && y < Height - 3)
                 {
                     if (boardContents[x + 1, y + 1] == currentCell && boardContents[x + 2, y + 2] == currentCell && boardContents[x + 3, y + 3] == currentCell)
                     {
@@ -141,7 +152,7 @@ public class C4Board : GridBasedBoard {
                 }
 
                 //Check for a downwards diagonal win
-                if (x < boardContents.GetLength(0) - 3 && y > 2)
+                if (x < Width - 3 && y > 2)
                 {
                     if (boardContents[x + 1, y - 1] == currentCell && boardContents[x + 2, y - 2] == currentCell && boardContents[x + 3, y - 3] == currentCell)
                     {
@@ -177,7 +188,7 @@ public class C4Board : GridBasedBoard {
         for (int x = m.X; x >= m.X- 3 && x >= 0; x--)
         {
             currentCell = boardContents[x, m.Y];
-            if (x < boardContents.GetLength(0) - 3)
+            if (x < Width - 3)
             {
                 if (boardContents[x + 1, m.Y] == currentCell && boardContents[x + 2, m.Y] == currentCell && boardContents[x + 3, m.Y] == currentCell)
                 {
@@ -192,7 +203,7 @@ public class C4Board : GridBasedBoard {
         for (int y = m.Y; y >= m.Y - 3 && y >= 0; y--)
         {
             currentCell = boardContents[m.X, y];
-            if (y < boardContents.GetLength(1) - 3)
+            if (y < Height - 3)
             {
                 if (boardContents[m.X, y + 1] == currentCell && boardContents[m.X, y + 2] == currentCell && boardContents[m.X, y + 3] == currentCell)
                 {
@@ -207,7 +218,7 @@ public class C4Board : GridBasedBoard {
         for (int y = m.Y, x = m.X; x >= m.X - 3 && y >= m.Y - 3 && x >= 0 && y >= 0; x--, y--)
         {
             currentCell = boardContents[x, y];
-            if (x < boardContents.GetLength(0) - 3 && y < boardContents.GetLength(1) - 3)
+            if (x < Width - 3 && y < Height - 3)
             {
                 if (boardContents[x + 1, y + 1] == currentCell && boardContents[x + 2, y + 2] == currentCell && boardContents[x + 3, y + 3] == currentCell)
                 {
@@ -222,7 +233,7 @@ public class C4Board : GridBasedBoard {
         for (int y = m.Y, x = m.X; x >= m.X - 3 && y <= m.Y + 3 && x >= 0 && y < Height; x--, y++)
         {
             currentCell = boardContents[x, y];
-            if (x < boardContents.GetLength(0) - 3 && y > 2)
+            if (x < Width - 3 && y > 2)
             {
                 if (boardContents[x + 1, y - 1] == currentCell && boardContents[x + 2, y - 2] == currentCell && boardContents[x + 3, y - 3] == currentCell)
                 {
@@ -256,9 +267,9 @@ public class C4Board : GridBasedBoard {
     {
         string result = "\n";
 
-        for (int y = boardContents.GetLength(1) - 1; y >= 0; y--)
+        for (int y = Height - 1; y >= 0; y--)
         {
-            for (int x = 0; x < boardContents.GetLength(0); x++)
+            for (int x = 0; x < Width; x++)
             {
                 result += boardContents[x, y] + " ";
             }

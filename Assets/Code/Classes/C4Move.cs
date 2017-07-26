@@ -22,7 +22,7 @@ public class C4Move : Move
     {
         if (xPos > 6 || xPos < 0)
         {
-            throw new InvalidMoveException("Move: " + "(" + xPos + ")" + " is out of bounds of the 0-7 board space");
+            throw new InvalidMoveException("Move: " + "(" + xPos + ")" + " is out of bounds of the 7 cell wide board space");
         }
 
         x = xPos;
@@ -71,9 +71,9 @@ public class C4Move : Move
     /// </summary>
     public void SetY(int val)
     {
-        if(val < 0 || val > 6)
+        if(val < 0 || val > 5)
         {
-            throw new InvalidMoveException("Position " + val + " is out of bounds of the 0-7 board space");
+            throw new InvalidMoveException("Position " + val + " is out of bounds of the 6 cell high board space");
         }
 
         y = val;
