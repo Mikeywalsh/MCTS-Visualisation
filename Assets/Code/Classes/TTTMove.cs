@@ -6,12 +6,12 @@ public class TTTMove : Move {
     /// <summary>
     /// X position of this move
     /// </summary>
-    private int x;
+    public int X { get; private set; }
 
     /// <summary>
     /// Y position of this move
     /// </summary>
-    private int y;
+    public int Y { get; private set; }
 
     /// <summary>
     /// Creates a new Tic-Tac-Toe move with the given x and y positions
@@ -25,8 +25,8 @@ public class TTTMove : Move {
             throw new InvalidMoveException("Move: " + "(" + xPos + "," + yPos + ")" + " is out of bounds of the 3x3 game area");
         }
 
-        x = xPos;
-        y = yPos;
+        X = xPos;
+        Y = yPos;
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public class TTTMove : Move {
     /// <returns>A string representation of this Tic-Tac-Toe move</returns>
     public override string ToString()
     {
-        return "(" + x + "," + y + ")";
+        return "(" + X + "," + Y + ")";
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public class TTTMove : Move {
         if(obj is TTTMove)
         {
             TTTMove other = (TTTMove)obj;
-            if (other.x == x && other.y == y)
+            if (other.X == X && other.Y == Y)
                 return true;
         }
 
@@ -63,28 +63,6 @@ public class TTTMove : Move {
     /// <returns>A unique integer for this instance</returns>
     public override int GetHashCode()
     {
-        return int.Parse(x.ToString() + y.ToString());
-    }
-
-    /// <summary>
-    /// The X position of this move
-    /// </summary>
-    public int X
-    {
-        get
-        {
-            return x;
-        }
-    }
-
-    /// <summary>
-    /// Y position of this move
-    /// </summary>
-    public int Y
-    {
-        get
-        {
-            return y;
-        }
+        return int.Parse(X.ToString() + Y.ToString());
     }
 }
