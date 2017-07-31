@@ -3,7 +3,7 @@
 /// <summary>
 /// This class tests all aspects of the <see cref="TTTBoard"/> class
 /// </summary>
-public class TTTBoardTest{
+public class TTTBoardTest {
 
     [Test]
     public void CreateBoardTest()

@@ -32,7 +32,7 @@ public class ChessBoard : GridBasedBoard
         whitePieces.Add(new ChessPiece(ChessPieces.WHITE_PAWN, 6, 1));
         whitePieces.Add(new ChessPiece(ChessPieces.WHITE_PAWN, 7, 1));
         #endregion
-
+        
         #region Create starting black pieces
         blackPieces = new List<ChessPiece>();
         blackPieces.Add(new ChessPiece(ChessPieces.BLACK_ROOK, 0, 7));
@@ -66,9 +66,23 @@ public class ChessBoard : GridBasedBoard
         #endregion
     }
 
+    /// <summary>
+    /// Create a new Chess board as a copy from an existing board
+    /// </summary>
+    /// <param name="board">The board to make a copy of</param>
+    private ChessBoard(ChessBoard board)
+    {
+        currentPlayer = board.CurrentPlayer;
+        boardContents = (int[,])board.boardContents.Clone();
+    }
+
+    /// <summary>
+    /// Duplicates the current Chess board
+    /// </summary>
+    /// <returns>A clone of the current Chess Board</returns>
     public override Board Duplicate()
     {
-        throw new NotImplementedException();
+        return new ChessBoard(this);
     }
 
     public override Board MakeMove(Move move)

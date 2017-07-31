@@ -40,7 +40,7 @@ public class TTTBoard : GridBasedBoard {
     /// <summary>
     /// Duplicates the current Tic-Tac-Toe board
     /// </summary>
-    /// <returns>A clone of the current Tic-Toe-Board</returns>
+    /// <returns>A clone of the current Tic-Tac-Toe Board</returns>
     public override Board Duplicate()
     {
         return new TTTBoard(this);
