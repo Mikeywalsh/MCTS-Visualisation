@@ -6,13 +6,13 @@ public class C4Move : Move
     /// <summary>
     /// X position of this move
     /// </summary>
-    private int x;
+    public int X { get; private set; }
 
     /// <summary>
     /// Y position of this move
     /// Not chosen by the user, instead it is calculated when the move is made
     /// </summary>
-    private int y;
+    public int Y { get; private set; }
 
     /// <summary>
     /// Creates a new Connect 4 move with the given x position
@@ -22,10 +22,10 @@ public class C4Move : Move
     {
         if (xPos > 6 || xPos < 0)
         {
-            throw new InvalidMoveException("Move: " + "(" + xPos + ")" + " is out of bounds of the 7 cell wide board space");
+            throw new InvalidMoveException("Move: " + "(" + xPos + ") is out of bounds of the 7 cell wide board space");
         }
 
-        x = xPos;
+        X = xPos;
     }
 
     /// <summary>
@@ -34,7 +34,7 @@ public class C4Move : Move
     /// <returns>A string representation of this connect 4 move</returns>
     public override string ToString()
     {
-        return "(" + x + ")";
+        return "(" + X + ")";
     }
 
     /// <summary>
@@ -48,8 +48,7 @@ public class C4Move : Move
         if (obj is C4Move)
         {
             C4Move other = (C4Move)obj;
-            if (other.x == x)
-                return true;
+            return other.X == X;
         }
 
         return false;
@@ -62,7 +61,7 @@ public class C4Move : Move
     /// <returns>A unique integer for this instance</returns>
     public override int GetHashCode()
     {
-        return x;
+        return X;
     }
 
     /// <summary>
@@ -76,29 +75,6 @@ public class C4Move : Move
             throw new InvalidMoveException("Position " + val + " is out of bounds of the 6 cell high board space");
         }
 
-        y = val;
-    }
-
-    /// <summary>
-    /// The X position of this move
-    /// </summary>
-    public int X
-    {
-        get
-        {
-            return x;
-        }
-    }
-
-    /// <summary>
-    /// Y position of this move
-    /// Not chosen by the user, instead it is calculated when the move is made
-    /// </summary>
-    public int Y
-    {
-        get
-        {
-            return y;
-        }
+        Y = val;
     }
 }
