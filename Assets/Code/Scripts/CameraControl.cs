@@ -15,9 +15,13 @@ public class CameraControl : MonoBehaviour
     {
         //Make the camera always look directly at the focus point
         transform.LookAt(transform.parent.position);
+        
+        //if there is no current node, then the tree has not finished being created, return
+        if (CurrentNode == null)
+            return;
 
         //Smoothly translate the focus point towards the current node
-        transform.parent.position = Vector3.Lerp(transform.parent.position, CurrentNode.transform.position, 0.1f);
+        transform.parent.position = Vector3.Lerp(transform.parent.position, CurrentNode.Position, 0.1f);
 
         //Allow the user to navigate the tree with number keys
         int inputNum = GetNumericalInput();
@@ -53,11 +57,11 @@ public class CameraControl : MonoBehaviour
     /// <param name="childIndex">The child index of the new selected node</param>
     public void SelectChildNode(int childIndex)
     {
-        if (CurrentNode.transform.childCount > childIndex)
+        if (CurrentNode.Children.Count > childIndex)
         {
-            CurrentNode = CurrentNode.transform.GetChild(childIndex).GetComponent<NodeObject>();
-            CurrentNode.SelectNode();
-            UIController.DisplayNodeInfo(CurrentNode.TreeNode);
+            CurrentNode = (NodeObject)CurrentNode.Children[childIndex];
+            LineDraw.SelectNode(CurrentNode);
+            UIController.DisplayNodeInfo(CurrentNode);
         }
     }
 
@@ -66,11 +70,11 @@ public class CameraControl : MonoBehaviour
     /// </summary>
     public void SelectParentNode()
     {
-        if (CurrentNode.transform.parent != null)
+        if (CurrentNode.Parent != null)
         {
-            CurrentNode = CurrentNode.transform.parent.GetComponent<NodeObject>();
-            CurrentNode.SelectNode();
-            UIController.DisplayNodeInfo(CurrentNode.TreeNode);
+            CurrentNode = (NodeObject)CurrentNode.Parent;
+            LineDraw.SelectNode(CurrentNode);
+            UIController.DisplayNodeInfo(CurrentNode);
         }
     }
 

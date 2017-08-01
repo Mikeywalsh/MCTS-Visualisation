@@ -33,10 +33,18 @@ public class MCTS {
     /// </summary>
     /// <param name="gameBoard">The game board to perform the MCTS with</param>
     /// <param name="playsPerSimulation">The amount of playouts to do for each simulation</param>
-    public MCTS(Board gameBoard, int playsPerSimulation)
+    /// <param name="nodeType">The type of node to use for the tree search</param>
+    public MCTS(Board gameBoard, int playsPerSimulation, Type nodeType)
     {
-        //Create the root node of the search tree
-        root = new Node(null, gameBoard);
+        //Ensure that the passed in type is a type of node
+        if(!nodeType.IsSubclassOf(typeof(Node)))
+        {
+            throw new InvalidCastException("Only a type of node can be passed in as the node type");
+        }
+
+        //Create the root node of the search tree using the provided node type
+        root = (Node)Activator.CreateInstance(nodeType);
+        root.Initialise(null, gameBoard);
 
         //Set the number of playouts to be done on each node during simulation
         playoutsPerSimulation = playsPerSimulation;
@@ -49,6 +57,7 @@ public class MCTS {
     public void Step()
     {
         Node bestNode = Selection(root);
+
         if (bestNode == null)
         {
             finished = true;

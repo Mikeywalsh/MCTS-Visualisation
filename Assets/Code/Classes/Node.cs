@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 /// <summary>
 /// A node for use with a Monte Carlo Search Tree
@@ -47,7 +48,7 @@ public class Node {
     /// </summary>
     /// <param name="parentNode">The parent of this node, null if this is the root node</param>
     /// <param name="board">The game board for this node</param>
-	public Node(Node parentNode, Board board)
+	public void Initialise(Node parentNode, Board board)
     {
         parent = parentNode;
         gameBoard = board;
@@ -89,7 +90,11 @@ public class Node {
         {
             Board newBoard = gameBoard.Duplicate();
             newBoard.MakeMove(move);
-            children.Add(new Node(this, newBoard));
+
+            //Create a child node with the same type as this node, initialise it, and add it to the list of children
+            Node child = (Node)Activator.CreateInstance(GetType());
+            child.Initialise(this, newBoard);
+            children.Add(child);
         }
     }
 

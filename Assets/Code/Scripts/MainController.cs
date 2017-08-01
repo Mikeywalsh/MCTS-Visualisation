@@ -4,21 +4,21 @@ using UnityEngine;
 
 /// <summary>
 /// The main script for the application
-/// Handles the running of the MCTS and the creation of <see cref="NodeObject"/>s for each node
+/// Handles the running of the MCTS and the positioning of each <see cref="NodeObject"/>
 /// Also handles the changeover between the menu UI and navigation UI
 /// </summary>
 public class MainController : MonoBehaviour {
-
-    /// <summary>
-    /// The gameobject of the root node, used as a starting point for rendering the game tree
-    /// </summary>
-    public NodeObject RootNodeObject;
 
     /// <summary>
     /// The MCTS instance used to create the game tree
     /// Should be ran on another thread to avoid freezing of the application
     /// </summary>
     private MCTS mcts;
+
+    /// <summary>
+    /// The root node object, which is the starting point for the MCTS
+    /// </summary>
+    private NodeObject rootNodeObject;
 
     /// <summary>
     /// The time to run MCTS for, input by the user
@@ -80,7 +80,7 @@ public class MainController : MonoBehaviour {
             }
 
             //Initialise MCTS on the given game board
-            mcts = new MCTS(board, UIController.GetPlayoutInput);
+            mcts = new MCTS(board, UIController.GetPlayoutInput, typeof(NodeObject));
 
             //Run mcts in another thread
             Thread mctsThread = new Thread(new ThreadStart(() => RunMCTS(mcts)));
@@ -100,8 +100,8 @@ public class MainController : MonoBehaviour {
 	
     /// <summary>
     /// If the user has started running MCTS, then display information about it to the UI whilst it generates
-    /// When the MCTS has finished generating, start created a <see cref="NodeObject"/> for each <see cref="Node"/>, so that they can be rendered on-screen
-    /// When each Node has a corresponding NodeObject, switch to the tree navigation UI
+    /// When the MCTS has finished generating, set the position of each <see cref="NodeObject"/> so that they can be rendered on-screen
+    /// When each nodes position has been set, switch to the tree navigation UI
     /// </summary>
 	void Update () {
         //Don't do anything until the user has started running the MCTS
@@ -127,8 +127,9 @@ public class MainController : MonoBehaviour {
         //If the MCTS has finished being computed, start to create gameobjects for each node in the tree
         if (!startedVisualisation)
         {
-            RootNodeObject.Initialise(mcts.Root);
-            StartCoroutine(GenChildren(mcts.Root, RootNodeObject.gameObject));
+            rootNodeObject = (NodeObject)mcts.Root;
+            rootNodeObject.SetPosition();
+            StartCoroutine(SetNodePosition(rootNodeObject));
             startedVisualisation = true;
         }
 
@@ -144,32 +145,29 @@ public class MainController : MonoBehaviour {
                 //If every node has had a gameobject created for it, then switch to the navigation UI and start to render the game tree
                 UIController.SwitchToNavigationUI();
                 Camera.main.GetComponent<LineDraw>().linesVisible = true;
+                Camera.main.GetComponent<CameraControl>().CurrentNode = rootNodeObject;
                 UIController.DisplayNodeInfo(mcts.Root);
                 allNodesGenerated = true;
+                LineDraw.SelectNode(rootNodeObject);
             }
         }
     }
 
     /// <summary>
-    /// Creates child gameobjects for a nodes children, recursively
-    /// If the root node is passed in as the parent node, then the entire tree will be created
+    /// Sets the position of a <see cref="NodeObject"/> in the world, and all its children, recursively
     /// This method is an <see cref="IEnumerator"/> so the tree is given time to be created, instead of the program freezing whilst it creates the tree in one frame
     /// </summary>
-    /// <param name="parentNode">The starting node to create a child object hierarchy of </param>
-    /// <param name="parentNodeObject">The gameobject of the parent node</param>
-    IEnumerator GenChildren(Node parentNode, GameObject parentNodeObject)
+    /// <param name="node">The starting node to set the position of</param>
+    IEnumerator SetNodePosition(NodeObject node)
     {
-        foreach (Node child in parentNode.Children)
-        {
-            GameObject newNode = Instantiate(Resources.Load<GameObject>("Node"));
-            newNode.transform.parent = parentNodeObject.transform;
-            newNode.name = "D" + child.Depth + " C" + newNode.transform.parent.childCount + "/" + parentNode.Children.Capacity;
-            newNode.AddComponent<NodeObject>().Initialise(child);
-            nodesGenerated++;
+        node.SetPosition();
 
+        foreach (Node child in node.Children)
+        {
             yield return new WaitForSeconds(.1f);
 
-            StartCoroutine(GenChildren(child, newNode));
+            StartCoroutine(SetNodePosition((NodeObject)child));
+            nodesGenerated++;
         }
     }
 
