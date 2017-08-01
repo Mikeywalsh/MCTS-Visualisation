@@ -6,7 +6,8 @@
 /// The algorithm will run until the search space is exhausted
 /// A graceful exit can be achieved via <see cref="FinishEarly"/>, which will result in an incomplete but still useful tree
 /// </summary>
-public class MCTS {
+/// <typeparam name="T">The type of node to use for the tree search</typeparam>
+public class MCTS<T> where T : Node {
 
     /// <summary>
     /// The random instance to use for all random number generations to ensure proper randomness
@@ -16,7 +17,7 @@ public class MCTS {
     /// <summary>
     /// The root node of the search tree
     /// </summary>
-    private Node root;
+    private T root;
 
     /// <summary>
     /// Signals if the MCTS algorithm has finished running
@@ -33,17 +34,10 @@ public class MCTS {
     /// </summary>
     /// <param name="gameBoard">The game board to perform the MCTS with</param>
     /// <param name="playsPerSimulation">The amount of playouts to do for each simulation</param>
-    /// <param name="nodeType">The type of node to use for the tree search</param>
-    public MCTS(Board gameBoard, int playsPerSimulation, Type nodeType)
+    public MCTS(Board gameBoard, int playsPerSimulation)
     {
-        //Ensure that the passed in type is a type of node
-        if(!nodeType.IsSubclassOf(typeof(Node)))
-        {
-            throw new InvalidCastException("Only a type of node can be passed in as the node type");
-        }
-
         //Create the root node of the search tree using the provided node type
-        root = (Node)Activator.CreateInstance(nodeType);
+        root = (T)Activator.CreateInstance(typeof(T));
         root.Initialise(null, gameBoard);
 
         //Set the number of playouts to be done on each node during simulation

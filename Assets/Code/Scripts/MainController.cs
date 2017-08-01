@@ -13,7 +13,7 @@ public class MainController : MonoBehaviour {
     /// The MCTS instance used to create the game tree
     /// Should be ran on another thread to avoid freezing of the application
     /// </summary>
-    private MCTS mcts;
+    private MCTS<NodeObject> mcts;
 
     /// <summary>
     /// The root node object, which is the starting point for the MCTS
@@ -80,7 +80,7 @@ public class MainController : MonoBehaviour {
             }
 
             //Initialise MCTS on the given game board
-            mcts = new MCTS(board, UIController.GetPlayoutInput, typeof(NodeObject));
+            mcts = new MCTS<NodeObject>(board, UIController.GetPlayoutInput);
 
             //Run mcts in another thread
             Thread mctsThread = new Thread(new ThreadStart(() => RunMCTS(mcts)));
@@ -176,7 +176,7 @@ public class MainController : MonoBehaviour {
     /// Should be ran on another thread to avoid freezing of the application
     /// </summary>
     /// <param name="m">The MCTS instance to run</param>
-    static void RunMCTS(MCTS m)
+    static void RunMCTS(MCTS<NodeObject> m)
     {
         while (!m.Finished)
         {
