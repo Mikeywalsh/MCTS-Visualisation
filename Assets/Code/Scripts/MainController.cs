@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
@@ -7,8 +7,8 @@ using UnityEngine;
 /// Handles the running of the MCTS and the positioning of each <see cref="NodeObject"/>
 /// Also handles the changeover between the menu UI and navigation UI
 /// </summary>
-public class MainController : MonoBehaviour {
-
+public class MainController : MonoBehaviour
+{
     /// <summary>
     /// The MCTS instance used to create the game tree
     /// Should be ran on another thread to avoid freezing of the application
@@ -49,7 +49,8 @@ public class MainController : MonoBehaviour {
     /// <summary>
     /// Ensure that the application runs in the background when it is started
     /// </summary>
-    void Start() {
+    void Start()
+    {
         Application.runInBackground = true;
     }
 
@@ -67,7 +68,7 @@ public class MainController : MonoBehaviour {
             Board board;
 
             //Assign whatever game board the user has chosen to the board instance
-            switch(UIController.GetGameChoice)
+            switch (UIController.GetGameChoice)
             {
                 case 0:
                     board = new TTTBoard();
@@ -82,28 +83,28 @@ public class MainController : MonoBehaviour {
             //Initialise MCTS on the given game board
             mcts = new MCTS<NodeObject>(board, UIController.GetPlayoutInput);
 
-            //Run mcts in another thread
-            Thread mctsThread = new Thread(new ThreadStart(() => RunMCTS(mcts)));
-            mctsThread.IsBackground = true;
-            mctsThread.Start();
+            //Obtain the time to run mcts for from the input user amount
             timeToRunFor = UIController.GetTimeToRunInput;
             timeLeft = timeToRunFor;
+
+            //Run mcts asyncronously
+            RunMCTS(mcts);
             UIController.StartButtonPressed();
         }
         else
         {
             //Stop the MCTS early
             mcts.Finish();
-            UIController.StopButtonPressed();
         }
     }
-	
+
     /// <summary>
     /// If the user has started running MCTS, then display information about it to the UI whilst it generates
     /// When the MCTS has finished generating, set the position of each <see cref="NodeObject"/> so that they can be rendered on-screen
     /// When each nodes position has been set, switch to the tree navigation UI
     /// </summary>
-	void Update () {
+    void Update()
+    {
         //Don't do anything until the user has started running the MCTS
         if (mcts == null)
             return;
@@ -115,7 +116,6 @@ public class MainController : MonoBehaviour {
             if (timeLeft <= 0)
             {
                 mcts.Finish();
-                UIController.StopButtonPressed();
             }
             UIController.UpdateProgressBar((1 - (timeLeft / timeToRunFor)) / 2, "Running MCTS   " + mcts.NodesVisited + " nodes     " + timeLeft.ToString("0.0") + "s/" + timeToRunFor.ToString("0.0") + "s");
         }
@@ -140,7 +140,7 @@ public class MainController : MonoBehaviour {
             {
                 UIController.UpdateProgressBar(0.5f + ((float)nodesGenerated / mcts.NodesVisited / 2), "Creating node objects: " + nodesGenerated + "/" + mcts.NodesVisited);
             }
-            else if(nodesGenerated == mcts.NodesVisited)
+            else if (nodesGenerated == mcts.NodesVisited)
             {
                 //If every node has had a gameobject created for it, then switch to the navigation UI and start to render the game tree
                 UIController.SwitchToNavigationUI();
@@ -172,16 +172,12 @@ public class MainController : MonoBehaviour {
     }
 
     /// <summary>
-    /// Runs MCTS until completion
-    /// Should be ran on another thread to avoid freezing of the application
+    /// Runs MCTS until completion asyncronously and then disables the stop button
     /// </summary>
     /// <param name="m">The MCTS instance to run</param>
-    static void RunMCTS(MCTS<NodeObject> m)
+    static async void RunMCTS(MCTS<NodeObject> mcts)
     {
-        while (!m.Finished)
-        {
-            m.Step();
-        }
+        await Task.Run(() => { while (!mcts.Finished) { mcts.Step(); } });
+        UIController.StopButtonPressed();
     }
 }
-

@@ -34,7 +34,7 @@ public class NodeObject : Node {
         if (Depth == 1)             //If at depth 1, use the Fibonacci sphere algorithm to evenly distribute all depth 1 nodes in a sphere around the root node
         {
             #region Fibbonacci Sphere algorithm
-            int samples = Parent.Children.Count + 1;
+            int samples = Parent.Children.Capacity + 1;
             float offset = 2f / samples;
             float increment = Mathf.PI * (3 - Mathf.Sqrt(5));
 
@@ -69,7 +69,7 @@ public class NodeObject : Node {
             if (Parent.Children.Count != 1)
             {
                 Position += tangent.normalized * depthMul * 0.25f;
-                Position = Position.RotateAround(rotationPoint, rotationPoint - parentNode.Position, (360 / Parent.Children.Count) * parentNode.ChildPositionsSet);
+                Position = Position.RotateAround(rotationPoint, rotationPoint - parentNode.Position, (360 / Parent.Children.Capacity) * parentNode.ChildPositionsSet);
             }
         }
         parentNode.ChildPositionsSet++;
