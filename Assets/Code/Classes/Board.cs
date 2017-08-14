@@ -28,15 +28,14 @@ public abstract class Board {
     /// <summary>
     /// Simulates random plays on this board until the game has ended
     /// </summary>
-    /// <param name="r">The random instance used to choose proper random elements from the list of possible moves</param>
     /// <returns>The value of the winner variable at the end of the game</returns>
-    public int SimulateUntilEnd(Random r)
+    public int SimulateUntilEnd()
     {
         Board temp = Duplicate();
 
         while (temp.Winner == -1)
         {
-            temp.MakeMove(temp.possibleMoves.PickRandom(r));
+            temp.MakeMove(temp.possibleMoves.PickRandom());
         }
 
         return temp.winner;

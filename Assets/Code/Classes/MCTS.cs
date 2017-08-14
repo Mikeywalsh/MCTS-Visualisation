@@ -10,11 +10,6 @@
 public class MCTS<T> where T : Node {
 
     /// <summary>
-    /// The random instance to use for all random number generations to ensure proper randomness
-    /// </summary>
-    private Random rand = new Random();
-
-    /// <summary>
     /// The root node of the search tree
     /// </summary>
     private T root;
@@ -127,7 +122,7 @@ public class MCTS<T> where T : Node {
     /// <param name="playoutAmount">The amount of playout simulations to run</param>
     private void Simulation(Node n, int playoutAmount)
     {
-        n.SimulatePlayouts(rand, playoutAmount);
+        n.StartSimulatePlayouts(playoutAmount);
     }
     
     /// <summary>
@@ -153,7 +148,7 @@ public class MCTS<T> where T : Node {
         if (n.Visits == 0)
             return float.MaxValue;
 
-        return n.AverageScore + (Math.Sqrt(2) * Math.Sqrt(Math.Log(n.Parent.Visits)) / n.Visits);
+        return n.AverageScore + (Math.Sqrt(2) * Math.Sqrt(Math.Log(root.Visits)) / n.Visits);
     }
 
     /// <summary>

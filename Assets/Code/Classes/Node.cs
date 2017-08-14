@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 /// <summary>
 /// A node for use with a Monte Carlo Search Tree
 /// Contains a game state, as well as stats such as visits, score, parent and children
 /// </summary>
-public class Node {
-
+public class Node
+{
     /// <summary>
     /// This nodes parent node
     /// </summary>
@@ -44,6 +45,11 @@ public class Node {
     private int depth;
 
     /// <summary>
+    /// The maximum amount of tasks that can be used during simulation
+    /// </summary>
+    private const int MAX_SIMULATION_TASKS = 4;
+
+    /// <summary>
     /// Creates a new node with the given board and parent node
     /// </summary>
     /// <param name="parentNode">The parent of this node, null if this is the root node</param>
@@ -54,7 +60,7 @@ public class Node {
         gameBoard = board;
         children = new List<Node>(gameBoard.PossibleMoves().Count);
 
-        if(IsLeafNode)
+        if (IsLeafNode)
         {
             children.Capacity = 0;
             allChildrenFullyExplored = true;
@@ -80,13 +86,13 @@ public class Node {
     /// </summary>
     public void CreateAllChildren()
     {
-        if(IsLeafNode)
+        if (IsLeafNode)
         {
             throw new InvalidNodeException("This node is a leaf node, cannot create children for it");
         }
 
         //Create a new child node for each possible move from this node
-        foreach(Move move in gameBoard.PossibleMoves())
+        foreach (Move move in gameBoard.PossibleMoves())
         {
             Board newBoard = gameBoard.Duplicate();
             newBoard.MakeMove(move);
@@ -107,7 +113,7 @@ public class Node {
         if (allChildrenFullyExplored)
             return;
 
-        foreach(Node child in children)
+        foreach (Node child in children)
         {
             if (!child.AllChildrenFullyExplored)
                 return;
@@ -123,23 +129,66 @@ public class Node {
 
     /// <summary>
     /// Simulates a number of playouts from this node and adds the mean score value to this nodes score attribute
+    /// Uses <see cref="Task"/>'s to split the simulation workload across multiple threads
     /// </summary>
-    /// <param name="rand">The random instance used to ensure proper random number generation</param>
     /// <param name="playoutCount">The amount of simulations to run, a larger amount will give better results</param>
-    public void SimulatePlayouts(System.Random rand, int playoutCount)
+    public void StartSimulatePlayouts(int playoutCount)
     {
-        int wins = 0;
+        //A list of tasks that will be used to split the simulation workload
+        List<Task<int>> tasks = new List<Task<int>>(MAX_SIMULATION_TASKS);
 
-        for (int i = 0; i < playoutCount; i++)
+        //The amount of playouts still left to assign to tasks
+        int playoutsToAssign = playoutCount;
+
+        //Split the amount of playouts to be simulated across multiple tasks
+        for (int i = 0; i < MAX_SIMULATION_TASKS; i++)
         {
-            int winner = gameBoard.SimulateUntilEnd(rand);
-            if (winner == gameBoard.PreviousPlayer)
-                wins++;
+            //If this is the last task to be added, give it the amount of playouts still left to assign, in case the total playouts needed is not divisible by the maximum task count
+            if (i == MAX_SIMULATION_TASKS - 1)
+            {
+                tasks.Add(Task<int>.Factory.StartNew(() => SimulatePlayouts(gameBoard, playoutsToAssign)));
+            }
+            else
+            {
+                tasks.Add(Task<int>.Factory.StartNew(() => SimulatePlayouts(gameBoard, playoutCount / MAX_SIMULATION_TASKS)));
+                playoutsToAssign -= playoutCount / MAX_SIMULATION_TASKS;
+            }
+
         }
 
+        int wins = 0;
+
+        //Get the amount of wins from each task
+        for (int i = 0; i < tasks.Count; i++)
+        {
+            wins += tasks[i].Result;
+        }
+
+        //Calculate the total simulation score for this node
         float simScore = (float)wins / playoutCount;
         totalScore = simScore;
         visits = 1;
+    }
+
+    /// <summary>
+    /// For use with tasks to simulate a given amount of playouts for a board
+    /// </summary>
+    /// <param name="board">The board to perform the simulations on</param>
+    /// <param name="playoutCount">The amount of simulations to run on this board</param>
+    /// <returns>The sum of wins for the current player after simulating the board</returns>
+    private static int SimulatePlayouts(Board board, int playoutCount)
+    {
+        int wins = 0;
+
+        //Simulate a playout of the entire game for each value of playoutCount
+        for (int i = 0; i < playoutCount; i++)
+        {
+            int winner = board.SimulateUntilEnd();
+            if (winner == board.PreviousPlayer)
+                wins++;
+        }
+
+        return wins;
     }
 
     /// <summary>
@@ -163,7 +212,7 @@ public class Node {
         visits++;
 
         //Update this nodes parents with the new score
-        if(parent != null)
+        if (parent != null)
         {
             parent.Update(updateScore, player);
         }
