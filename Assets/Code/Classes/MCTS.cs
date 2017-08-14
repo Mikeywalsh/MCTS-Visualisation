@@ -148,7 +148,7 @@ public class MCTS<T> where T : Node {
         if (n.Visits == 0)
             return float.MaxValue;
 
-        return n.AverageScore + (Math.Sqrt(2) * Math.Sqrt(Math.Log(root.Visits)) / n.Visits);
+        return n.AverageScore + (Math.Sqrt(2) * Math.Sqrt(Math.Log(root.Visits) / n.Visits));
     }
 
     /// <summary>
