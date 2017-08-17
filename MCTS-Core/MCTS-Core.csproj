@@ -62,6 +62,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy MCTS-Core.dll ..\..\..\MCTS-Visualisation\Assets\Plugins /Y</PostBuildEvent>
+    <PostBuildEvent Condition="'$(OS)' == 'Windows_NT' ">xcopy MCTS-Core.dll ..\..\..\MCTS-Visualisation\Assets\Plugins /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>

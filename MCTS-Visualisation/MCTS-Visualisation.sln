@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2017
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.15
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCTS-Visualisation", "MCTS-Visualisation.csproj", "{B8A662EE-A16C-4468-7570-2BD6B1CC00A5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCTS-Core", "..\MCTS-Core\MCTS-Core.csproj", "{EB86F94A-7B9E-44CE-A59A-DC06400122A9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCTS-Test", "..\MCTS-Test\MCTS-Test.csproj", "{F82438CB-B73D-4D0A-8DAA-3F5F97D07C72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,14 +15,6 @@ Global
 		{B8A662EE-A16C-4468-7570-2BD6B1CC00A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8A662EE-A16C-4468-7570-2BD6B1CC00A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8A662EE-A16C-4468-7570-2BD6B1CC00A5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EB86F94A-7B9E-44CE-A59A-DC06400122A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EB86F94A-7B9E-44CE-A59A-DC06400122A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EB86F94A-7B9E-44CE-A59A-DC06400122A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EB86F94A-7B9E-44CE-A59A-DC06400122A9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F82438CB-B73D-4D0A-8DAA-3F5F97D07C72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F82438CB-B73D-4D0A-8DAA-3F5F97D07C72}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F82438CB-B73D-4D0A-8DAA-3F5F97D07C72}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F82438CB-B73D-4D0A-8DAA-3F5F97D07C72}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

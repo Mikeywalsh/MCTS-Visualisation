@@ -7,7 +7,6 @@ namespace MCTS_Core
     /// </summary>
     public class TTTBoard : GridBasedBoard
     {
-
         /// <summary>
         /// Creates a new Tic-Tac-Toe board representing an empty game
         /// </summary>

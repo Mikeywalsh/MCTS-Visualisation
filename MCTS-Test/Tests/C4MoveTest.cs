@@ -8,7 +8,6 @@ namespace MCTS_Test
     /// </summary>
     public class C4MoveTest
     {
-
         [Test]
         public void CreateValidMoveTest()
         {

@@ -20,10 +20,13 @@ sysinfo.txt
 *.unityproj
 *.booproj
 .idea*/
-MCTS-Core/[Bb]in
-MCTS-Core/[Oo]bj
-MCTS-Test/[Bb]in
-MCTS-Test/[Oo]bj
+MCTS-Visualisation/*.csproj
+MCTS-Visualisation/*.sln
+MCTS-Core/[Bb]in/
+MCTS-Core/[Oo]bj/
+MCTS-Test/[Bb]in/
+MCTS-Test/[Oo]bj/
+packages
  
 # ============ #
 # OS generated #
