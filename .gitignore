@@ -22,6 +22,10 @@ sysinfo.txt
 *.unityproj
 *.booproj
 .idea*/
+MCTS-Core/[Bb]in
+MCTS-Core/[Oo]bj
+MCTS-Test/[Bb]in
+MCTS-Test/[Oo]bj
  
 # ============ #
 # OS generated #
