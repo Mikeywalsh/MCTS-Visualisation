@@ -1,0 +1,8 @@
+language: csharp
+solution: MCTS-Visualisation/MCTS-Visualisation.sln
+install:
+  - nuget restore MCTS-Visualisation/MCTS-Visualisation.sln
+  - nuget install NUnit.Console -Version 3.6.0 -OutputDirectory testrunner
+script:
+  - xbuild /p:Configuration=Debug MCTS-Visualisation/MCTS-Visualisation.sln
+- mono ./testrunner/NUnit.ConsoleRunner.3.6.0/tools/nunit3-console.exe ./MCTS-Test/bin/Debug/MCTS-Test.dll
