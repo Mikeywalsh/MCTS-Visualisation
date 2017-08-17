@@ -50,6 +50,11 @@ public class Node
     private const int MAX_SIMULATION_TASKS = 4;
 
     /// <summary>
+    /// The minimum amount of playouts needed before simulations will be ran in multi thread mode
+    /// </summary>
+    private const int MULTI_THREAD_MODE_PLAYOUT_REQUIREMENT = 50;
+
+    /// <summary>
     /// Creates a new node with the given board and parent node
     /// </summary>
     /// <param name="parentNode">The parent of this node, null if this is the root node</param>
@@ -134,34 +139,33 @@ public class Node
     /// <param name="playoutCount">The amount of simulations to run, a larger amount will give better results</param>
     public void StartSimulatePlayouts(int playoutCount)
     {
-        //A list of tasks that will be used to split the simulation workload
-        List<Task<int>> tasks = new List<Task<int>>(MAX_SIMULATION_TASKS);
-
-        //The amount of playouts still left to assign to tasks
-        int playoutsToAssign = playoutCount;
-
-        //Split the amount of playouts to be simulated across multiple tasks
-        for (int i = 0; i < MAX_SIMULATION_TASKS; i++)
-        {
-            //If this is the last task to be added, give it the amount of playouts still left to assign, in case the total playouts needed is not divisible by the maximum task count
-            if (i == MAX_SIMULATION_TASKS - 1)
-            {
-                tasks.Add(Task<int>.Factory.StartNew(() => SimulatePlayouts(gameBoard, playoutsToAssign)));
-            }
-            else
-            {
-                tasks.Add(Task<int>.Factory.StartNew(() => SimulatePlayouts(gameBoard, playoutCount / MAX_SIMULATION_TASKS)));
-                playoutsToAssign -= playoutCount / MAX_SIMULATION_TASKS;
-            }
-
-        }
-
         int wins = 0;
 
-        //Get the amount of wins from each task
-        for (int i = 0; i < tasks.Count; i++)
+        //Run simulations in single thread mode if the amount of playouts is below the multi thread requirement. Run in multi thread mode otherwise
+        if (playoutCount < MULTI_THREAD_MODE_PLAYOUT_REQUIREMENT)
         {
-            wins += tasks[i].Result;
+            //Get the amount of wins for the simulation job
+            wins = SimulatePlayouts(gameBoard, playoutCount);
+        }
+        else
+        {
+            //Create an array of tasks to use
+            Task[] tasks = new Task[MAX_SIMULATION_TASKS];
+
+            //Create a thread safe container for the simulation result data
+            SimulateData sim = new SimulateData(playoutCount);
+
+            //Split the amount of playouts to be simulated across multiple tasks
+            for (int i = 0; i < MAX_SIMULATION_TASKS; i++)
+            {
+                tasks[i] = Task.Factory.StartNew(() => SimulatePlayouts(gameBoard, sim));
+            }
+
+            //Ensure the other tasks have finished
+            Task.WaitAll(tasks);
+
+            //Get the amount of wins for the simulation job
+            wins = sim.Wins;
         }
 
         //Calculate the total simulation score for this node
@@ -171,7 +175,24 @@ public class Node
     }
 
     /// <summary>
+    /// Used in multi thread mode
     /// For use with tasks to simulate a given amount of playouts for a board
+    /// </summary>
+    /// <param name="board">The board to perform the simulations on</param>
+    /// <param name="sim">The thread safe simulate data holder which allows multiple threads to record their results at once</param>
+    /// <returns>The sum of wins for the current player after simulating the board</returns>
+    private static void SimulatePlayouts(Board board, SimulateData sim)
+    {
+        while (sim.Plays != sim.TargetPlays)
+        {
+            int winner = board.SimulateUntilEnd();
+            sim.AddResult(winner == board.PreviousPlayer);
+        }
+    }
+
+    /// <summary>
+    /// Used in single thread mode
+    /// Simulates an amount of playouts on a given board
     /// </summary>
     /// <param name="board">The board to perform the simulations on</param>
     /// <param name="playoutCount">The amount of simulations to run on this board</param>
@@ -180,8 +201,7 @@ public class Node
     {
         int wins = 0;
 
-        //Simulate a playout of the entire game for each value of playoutCount
-        for (int i = 0; i < playoutCount; i++)
+        for(int i = 0; i < playoutCount; i++)
         {
             int winner = board.SimulateUntilEnd();
             if (winner == board.PreviousPlayer)
