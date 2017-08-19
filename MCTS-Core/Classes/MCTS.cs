@@ -11,7 +11,6 @@ namespace MCTS.Core
     /// <typeparam name="T">The type of node to use for the tree search</typeparam>
     public class MCTS<T> where T : Node
     {
-
         /// <summary>
         /// The root node of the search tree
         /// </summary>

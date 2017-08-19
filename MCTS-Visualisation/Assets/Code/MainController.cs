@@ -178,7 +178,7 @@ public class MainController : MonoBehaviour
     /// <param name="m">The MCTS instance to run</param>
     static async void RunMCTS(MCTS<NodeObject> mcts)
     {
-        await Task.Run(() => { while (!mcts.Finished) { mcts.Step(); } });
+        await Task.Factory.StartNew(() => {while (!mcts.Finished) { mcts.Step(); } }, TaskCreationOptions.LongRunning);
         UIController.StopButtonPressed();
     }
 }
