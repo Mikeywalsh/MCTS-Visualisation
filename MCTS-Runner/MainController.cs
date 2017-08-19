@@ -10,7 +10,7 @@ namespace MCTS.Runner
         public static void Start(Board gameBoard, int playoutCount)
         {
             mcts = new TreeSearch<Node>(gameBoard, playoutCount);
-            RunUntilEnd();
+            //RunUntilEnd();
         }
 
         public static int TotalNodesVisited
@@ -29,7 +29,7 @@ namespace MCTS.Runner
         /// <param name="m">The MCTS instance to run</param>
         static void RunUntilEnd()
         {
-            Task.Factory.StartNew(() => { while (!mcts.Finished) { mcts.Step(); } }, TaskCreationOptions.LongRunning);
+            //Task.Factory.StartNew(() => { while (!mcts.Finished) { mcts.Step(); } }, TaskCreationOptions.LongRunning);
         }
     }
 }

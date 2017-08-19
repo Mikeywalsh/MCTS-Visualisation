@@ -47,23 +47,45 @@ namespace MCTS.Core
         /// </summary>
         public void Step()
         {
-            Node bestNode = Selection(root);
+            Node bestNode;
 
-            if (bestNode == null)
+            while (true)
             {
-                finished = true;
-                return;
+                bestNode = null;
+                while (bestNode == null)
+                {
+                    bestNode = Selection(root);
+                }
+
+                if (!bestNode.Lock())
+                {
+                    //throw new Exception("GOD WHY");
+                }
+                else
+                {
+                    break;
+                }
             }
 
-            Expansion(bestNode);
-
-            foreach (Node child in bestNode.Children)
+            lock (bestNode)
             {
-                if (!child.IsLeafNode)
+                //if (bestNode == null)
+                //{
+                //    finished = true;
+                //    return;
+                //}
+
+                Expansion(bestNode);
+
+                foreach (Node child in bestNode.Children)
                 {
-                    Simulation(child, playoutsPerSimulation);
+                    if (!child.IsLeafNode)
+                    {
+                        Simulation(child, playoutsPerSimulation);
+                    }
+                    Backprogation(child);
                 }
-                Backprogation(child);
+
             }
         }
 
@@ -93,7 +115,7 @@ namespace MCTS.Core
                     if (!child.AllChildrenFullyExplored)
                     {
                         double currentUCB1 = UCB1(child);
-                        if (currentUCB1 > highestUCB)
+                        if (currentUCB1 > highestUCB && !child.Locked)
                         {
                             highestUCB = currentUCB1;
                             highestUCBChild = child;

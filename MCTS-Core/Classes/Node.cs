@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MCTS.Core
@@ -10,6 +11,10 @@ namespace MCTS.Core
     /// </summary>
     public class Node
     {
+        private object scoreUpdateLock = new object();
+
+        private object simulatingLock = new object();
+
         /// <summary>
         /// This nodes parent node
         /// </summary>
@@ -220,23 +225,27 @@ namespace MCTS.Core
         /// <param name="updateScore">The score to update this node with</param>
         public void Update(float updateScore, int player)
         {
-            //Update this nodes score depending on the current player at this node
-            if (gameBoard.CurrentPlayer == player)
+            //Ensure that a maximum of one update can happen at once
+            lock (scoreUpdateLock)
             {
-                totalScore += updateScore;
-            }
-            else
-            {
-                totalScore += (1 - updateScore);
-            }
+                //Update this nodes score depending on the current player at this node
+                if (gameBoard.CurrentPlayer == player)
+                {
+                    totalScore += updateScore;
+                }
+                else
+                {
+                    totalScore += (1 - updateScore);
+                }
 
-            //Increment the visits attribute
-            visits++;
+                //Increment the visits attribute
+                visits++;
 
-            //Update this nodes parents with the new score
-            if (parent != null)
-            {
-                parent.Update(updateScore, player);
+                //Update this nodes parents with the new score
+                if (parent != null)
+                {
+                    parent.Update(updateScore, player);
+                }
             }
         }
 
@@ -313,6 +322,40 @@ namespace MCTS.Core
         public int Depth
         {
             get { return depth; }
+        }
+
+        /// <summary>
+        /// Returns true if this node is free to enter
+        /// False if another thread is using this node
+        /// </summary>
+        public bool Locked
+        {
+            get { return !Monitor.TryEnter(simulatingLock); }
+        }
+
+        public bool Lock()
+        {
+            if (Locked)
+            {
+                return false;
+            }
+            else
+            {
+                Monitor.Enter(simulatingLock);
+                return true;
+            }
+        }
+
+        public void ReleaseLock()
+        {
+            try
+            {
+                Monitor.Exit(simulatingLock);
+            }
+            catch(SynchronizationLockException e)
+            {
+                throw e;
+            }
         }
     }
 }

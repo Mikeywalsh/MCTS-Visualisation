@@ -55,6 +55,7 @@
     <Compile Include="Classes\ThreadSafeRandom.cs" />
     <Compile Include="Classes\TTTBoard.cs" />
     <Compile Include="Classes\TTTMove.cs" />
+    <Compile Include="Classes\Worker.cs" />
     <Compile Include="Exceptions\InvalidMoveException.cs" />
     <Compile Include="Exceptions\InvalidNodeException.cs" />
     <Compile Include="Extensions\ListExtension.cs" />

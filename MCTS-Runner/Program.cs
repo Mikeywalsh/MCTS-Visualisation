@@ -11,6 +11,10 @@ namespace MCTS.Runner
     class Program
     {
         private static Board startingBoard;
+        private static TreeSearch<Node> mcts;
+        private static List<Worker> workers = new List<Worker>();
+
+        private const int WORKER_THREAD_AMOUNT = 2;
 
         static void Main(string[] args)
         {
@@ -18,20 +22,35 @@ namespace MCTS.Runner
             startingBoard = GetStartingBoard();
 
             //Start the MCTS
-            MainController.Start(startingBoard, 100);
+            mcts = new TreeSearch<Node>(startingBoard, 100);
+            //MainController.Start(startingBoard, 100);
+
+            //Create workers
+            for(int i = 0; i < WORKER_THREAD_AMOUNT; i++)
+            {
+                workers.Add(new Worker(mcts));
+            }
+
+            //Clear the display
+            Console.Clear();
 
             //Update the display with information about the tree search every 0.1 seconds
             while (true)
             {
                 Console.WriteLine("---------------------------------------");
                 Console.WriteLine("-       Monte Carlo Tree Search       -");
-                Console.WriteLine("-    Game: " + GetGameName(startingBoard) + "     Threads:" + "1" + "    -");
-                Console.WriteLine("-    Total nodes: " + MainController.TotalNodesVisited + " nodes");
-                Console.WriteLine("-    Thread 1: " + MainController.TotalNodesVisited + " nodes");
+                Console.WriteLine("-    Game: " + GetGameName(startingBoard) + "     Threads:" + workers.Count + "    -");
+                Console.WriteLine("-    Total nodes: " + mcts.NodesVisited + " nodes");
+                Console.WriteLine("-    Total Steps: " + StepSum());
+
+                foreach (Worker w in workers)
+                {
+                    Console.WriteLine("-    Thread " + w.ThreadID + ": " + w.Steps + " steps");
+                }
                 Console.WriteLine("--------------------------------------");
 
                 //If the entire game tree has been created, stop refreshing the display and allow the user to exit
-                if (MainController.Finished)
+                if (mcts.Finished)
                 {
                     Console.ReadLine();
                     break;
@@ -42,6 +61,17 @@ namespace MCTS.Runner
             }
         }
 
+        private static int StepSum()
+        {
+            int sum = 0;
+
+            foreach(Worker w in workers)
+            {
+                sum += w.Steps;
+            }
+
+            return sum;
+        }
         /// <summary>
         /// Gets the name of the game that the provided board is from
         /// </summary>
