@@ -9,14 +9,20 @@ namespace MCTS.Runner
 
         public static void Start(Board gameBoard, int playoutCount)
         {
-            
+            mcts = new TreeSearch<Node>(gameBoard, playoutCount);
+            RunUntilEnd();
+        }
+
+        public static int TotalNodesVisited
+        {
+            get { return mcts.NodesVisited; }
         }
 
         /// <summary>
         /// Runs MCTS until completion asyncronously and then disables the stop button
         /// </summary>
         /// <param name="m">The MCTS instance to run</param>
-        static void RunMCTS(TreeSearch<Node> mcts)
+        static void RunUntilEnd()
         {
             Task.Factory.StartNew(() => { while (!mcts.Finished) { mcts.Step(); } }, TaskCreationOptions.LongRunning);
         }
