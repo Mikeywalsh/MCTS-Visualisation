@@ -7,7 +7,6 @@ namespace MCTS.Core
     /// </summary>
     public class C4Board : GridBasedBoard
     {
-
         /// <summary>
         /// Creates a new Connect 4 board representing an empty game
         /// </summary>

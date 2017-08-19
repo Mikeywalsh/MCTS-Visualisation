@@ -18,6 +18,11 @@ namespace MCTS.Runner
             get { return mcts.NodesVisited; }
         }
 
+        public static bool Finished
+        {
+            get { return mcts.Finished; }
+        }
+
         /// <summary>
         /// Runs MCTS until completion asyncronously and then disables the stop button
         /// </summary>

@@ -9,7 +9,6 @@ namespace MCTS.Core
     /// </summary>
     public abstract class Board
     {
-
         /// <summary>
         /// The playerID of the current player
         /// </summary>
@@ -126,6 +125,8 @@ namespace MCTS.Core
 
         /// <summary>
         /// Returns amount of players playing on this board
+        /// Can't have static polymorphism and a workaround would be less efficient for execution speed
+        /// Compromise is to have every instance contain the player count
         /// </summary>
         /// <returns>The amount of players playing on this board</returns>
         protected abstract int PlayerCount();
