@@ -1,11 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace MCTS_Core
+namespace MCTS.Core
 {
     public class ChessMove : Move
     {
-
         public ChessPiece PieceToMove { get; private set; }
 
         public int ToX { get; private set; }

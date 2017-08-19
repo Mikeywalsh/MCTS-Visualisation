@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MCTS_Core
+namespace MCTS.Core
 {
     /// <summary>
     /// Represents an abstract board state

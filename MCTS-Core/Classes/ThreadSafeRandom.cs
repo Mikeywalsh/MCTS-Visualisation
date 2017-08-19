@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace MCTS_Core
+namespace MCTS.Core
 {
     /// <summary>
     /// A thread-safe random class, that can be used to generate random numbers concurrently across multiple threads

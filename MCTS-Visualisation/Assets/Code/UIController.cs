@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using MCTS_Core;
+using MCTS.Core;
 
 /// <summary>
 /// A singleton used to control the UI

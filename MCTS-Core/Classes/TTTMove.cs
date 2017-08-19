@@ -1,4 +1,4 @@
-﻿namespace MCTS_Core
+﻿namespace MCTS.Core
 {
     /// <summary>
     /// A move that can be made in Tic-Tac-Toe

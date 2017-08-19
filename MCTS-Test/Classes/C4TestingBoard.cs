@@ -1,6 +1,6 @@
-﻿using MCTS_Core;
+﻿using MCTS.Core;
 
-namespace MCTS_Test
+namespace MCTS.Test
 {
     /// <summary>
     /// A special version of a <see cref="C4Board"/>, which allows making of moves in any cell, regardless if any moves have been made beneath it

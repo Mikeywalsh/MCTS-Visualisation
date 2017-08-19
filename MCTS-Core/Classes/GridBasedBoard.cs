@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MCTS_Core
+namespace MCTS.Core
 {
     /// <summary>
     /// An abstract extension of <see cref="Board"/>

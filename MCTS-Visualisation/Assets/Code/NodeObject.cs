@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using MCTS_Core;
+using MCTS.Core;
 
 /// <summary>
 /// An extension upon <see cref="Node"/>, used for representing nodes of a Monte Carlo Tree Search graphically

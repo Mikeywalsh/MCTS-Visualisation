@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MCTS_Core
+namespace MCTS.Core
 {
     /// <summary>
     /// A Tic-Tac-Toe game board, which allows a game of Tic-Tac-Toe to be played out on it

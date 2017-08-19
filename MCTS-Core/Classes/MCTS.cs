@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MCTS_Core
+namespace MCTS.Core
 {
     /// <summary>
     /// Runs Monte Carlo Tree Search on a given game board

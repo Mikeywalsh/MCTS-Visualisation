@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
-using MCTS_Core;
+using MCTS.Core;
 
-namespace MCTS_Test
+namespace MCTS.Test
 {
     public class TTTMoveTest
     {

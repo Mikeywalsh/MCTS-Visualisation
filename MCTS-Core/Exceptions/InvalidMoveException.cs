@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MCTS_Core
+namespace MCTS.Core
 {
     /// <summary>
     /// An exception which should be thrown when an invalid move is created or used

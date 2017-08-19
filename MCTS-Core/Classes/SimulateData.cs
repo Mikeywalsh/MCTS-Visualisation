@@ -1,4 +1,4 @@
-﻿namespace MCTS_Core
+﻿namespace MCTS.Core
 {
     /// <summary>
     /// A thread safe class which holds data about a simulation job

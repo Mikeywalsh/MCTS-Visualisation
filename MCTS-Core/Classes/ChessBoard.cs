@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace MCTS_Core
+namespace MCTS.Core
 {
     public class ChessBoard : GridBasedBoard
     {

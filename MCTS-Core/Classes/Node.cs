@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace MCTS_Core
+namespace MCTS.Core
 {
     /// <summary>
     /// A node for use with a Monte Carlo Search Tree

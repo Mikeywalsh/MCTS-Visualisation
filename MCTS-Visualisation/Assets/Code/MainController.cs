@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
-using MCTS_Core;
+using MCTS.Core;
 
 /// <summary>
 /// The main script for the application
