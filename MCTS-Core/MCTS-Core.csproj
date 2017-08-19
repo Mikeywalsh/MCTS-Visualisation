@@ -48,7 +48,7 @@
     <Compile Include="Classes\ChessPiece.cs" />
     <Compile Include="Classes\ChessPieces.cs" />
     <Compile Include="Classes\GridBasedBoard.cs" />
-    <Compile Include="Classes\MCTS.cs" />
+    <Compile Include="Classes\TreeSearch.cs" />
     <Compile Include="Classes\Move.cs" />
     <Compile Include="Classes\Node.cs" />
     <Compile Include="Classes\SimulateData.cs" />

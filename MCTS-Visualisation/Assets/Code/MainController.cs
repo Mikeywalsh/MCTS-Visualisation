@@ -14,7 +14,7 @@ public class MainController : MonoBehaviour
     /// The MCTS instance used to create the game tree
     /// Should be ran on another thread to avoid freezing of the application
     /// </summary>
-    private MCTS<NodeObject> mcts;
+    private TreeSearch<NodeObject> mcts;
 
     /// <summary>
     /// The root node object, which is the starting point for the MCTS
@@ -82,7 +82,7 @@ public class MainController : MonoBehaviour
             }
 
             //Initialise MCTS on the given game board
-            mcts = new MCTS<NodeObject>(board, UIController.GetPlayoutInput);
+            mcts = new TreeSearch<NodeObject>(board, UIController.GetPlayoutInput);
 
             //Obtain the time to run mcts for from the input user amount
             timeToRunFor = UIController.GetTimeToRunInput;
@@ -176,7 +176,7 @@ public class MainController : MonoBehaviour
     /// Runs MCTS until completion asyncronously and then disables the stop button
     /// </summary>
     /// <param name="m">The MCTS instance to run</param>
-    static async void RunMCTS(MCTS<NodeObject> mcts)
+    private static async void RunMCTS(TreeSearch<NodeObject> mcts)
     {
         await Task.Factory.StartNew(() => {while (!mcts.Finished) { mcts.Step(); } }, TaskCreationOptions.LongRunning);
         UIController.StopButtonPressed();

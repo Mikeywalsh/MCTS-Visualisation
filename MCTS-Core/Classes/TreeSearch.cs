@@ -9,7 +9,7 @@ namespace MCTS.Core
     /// A graceful exit can be achieved via <see cref="FinishEarly"/>, which will result in an incomplete but still useful tree
     /// </summary>
     /// <typeparam name="T">The type of node to use for the tree search</typeparam>
-    public class MCTS<T> where T : Node
+    public class TreeSearch<T> where T : Node
     {
         /// <summary>
         /// The root node of the search tree
@@ -31,7 +31,7 @@ namespace MCTS.Core
         /// </summary>
         /// <param name="gameBoard">The game board to perform the MCTS with</param>
         /// <param name="playsPerSimulation">The amount of playouts to do for each simulation</param>
-        public MCTS(Board gameBoard, int playsPerSimulation)
+        public TreeSearch(Board gameBoard, int playsPerSimulation)
         {
             //Create the root node of the search tree using the provided node type
             root = (T)Activator.CreateInstance(typeof(T));
