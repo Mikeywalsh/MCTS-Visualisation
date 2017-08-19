@@ -22,10 +22,10 @@ sysinfo.txt
 .idea*/
 MCTS-Visualisation/*.csproj
 MCTS-Visualisation/*.sln
-MCTS-Core/[Bb]in/
-MCTS-Core/[Oo]bj/
-MCTS-Test/[Bb]in/
-MCTS-Test/[Oo]bj/
+*/[Bb]in/
+*/[Oo]bj/
+*/[Bb]in/
+*/[Oo]bj/
 packages
  
 # ============ #

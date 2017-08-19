@@ -8,7 +8,7 @@
     <ProjectGuid>{F82438CB-B73D-4D0A-8DAA-3F5F97D07C72}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MCTS_Test</RootNamespace>
+    <RootNamespace>MCTS.Test</RootNamespace>
     <AssemblyName>MCTS-Test</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EB86F94A-7B9E-44CE-A59A-DC06400122A9}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MCTS.Core</RootNamespace>
-    <AssemblyName>MCTS-Core</AssemblyName>
+    <ProjectGuid>{6DF00C91-A22A-43B3-AB20-72D3121C0867}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>MCTS.Runner</RootNamespace>
+    <AssemblyName>MCTS-Runner</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -40,28 +42,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\Board.cs" />
-    <Compile Include="Classes\C4Board.cs" />
-    <Compile Include="Classes\C4Move.cs" />
-    <Compile Include="Classes\ChessBoard.cs" />
-    <Compile Include="Classes\ChessMove.cs" />
-    <Compile Include="Classes\ChessPiece.cs" />
-    <Compile Include="Classes\ChessPieces.cs" />
-    <Compile Include="Classes\GridBasedBoard.cs" />
-    <Compile Include="Classes\MCTS.cs" />
-    <Compile Include="Classes\Move.cs" />
-    <Compile Include="Classes\Node.cs" />
-    <Compile Include="Classes\SimulateData.cs" />
-    <Compile Include="Classes\ThreadSafeRandom.cs" />
-    <Compile Include="Classes\TTTBoard.cs" />
-    <Compile Include="Classes\TTTMove.cs" />
-    <Compile Include="Exceptions\InvalidMoveException.cs" />
-    <Compile Include="Exceptions\InvalidNodeException.cs" />
-    <Compile Include="Extensions\ListExtension.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MCTS-Core\MCTS-Core.csproj">
+      <Project>{eb86f94a-7b9e-44ce-a59a-dc06400122a9}</Project>
+      <Name>MCTS-Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent Condition="'$(OS)' == 'Windows_NT' ">xcopy MCTS-Core.dll ..\..\..\MCTS-Visualisation\Assets\Plugins /Y</PostBuildEvent>
-  </PropertyGroup>
 </Project>

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCTS-Test", "MCTS-Test\MCTS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCTS-Core", "MCTS-Core\MCTS-Core.csproj", "{EB86F94A-7B9E-44CE-A59A-DC06400122A9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCTS-Runner", "MCTS-Runner\MCTS-Runner.csproj", "{6DF00C91-A22A-43B3-AB20-72D3121C0867}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{EB86F94A-7B9E-44CE-A59A-DC06400122A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB86F94A-7B9E-44CE-A59A-DC06400122A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB86F94A-7B9E-44CE-A59A-DC06400122A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DF00C91-A22A-43B3-AB20-72D3121C0867}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DF00C91-A22A-43B3-AB20-72D3121C0867}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DF00C91-A22A-43B3-AB20-72D3121C0867}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DF00C91-A22A-43B3-AB20-72D3121C0867}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
