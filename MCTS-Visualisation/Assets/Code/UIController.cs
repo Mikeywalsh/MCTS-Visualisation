@@ -7,15 +7,21 @@ using MCTS.Core;
 /// <summary>
 /// A singleton used to control the UI
 /// </summary>
-public class UIController : MonoBehaviour {
-
+public class UIController : MonoBehaviour
+{
     /// <summary>
     /// The singleton reference for the UI controller being used
     /// </summary>
     private static UIController uiController;
 
+    /// <summary>
+    /// Parent object for all elements of the navigation UI
+    /// </summary>
     public GameObject NavigationElements;
 
+    /// <summary>
+    /// Parent object for all elements of the menu UI
+    /// </summary>
     public GameObject MenuElements;
 
     /// <summary>
