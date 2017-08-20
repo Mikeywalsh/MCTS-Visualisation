@@ -14,7 +14,7 @@ namespace MCTS.Runner
         private static TreeSearch<Node> mcts;
         private static List<Worker> workers = new List<Worker>();
 
-        private const int WORKER_THREAD_AMOUNT = 2;
+        private const int WORKER_THREAD_AMOUNT = 5;
 
         static void Main(string[] args)
         {

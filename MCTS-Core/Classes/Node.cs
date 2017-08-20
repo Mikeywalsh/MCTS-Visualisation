@@ -330,7 +330,7 @@ namespace MCTS.Core
         /// </summary>
         public bool Locked
         {
-            get { return !Monitor.TryEnter(simulatingLock); }
+            get { return !Monitor.TryEnter(this); }
         }
 
         public bool Lock()
@@ -341,7 +341,7 @@ namespace MCTS.Core
             }
             else
             {
-                Monitor.Enter(simulatingLock);
+                Monitor.Enter(this);
                 return true;
             }
         }
@@ -350,7 +350,7 @@ namespace MCTS.Core
         {
             try
             {
-                Monitor.Exit(simulatingLock);
+                Monitor.Exit(this);
             }
             catch(SynchronizationLockException e)
             {

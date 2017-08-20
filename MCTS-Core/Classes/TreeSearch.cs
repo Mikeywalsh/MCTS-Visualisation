@@ -49,26 +49,28 @@ namespace MCTS.Core
         {
             Node bestNode;
 
-            while (true)
-            {
+            //while (true)
+            //{
                 bestNode = null;
                 while (bestNode == null)
                 {
                     bestNode = Selection(root);
                 }
 
-                if (!bestNode.Lock())
-                {
-                    //throw new Exception("GOD WHY");
-                }
-                else
-                {
-                    break;
-                }
-            }
+            //    if (!bestNode.Lock())
+            //    {
+            //        //throw new Exception("GOD WHY");
+            //    }
+            //    else
+            //    {
+            //        break;
+            //    }
+            //}
 
             lock (bestNode)
             {
+                if (bestNode.Visits >= 100)
+                    return;
                 //if (bestNode == null)
                 //{
                 //    finished = true;
