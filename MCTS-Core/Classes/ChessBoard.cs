@@ -4,11 +4,24 @@ using System.Collections.Generic;
 
 namespace MCTS.Core
 {
+    /// <summary>
+    /// A Chess game board, which allows a game of Chess to be played out on it
+    /// </summary>
     public class ChessBoard : GridBasedBoard
     {
+        /// <summary>
+        /// The list of all active white pieces on this board
+        /// </summary>
         private List<ChessPiece> whitePieces;
+
+        /// <summary>
+        /// The list of all active black pieces on this board
+        /// </summary>
         private List<ChessPiece> blackPieces;
 
+        /// <summary>
+        /// Creates a new chess board representing an empty game
+        /// </summary>
         public ChessBoard()
         {
             currentPlayer = 1;
@@ -86,11 +99,20 @@ namespace MCTS.Core
             return new ChessBoard(this);
         }
 
+        /// <summary>
+        /// Makes a move on this board for the current player
+        /// </summary>
+        /// <param name="move">The move to make</param>
+        /// <returns>This board instance</returns>
         public override Board MakeMove(Move move)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Returns a list of all possible moves for the current player
+        /// </summary>
+        /// <returns>A list of all possible moves for the current player</returns>
         public override List<Move> PossibleMoves()
         {
             List<Move> moves = new List<Move>();
@@ -98,21 +120,43 @@ namespace MCTS.Core
             return moves;
         }
 
+        /// <summary>
+        /// Determines if there is a winner on this chess board
+        /// If there is a winner, the Winner attribute is set to the ID of the winning player
+        /// If there is a draw, the Winner attribute is set to 0
+        /// If the game is still in progress, the Winner attribute is set to -1
+        /// </summary>
         protected override void DetermineWinner()
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Determines if there is a winner on this chess board
+        /// Uses the last played move to narrow down the amount of checks needed
+        /// If there is a winner, the Winner attribute is set to the ID of the winning player
+        /// If there is a draw, the Winner attribute is set to 0
+        /// If the game is still in progress, the Winner attribute is set to -1
+        /// </summary>
+        /// <param name="move">The last played move on this board</param>
         protected override void DetermineWinner(Move move)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Returns the amount of players on this chess board
+        /// </summary>
+        /// <returns>The amount of players on this chess board</returns>
         protected override int PlayerCount()
         {
             return 2;
         }
 
+        /// <summary>
+        /// Returns a string representation of this chess board
+        /// </summary>
+        /// <returns>A string representation of this chess board</returns>
         public override string ToString()
         {
             return base.ToString();

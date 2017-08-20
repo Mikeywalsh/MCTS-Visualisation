@@ -218,6 +218,7 @@ namespace MCTS.Core
         /// Used during backpropagation
         /// </summary>
         /// <param name="updateScore">The score to update this node with</param>
+        /// <param name="player">The current player on the board at this node</param>
         public void Update(float updateScore, int player)
         {
             //Update this nodes score depending on the current player at this node

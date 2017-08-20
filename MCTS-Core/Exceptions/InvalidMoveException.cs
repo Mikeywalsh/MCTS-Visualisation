@@ -7,9 +7,15 @@ namespace MCTS.Core
     /// </summary>
     public class InvalidMoveException : Exception
     {
-
+        /// <summary>
+        /// Creates an invalid move exception
+        /// </summary>
         public InvalidMoveException() : base() { }
 
+        /// <summary>
+        /// Creates an invalid move exception with a message
+        /// </summary>
+        /// <param name="message">The message to include in the exception</param>
         public InvalidMoveException(string message) : base(message) { }
     }
 }

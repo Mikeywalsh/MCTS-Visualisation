@@ -2,7 +2,10 @@
 
 namespace MCTS.Core
 {
-    public static class EnumerableExtension
+    /// <summary>
+    /// Adds utility methods to <see cref="List{T}"/>
+    /// </summary>
+    public static class ListExtension
     {
         /// <summary>
         /// Picks a random element from the given list and returns it

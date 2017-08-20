@@ -1,0 +1,968 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MCTS-Core</name>
+    </assembly>
+    <members>
+        <member name="T:MCTS.Core.Board">
+            <summary>
+            Represents an abstract board state
+            Can be used for implementations of many different games
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.Board.currentPlayer">
+            <summary>
+            The playerID of the current player
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.Board.winner">
+            <summary>
+            The winner value of the board state
+            -1 if no winner yet
+            0 if game is a tie
+            Any positive integer is the winning players ID
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.Board.possibleMoves">
+            <summary>
+            A list of all possible moves that can follow from this board state
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.Board.SimulateUntilEnd">
+            <summary>
+            Simulates random plays on this board until the game has ended
+            </summary>
+            <returns>The value of the winner variable at the end of the game</returns>
+        </member>
+        <member name="P:MCTS.Core.Board.CurrentPlayer">
+            <summary>
+            Returns the playerID of the current player
+            </summary>
+            <returns>The playerID of the current player</returns>
+        </member>
+        <member name="P:MCTS.Core.Board.PreviousPlayer">
+            <summary>
+            Returns the playerID of the previous player
+            </summary>
+            <returns>The playerID of the previous player</returns>
+        </member>
+        <member name="P:MCTS.Core.Board.NextPlayer">
+            <summary>
+            Returns the playerID of the next player
+            </summary>
+            <returns>The playerID of the next player</returns>
+        </member>
+        <member name="P:MCTS.Core.Board.Winner">
+            <summary>
+            Returns the value of the winner integer
+            -1 if no winner yet
+            0 if game is a tie
+            Any positive integer is the winning players ID
+            </summary>
+            <returns>An integer indicating if the game has a winner, is a draw, or neither</returns>
+        </member>
+        <member name="M:MCTS.Core.Board.MakeMove(MCTS.Core.Move)">
+            <summary>
+            Performs a move on this board state for the current player and returns the updated state.
+            </summary>
+            <param name="move">The move to make</param>
+            <returns>A board instance which has had the passed in move made</returns>
+        </member>
+        <member name="M:MCTS.Core.Board.PossibleMoves">
+            <summary>
+            Gets a list of possible moves that can follow from this board state
+            </summary>
+            <returns>A list of moves that can follow from this board state</returns>
+        </member>
+        <member name="M:MCTS.Core.Board.Duplicate">
+            <summary>
+            Performs a deep copy of the current board state and returns the copy
+            </summary>
+            <returns>A copy of this board state</returns>
+        </member>
+        <member name="M:MCTS.Core.Board.PlayerCount">
+            <summary>
+            Returns amount of players playing on this board
+            Can't have static polymorphism and a workaround would be less efficient for execution speed
+            Compromise is to have every instance contain the player count
+            </summary>
+            <returns>The amount of players playing on this board</returns>
+        </member>
+        <member name="M:MCTS.Core.Board.DetermineWinner">
+            <summary>
+            Determines if there is a winner or not for this board state and updates the winner integer accordingly
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.Board.DetermineWinner(MCTS.Core.Move)">
+            <summary>
+            A more efficient method of determining if there is a winner
+            Saves time by using knowledge of the last move to remove unnessessary computation
+            </summary>
+            <param name="move">The last move made before calling this method</param>
+        </member>
+        <member name="T:MCTS.Core.C4Board">
+            <summary>
+            A Connect 4 game board, which allows a game of Connect 4 to be played out on it
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.C4Board.#ctor">
+            <summary>
+            Creates a new Connect 4 board representing an empty game
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.C4Board.#ctor(MCTS.Core.C4Board)">
+            <summary>
+            Create a new Connect 4 board as a copy from an existing board
+            </summary>
+            <param name="board">The board to make a copy of</param>
+        </member>
+        <member name="M:MCTS.Core.C4Board.Duplicate">
+            <summary>
+            Duplicates the current Connect 4 board
+            </summary>
+            <returns>A clone of the current Connect 4</returns>
+        </member>
+        <member name="M:MCTS.Core.C4Board.MakeMove(MCTS.Core.Move)">
+            <summary>
+            Makes a move on this Connect 4 board at the specified move position
+            </summary>
+            <param name="move">The move to make</param>
+            <returns>A reference to this Connect 4 board</returns>
+        </member>
+        <member name="M:MCTS.Core.C4Board.PossibleMoves">
+            <summary>
+            Get a list of all possible moves for this Connect 4 board instance
+            </summary>
+            <returns>A list of all possible moves for this Connect 4 board instance</returns>
+        </member>
+        <member name="M:MCTS.Core.C4Board.DetermineWinner">
+            <summary>
+            Determine if the current game is over
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.C4Board.DetermineWinner(MCTS.Core.Move)">
+            <summary>
+            Determine if the current game is over
+            Uses knowledge of the last move to save computation time
+            </summary>
+            <param name="move">The last move made</param>
+        </member>
+        <member name="M:MCTS.Core.C4Board.PlayerCount">
+            <summary>
+            Used to obtain the number of players on a Connect 4 board, which is always 2
+            </summary>
+            <returns>The number of players on a Connect 4 board, which is always 2</returns>
+        </member>
+        <member name="M:MCTS.Core.C4Board.ToString">
+            <summary>
+            Gives a string representation of this Connect 4 board
+            </summary>
+            <returns>A string representation of this Connect 4 board</returns>
+        </member>
+        <member name="T:MCTS.Core.C4Move">
+            <summary>
+            A move that can be made in Connect 4
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.C4Move.X">
+            <summary>
+            X position of this move
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.C4Move.Y">
+            <summary>
+            Y position of this move
+            Not chosen by the user, instead it is calculated when the move is made
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.C4Move.#ctor(System.Int32)">
+            <summary>
+            Creates a new Connect 4 move with the given x position
+            </summary>
+            <param name="xPos">X position of the move to make</param>
+        </member>
+        <member name="M:MCTS.Core.C4Move.ToString">
+            <summary>
+            Gives a string representation of this Connect 4 move
+            </summary>
+            <returns>A string representation of this connect 4 move</returns>
+        </member>
+        <member name="M:MCTS.Core.C4Move.Equals(System.Object)">
+            <summary>
+            Equality override for a Connect 4 move
+            Two moves are equal if their x positions are equal
+            </summary>
+            <param name="obj">The other C4Move instance to compare this one too</param>
+            <returns>True if the objects are equal, false otherwise</returns>
+        </member>
+        <member name="M:MCTS.Core.C4Move.GetHashCode">
+            <summary>
+            Returns a unique hash code for this instance
+            Represented as a 1 digit integer
+            </summary>
+            <returns>A unique integer for this instance</returns>
+        </member>
+        <member name="M:MCTS.Core.C4Move.SetY(System.Int32)">
+            <summary>
+            Set the Y position of this move
+            Used when calculating what cell this move can be played in
+            </summary>
+        </member>
+        <member name="T:MCTS.Core.ChessBoard">
+            <summary>
+            TODO
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.ChessBoard.whitePieces">
+            <summary>
+            TODO
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.ChessBoard.blackPieces">
+            <summary>
+            TODO
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.ChessBoard.#ctor">
+            <summary>
+            TODO
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.ChessBoard.#ctor(MCTS.Core.ChessBoard)">
+            <summary>
+            Create a new Chess board as a copy from an existing board
+            </summary>
+            <param name="board">The board to make a copy of</param>
+        </member>
+        <member name="M:MCTS.Core.ChessBoard.Duplicate">
+            <summary>
+            Duplicates the current Chess board
+            </summary>
+            <returns>A clone of the current Chess Board</returns>
+        </member>
+        <member name="M:MCTS.Core.ChessBoard.MakeMove(MCTS.Core.Move)">
+            <summary>
+            TODO
+            </summary>
+            <param name="move"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MCTS.Core.ChessBoard.PossibleMoves">
+            <summary>
+            TODO
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MCTS.Core.ChessBoard.DetermineWinner">
+            <summary>
+            TODO
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.ChessBoard.DetermineWinner(MCTS.Core.Move)">
+            <summary>
+            TODO
+            </summary>
+            <param name="move"></param>
+        </member>
+        <member name="M:MCTS.Core.ChessBoard.PlayerCount">
+            <summary>
+            TODO
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MCTS.Core.ChessBoard.ToString">
+            <summary>
+            TODO
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:MCTS.Core.ChessMove">
+            <summary>
+            TODO
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.ChessMove.PieceToMove">
+            <summary>
+            TODO
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.ChessMove.ToX">
+            <summary>
+            TODO
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.ChessMove.ToY">
+            <summary>
+            TODO
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.ChessMove.#ctor(MCTS.Core.ChessPiece,System.Int32,System.Int32)">
+            <summary>
+            TODO
+            </summary>
+            <param name="toMove"></param>
+            <param name="toX"></param>
+            <param name="toY"></param>
+        </member>
+        <member name="M:MCTS.Core.ChessMove.Equals(System.Object)">
+            <summary>
+            TODO
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MCTS.Core.ChessMove.GetHashCode">
+            <summary>
+            TODO
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MCTS.Core.ChessMove.ToString">
+            <summary>
+            TODO
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:MCTS.Core.ChessPiece">
+            <summary>
+            Represents a chess piece, which can be played on a <see cref="T:MCTS.Core.ChessBoard"/>
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.ChessPiece.PieceType">
+            <summary>
+            The type of piece that this chess piece is
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.ChessPiece.XPos">
+            <summary>
+            The X position of this chess piece
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.ChessPiece.YPos">
+            <summary>
+            The Y position of this chess piece
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.ChessPiece.#ctor(MCTS.Core.ChessPieces,System.Int32,System.Int32)">
+            <summary>
+            Constructs a new <see cref="T:MCTS.Core.ChessPiece"/> instance
+            </summary>
+            <param name="pieceType">The type of piece to assign this chess piece to</param>
+            <param name="xPos">The X position of this chess piece</param>
+            <param name="yPos">The Y position of this chess piece</param>
+        </member>
+        <member name="M:MCTS.Core.ChessPiece.op_Equality(MCTS.Core.ChessPiece,MCTS.Core.ChessPiece)">
+            <summary>
+            Checks equality for two given chess pieces
+            </summary>
+            <param name="p1">The first chess piece to check</param>
+            <param name="p2">The second chess piece to check</param>
+            <returns>True if both passed in pieces are equal, false otherwise</returns>
+        </member>
+        <member name="M:MCTS.Core.ChessPiece.op_Inequality(MCTS.Core.ChessPiece,MCTS.Core.ChessPiece)">
+            <summary>
+            Checks inequality for two given chess pieces
+            </summary>
+            <param name="p1">The first chess piece to check</param>
+            <param name="p2">The second chess piece to check</param>
+            <returns>False if both passed in pieces are equal, true otherwise</returns>
+        </member>
+        <member name="M:MCTS.Core.ChessPiece.Equals(System.Object)">
+            <summary>
+            Checks equality against another object
+            </summary>
+            <param name="obj">An object to check equality against. Should be a <see cref="T:MCTS.Core.ChessPiece"/></param>
+            <returns>True if this object is equal to the passed in piece, false otherwise</returns>
+        </member>
+        <member name="M:MCTS.Core.ChessPiece.GetHashCode">
+            <summary>
+            Returns a 4 digit hash code which uniquely describes a ChessPiece
+            For example, a White Queen at position 3,4 would have a hashcode of - 1534
+            </summary>
+            <returns>A hashcode uniquely describing this chess piece</returns>
+        </member>
+        <member name="M:MCTS.Core.ChessPiece.ToString">
+            <summary>
+            Returns a string representation of this chess board
+            </summary>
+            <returns>A string representation of this chess board</returns>
+        </member>
+        <member name="T:MCTS.Core.ChessPieces">
+            <summary>
+            Enum representing the different types of chess pieces, and integer values assossiated with them
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.ChessPieces.WHITE_PAWN">
+            <summary>
+            The white pawn piece
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.ChessPieces.WHITE_ROOK">
+            <summary>
+            The white rook piece
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.ChessPieces.WHITE_KNIGHT">
+            <summary>
+            The white knight piece
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.ChessPieces.WHITE_BISHOP">
+            <summary>
+            The white bishop piece
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.ChessPieces.WHITE_QUEEN">
+            <summary>
+            The white queen piece
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.ChessPieces.WHITE_KING">
+            <summary>
+            The white king piece
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.ChessPieces.BLACK_PAWN">
+            <summary>
+            The black pawn piece
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.ChessPieces.BLACK_ROOK">
+            <summary>
+            The black rook piece
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.ChessPieces.BLACK_KNIGHT">
+            <summary>
+            The black knight piece
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.ChessPieces.BLACK_BISHOP">
+            <summary>
+            The black bishop piece
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.ChessPieces.BLACK_QUEEN">
+            <summary>
+            The black queen piece
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.ChessPieces.BLACK_KING">
+            <summary>
+            The black king piece
+            </summary>
+        </member>
+        <member name="T:MCTS.Core.GridBasedBoard">
+            <summary>
+            An abstract extension of <see cref="T:MCTS.Core.Board"/>
+            Contains common elements of grid based board games, such as Tic-Tac-Toe, Connect 4, Chess, etc
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.GridBasedBoard.boardContents">
+            <summary>
+            The contents of this game board
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.GridBasedBoard.GetCell(System.Int32,System.Int32)">
+            <summary>
+            Returns the contents of this board cell at the given indices
+            </summary>
+            <param name="x">The x index of the cell to get</param>
+            <param name="y">The y index of the cell to get</param>
+            <returns>The contents of this board cell at the index [x,y]</returns>
+        </member>
+        <member name="P:MCTS.Core.GridBasedBoard.Width">
+            <summary>
+            The width of this game board
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.GridBasedBoard.Height">
+            <summary>
+            The height of this game board
+            </summary>
+        </member>
+        <member name="T:MCTS.Core.TreeSearch`1">
+            <summary>
+            Runs Monte Carlo Tree Search on a given game board
+            Every time <see cref="M:MCTS.Core.TreeSearch`1.Step"/> is called, the algorithm performs one Select, Expand, Simulate and Backpropagate cycle
+            The algorithm will run until the search space is exhausted
+            A graceful exit can be achieved via <see cref="M:MCTS.Core.TreeSearch`1.Finish"/>, which will result in an incomplete but still useful tree
+            </summary>
+            <typeparam name="T">The type of node to use for the tree search</typeparam>
+        </member>
+        <member name="F:MCTS.Core.TreeSearch`1.root">
+            <summary>
+            The root node of the search tree
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.TreeSearch`1.finished">
+            <summary>
+            Signals if the MCTS algorithm has finished running
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.TreeSearch`1.playoutsPerSimulation">
+            <summary>
+            The amount of playouts each node undergoes during simulation
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.TreeSearch`1.#ctor(MCTS.Core.Board,System.Int32)">
+            <summary>
+            Creates a new Monte Carlo Tree Search with the given game board
+            </summary>
+            <param name="gameBoard">The game board to perform the MCTS with</param>
+            <param name="playsPerSimulation">The amount of playouts to do for each simulation</param>
+        </member>
+        <member name="M:MCTS.Core.TreeSearch`1.Step">
+            <summary>
+            Perform a step of MCTS
+            Selects the highest UCT value node, expands it, simulates its children and backpropagates the results up the tree
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.TreeSearch`1.Selection(MCTS.Core.Node)">
+            <summary>
+            The first step of MCTS
+            The tree is searched recursively using the Upper Confidence Bound 1 calculation to select the best node to expand
+            </summary>
+            <param name="n">The current root node in the search</param>
+            <returns>The best node to expand, obtained using Upper Confidence Bound 1</returns>
+        </member>
+        <member name="M:MCTS.Core.TreeSearch`1.Expansion(MCTS.Core.Node)">
+            <summary>
+            The second step of MCTS
+            A given node is expanded, creating children nodes containing possible plays which can be simulated in the next step
+            </summary>
+            <param name="n">The node to expand</param>
+        </member>
+        <member name="M:MCTS.Core.TreeSearch`1.Simulation(MCTS.Core.Node,System.Int32)">
+            <summary>
+            The third step of MCTS
+            Simulates a given number of random playouts from the given node to obtain an average score of the node
+            The average score is then backpropogated up the tree to the root node
+            </summary>
+            <param name="n">The node to simulate the playout of</param>
+            <param name="playoutAmount">The amount of playout simulations to run</param>
+        </member>
+        <member name="M:MCTS.Core.TreeSearch`1.Backprogation(MCTS.Core.Node)">
+            <summary>
+            The fourth and final step of MCTS
+            Updates the given nodes parent hierarchy with its score value
+            </summary>
+            <param name="n">The child to update the hierachy of</param>
+        </member>
+        <member name="M:MCTS.Core.TreeSearch`1.UCB1(MCTS.Core.Node)">
+            <summary>
+            Gets the Upper Confidence Bound 1 value of a given node
+            </summary>
+            <param name="n">The node to get the value of</param>
+            <returns>The Upper Confidence Bound 1 value of the given node</returns>
+        </member>
+        <member name="M:MCTS.Core.TreeSearch`1.BestNodeChoice(MCTS.Core.Node)">
+            <summary>
+            Given a root node, will choose a child which maximises reward, based on the game tree constructed so far
+            </summary>
+            <param name="n">The root node to choose the best child of</param>
+            <returns>The best child of the given root node</returns>
+        </member>
+        <member name="M:MCTS.Core.TreeSearch`1.Finish">
+            <summary>
+            Can be called to gracefully halt execution of the algorithm
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.TreeSearch`1.Root">
+            <summary>
+            The root node of the Monte Carlo Tree Search
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.TreeSearch`1.Finished">
+            <summary>
+            Signals if the Monte Carlo Tree Search has finished
+            Can be flagged as a result of all possible nodes being generated or a graceful exit
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.TreeSearch`1.NodesVisited">
+            <summary>
+            The total number of nodes that have been visited so far
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.TreeSearch`1.PlayoutsPerSimulation">
+            <summary>
+            The amount of playouts each node undergoes during simulation
+            </summary>
+        </member>
+        <member name="T:MCTS.Core.Move">
+            <summary>
+            A marker interface used to allow each game move to have a common ancestor, so that they can be abstractly referenced in the <see cref="T:MCTS.Core.Board"/> class
+            </summary>
+        </member>
+        <member name="T:MCTS.Core.Node">
+            <summary>
+            A node for use with a Monte Carlo Search Tree
+            Contains a game state, as well as stats such as visits, score, parent and children
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.Node.parent">
+            <summary>
+            This nodes parent node
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.Node.gameBoard">
+            <summary>
+            The gameboard state for this node
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.Node.children">
+            <summary>
+            A list of all the children of this node
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.Node.visits">
+            <summary>
+            The amount of times this node has been visited directly or via backpropagation
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.Node.totalScore">
+            <summary>
+            The total score this node has as a result of direct simulation or backpropagation
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.Node.allChildrenFullyExplored">
+            <summary>
+            Signals if all this nodes children have been fully explored
+            Used to stop the MCTS algorithm from exploring exhausted nodes
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.Node.depth">
+            <summary>
+            The depth of this node in the game tree
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.Node.MAX_SIMULATION_TASKS">
+            <summary>
+            The maximum amount of tasks that can be used during simulation
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.Node.MULTI_THREAD_MODE_PLAYOUT_REQUIREMENT">
+            <summary>
+            The minimum amount of playouts needed before simulations will be ran in multi thread mode
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.Node.Initialise(MCTS.Core.Node,MCTS.Core.Board)">
+            <summary>
+            Creates a new node with the given board and parent node
+            </summary>
+            <param name="parentNode">The parent of this node, null if this is the root node</param>
+            <param name="board">The game board for this node</param>
+        </member>
+        <member name="M:MCTS.Core.Node.CreateAllChildren">
+            <summary>
+            Creates a child for each possible move for this node and adds it to the list of children
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.Node.CheckChildrenFullyExplored">
+            <summary>
+            Checks this nodes children to see if they are all fully explored
+            This is used so that during selection, the algorithm does not attempt to explore exhausted branches
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.Node.StartSimulatePlayouts(System.Int32)">
+            <summary>
+            Simulates a number of playouts from this node and adds the mean score value to this nodes score attribute
+            Uses <see cref="T:System.Threading.Tasks.Task"/>'s to split the simulation workload across multiple threads
+            </summary>
+            <param name="playoutCount">The amount of simulations to run, a larger amount will give better results</param>
+        </member>
+        <member name="M:MCTS.Core.Node.SimulatePlayouts(MCTS.Core.Board,MCTS.Core.SimulateData)">
+            <summary>
+            Used in multi thread mode
+            For use with tasks to simulate a given amount of playouts for a board
+            </summary>
+            <param name="board">The board to perform the simulations on</param>
+            <param name="sim">The thread safe simulate data holder which allows multiple threads to record their results at once</param>
+            <returns>The sum of wins for the current player after simulating the board</returns>
+        </member>
+        <member name="M:MCTS.Core.Node.SimulatePlayouts(MCTS.Core.Board,System.Int32)">
+            <summary>
+            Used in single thread mode
+            Simulates an amount of playouts on a given board
+            </summary>
+            <param name="board">The board to perform the simulations on</param>
+            <param name="playoutCount">The amount of simulations to run on this board</param>
+            <returns>The sum of wins for the current player after simulating the board</returns>
+        </member>
+        <member name="M:MCTS.Core.Node.Update(System.Single,System.Int32)">
+            <summary>
+            Updates the score and visits values of this node and its parents, recursively
+            Used during backpropagation
+            </summary>
+            <param name="updateScore">The score to update this node with</param>
+            <param name="player">The current player on the board at this node</param>
+        </member>
+        <member name="P:MCTS.Core.Node.AllChildrenFullyExplored">
+            <summary>
+            Signals if all this nodes children have been fully explored
+            Used to stop the MCTS algorithm from exploring exhausted nodes
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.Node.IsLeafNode">
+            <summary>
+            Signals if this node is a leaf node or not
+            A node is a leaf node if its game has ended
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.Node.Parent">
+            <summary>
+            This nodes parent node
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.Node.GameBoard">
+            <summary>
+            The gameboard state for this node
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.Node.Children">
+            <summary>
+            A list of all this nodes children nodes
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.Node.Visits">
+            <summary>
+            How many times this node has been visited
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.Node.TotalScore">
+            <summary>
+            The total score for this node as a result of simulation and backpropagation
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.Node.AverageScore">
+            <summary>
+            The average score for this node
+            Determined from the total score and number of visits
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.Node.Depth">
+            <summary>
+            The depth of this node in the game tree
+            </summary>
+        </member>
+        <member name="T:MCTS.Core.SimulateData">
+            <summary>
+            A thread safe class which holds data about a simulation job
+            Allows multiple threads to perform simulations and record the results, until a quota has been met
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.SimulateData.mutex">
+            <summary>
+            A lock used 
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.SimulateData.Plays">
+            <summary>
+            The amount of plays so far
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.SimulateData.Wins">
+            <summary>
+            The amount of wins so far
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.SimulateData.TargetPlays">
+            <summary>
+            The quota for the amount of simulations to run
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.SimulateData.#ctor(System.Int32)">
+            <summary>
+            Creates a new SimulateData instance with the given target simulation quota
+            </summary>
+            <param name="target">The target amount of simulations to run</param>
+        </member>
+        <member name="M:MCTS.Core.SimulateData.AddResult(System.Boolean)">
+            <summary>
+            Records a simulation result, incrementing <see cref="P:MCTS.Core.SimulateData.Plays"/>, and <see cref="P:MCTS.Core.SimulateData.Wins"/> if the simulation resulted in a win
+            If the target play quoto has been reached, then do nothing
+            </summary>
+            <param name="won">Did the simulation result in a victory?</param>
+        </member>
+        <member name="T:MCTS.Core.ThreadSafeRandom">
+            <summary>
+            A thread-safe random class, that can be used to generate random numbers concurrently across multiple threads
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.ThreadSafeRandom.seed">
+            <summary>
+            The random seed, determined from the environment tickcount
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.ThreadSafeRandom.Rand">
+            <summary>
+            Gets a new random integer value
+            </summary>
+            <returns>A random integer value</returns>
+        </member>
+        <member name="M:MCTS.Core.ThreadSafeRandom.Rand(System.Int32)">
+            <summary>
+            Gets a new random integer value that is at least as small as the passed in minimum value
+            </summary>
+            <param name="minValue">The minimum value that the random integer can be</param>
+            <returns>A random integer value that is at least as big as the minimum value</returns>
+        </member>
+        <member name="M:MCTS.Core.ThreadSafeRandom.Rand(System.Int32,System.Int32)">
+            <summary>
+            Gets a new random integer value that is between the inclusive minimum value and exclusing maximum value
+            </summary>
+            <param name="minValue">The inclusive minimum value that the random integer can be</param>
+            <param name="maxValue">The exclusive maximum value that the random integer can be</param>
+            <returns>A new random integer value that is between the inclusive minimum value and exclusing maximum value</returns>
+        </member>
+        <member name="T:MCTS.Core.TTTBoard">
+            <summary>
+            A Tic-Tac-Toe game board, which allows a game of Tic-Tac-Toe to be played out on it
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.TTTBoard.#ctor">
+            <summary>
+            Creates a new Tic-Tac-Toe board representing an empty game
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.TTTBoard.#ctor(MCTS.Core.TTTBoard)">
+            <summary>
+            Create a new Tic-Tac-Toe board as a copy from an existing board
+            </summary>
+            <param name="board">The board to make a copy of</param>
+        </member>
+        <member name="M:MCTS.Core.TTTBoard.Duplicate">
+            <summary>
+            Duplicates the current Tic-Tac-Toe board
+            </summary>
+            <returns>A clone of the current Tic-Tac-Toe Board</returns>
+        </member>
+        <member name="M:MCTS.Core.TTTBoard.MakeMove(MCTS.Core.Move)">
+            <summary>
+            Makes a move on this Tic-Tac-Toe board at the specified move position
+            </summary>
+            <param name="move">The move to make</param>
+            <returns>A reference to this Tic-Tac-Toe board</returns>
+        </member>
+        <member name="M:MCTS.Core.TTTBoard.PossibleMoves">
+            <summary>
+            Get a list of all possible moves for this Tic-Tac-Toe board instance
+            </summary>
+            <returns>A list of all possible moves for this Tic-Tac-Toe board instance</returns>
+        </member>
+        <member name="M:MCTS.Core.TTTBoard.DetermineWinner">
+            <summary>
+            Determine if the current game is over
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.TTTBoard.DetermineWinner(MCTS.Core.Move)">
+            <summary>
+            Determine if the current game is over
+            Uses knowledge of the last move to save computation time
+            </summary>
+            <param name="move">The last move made</param>
+        </member>
+        <member name="M:MCTS.Core.TTTBoard.PlayerCount">
+            <summary>
+            Used to obtain the number of players on a Tic-Tac-Toe board, which is always 2
+            </summary>
+            <returns>The number of players on a Tic-Tac-Toe board, which is always 2</returns>
+        </member>
+        <member name="M:MCTS.Core.TTTBoard.ToString">
+            <summary>
+            Gives a string representation of this Tic-Tac-Toe board
+            </summary>
+            <returns>A string representation of this Tic-Tac-Toe board</returns>
+        </member>
+        <member name="T:MCTS.Core.TTTMove">
+            <summary>
+            A move that can be made in Tic-Tac-Toe
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.TTTMove.X">
+            <summary>
+            X position of this move
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.TTTMove.Y">
+            <summary>
+            Y position of this move
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.TTTMove.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Creates a new Tic-Tac-Toe move with the given x and y positions
+            </summary>
+            <param name="xPos">X position of the move to make</param>
+            <param name="yPos">Y position of the move to make</param>
+        </member>
+        <member name="M:MCTS.Core.TTTMove.ToString">
+            <summary>
+            Gives a string representation of this Tic-Tac-Toe move
+            </summary>
+            <returns>A string representation of this Tic-Tac-Toe move</returns>
+        </member>
+        <member name="M:MCTS.Core.TTTMove.Equals(System.Object)">
+            <summary>
+            Equality override for a Tic-Tac-Toe move
+            Two moves are equal if their x and y positions are equal
+            </summary>
+            <param name="obj">The other TTTMove instance to compare this one too</param>
+            <returns>True if the objects are equal, false otherwise</returns>
+        </member>
+        <member name="M:MCTS.Core.TTTMove.GetHashCode">
+            <summary>
+            Returns a unique hash code for this instance
+            Represented as a 4 digit integer
+            </summary>
+            <returns>A unique integer for this instance</returns>
+        </member>
+        <member name="T:MCTS.Core.InvalidMoveException">
+            <summary>
+            An exception which should be thrown when an invalid move is created or used
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.InvalidMoveException.#ctor">
+            <summary>
+            Creates an invalid move exception
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.InvalidMoveException.#ctor(System.String)">
+            <summary>
+            Creates an invalid move exception with a message
+            </summary>
+            <param name="message">The message to include in the exception</param>
+        </member>
+        <member name="T:MCTS.Core.ListExtension">
+            <summary>
+            Adds utility methods to <see cref="T:System.Collections.Generic.List`1"/>
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.ListExtension.PickRandom``1(System.Collections.Generic.IList{``0})">
+            <summary>
+            Picks a random element from the given list and returns it
+            This method is thread-safe
+            </summary>
+            <typeparam name="T"> The type that the source list contains</typeparam>
+            <param name="source">The source list to choose the element from</param>
+            <returns>The randomly chosen list element</returns>
+        </member>
+        <member name="T:InvalidNodeException">
+            <summary>
+            An exception which should be thrown when an invalid node is being used
+            For example, trying to add children to a leaf node
+            </summary>
+        </member>
+        <member name="M:InvalidNodeException.#ctor">
+            <summary>
+            Creates an invalid node exception
+            </summary>
+        </member>
+        <member name="M:InvalidNodeException.#ctor(System.String)">
+            <summary>
+            Creates an invalid node exception with a message
+            </summary>
+            <param name="message">The message to include in the exception</param>
+        </member>
+    </members>
+</doc>

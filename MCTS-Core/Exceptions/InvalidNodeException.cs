@@ -6,7 +6,14 @@
 /// </summary>
 public class InvalidNodeException : Exception
 {
+    /// <summary>
+    /// Creates an invalid node exception
+    /// </summary>
     public InvalidNodeException() : base() { }
 
+    /// <summary>
+    /// Creates an invalid node exception with a message
+    /// </summary>
+    /// <param name="message">The message to include in the exception</param>
     public InvalidNodeException(string message) : base(message) { }
 }

@@ -48,6 +48,7 @@ namespace MCTS.Runner
                     break;
                 }
 
+                //Wait for 0.1 seconds before clearing the display
                 Thread.Sleep(100);
                 Console.Clear();
             }

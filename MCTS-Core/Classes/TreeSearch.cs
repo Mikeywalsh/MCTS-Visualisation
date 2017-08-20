@@ -6,7 +6,7 @@ namespace MCTS.Core
     /// Runs Monte Carlo Tree Search on a given game board
     /// Every time <see cref="Step"/> is called, the algorithm performs one Select, Expand, Simulate and Backpropagate cycle
     /// The algorithm will run until the search space is exhausted
-    /// A graceful exit can be achieved via <see cref="FinishEarly"/>, which will result in an incomplete but still useful tree
+    /// A graceful exit can be achieved via <see cref="Finish"/>, which will result in an incomplete but still useful tree
     /// </summary>
     /// <typeparam name="T">The type of node to use for the tree search</typeparam>
     public class TreeSearch<T> where T : Node
