@@ -1,4 +1,4 @@
-﻿namespace MCTS.Core
+﻿namespace MCTS.Core.Games
 {
     /// <summary>
     /// A move that can be made in Connect 4

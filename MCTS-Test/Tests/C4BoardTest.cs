@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using MCTS.Core;
+using MCTS.Core.Games;
 
 namespace MCTS.Test
 {
@@ -8,7 +9,6 @@ namespace MCTS.Test
     /// </summary>
     public class C4BoardTest
     {
-
         [Test]
         public void CreateBoardTest()
         {

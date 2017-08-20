@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace MCTS.Core
+namespace MCTS.Core.Games
 {
     /// <summary>
     /// A move that can be made in Chess

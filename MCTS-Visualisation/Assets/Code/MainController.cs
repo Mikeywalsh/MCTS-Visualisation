@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using UnityEngine;
 using MCTS.Core;
+using MCTS.Core.Games;
 
 /// <summary>
 /// The main script for the application

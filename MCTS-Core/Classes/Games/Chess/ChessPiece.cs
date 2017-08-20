@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace MCTS.Core
+namespace MCTS.Core.Games
 {
     /// <summary>
     /// Represents a chess piece, which can be played on a <see cref="ChessBoard"/>

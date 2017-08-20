@@ -1,4 +1,5 @@
 ﻿using MCTS.Core;
+using MCTS.Core.Games;
 
 namespace MCTS.Test
 {

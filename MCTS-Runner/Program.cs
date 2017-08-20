@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using MCTS.Core;
+using MCTS.Core.Games;
 using System.Threading;
 
 namespace MCTS.Runner

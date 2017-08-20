@@ -1,4 +1,4 @@
-﻿namespace MCTS.Core
+﻿namespace MCTS.Core.Games
 {
     /// <summary>
     /// Enum representing the different types of chess pieces, and integer values assossiated with them

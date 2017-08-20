@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MCTS.Core
+namespace MCTS.Core.Games
 {
     /// <summary>
     /// A Connect 4 game board, which allows a game of Connect 4 to be played out on it

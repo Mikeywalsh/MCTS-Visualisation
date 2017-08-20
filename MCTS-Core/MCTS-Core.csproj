@@ -45,25 +45,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Board.cs" />
-    <Compile Include="Classes\C4Board.cs" />
-    <Compile Include="Classes\C4Move.cs" />
-    <Compile Include="Classes\ChessBoard.cs" />
-    <Compile Include="Classes\ChessMove.cs" />
-    <Compile Include="Classes\ChessPiece.cs" />
-    <Compile Include="Classes\ChessPieces.cs" />
+    <Compile Include="Classes\Games\Connect4\C4Board.cs" />
+    <Compile Include="Classes\Games\Connect4\C4Move.cs" />
+    <Compile Include="Classes\Games\Chess\ChessBoard.cs" />
+    <Compile Include="Classes\Games\Chess\ChessMove.cs" />
+    <Compile Include="Classes\Games\Chess\ChessPiece.cs" />
+    <Compile Include="Classes\Games\Chess\ChessPieces.cs" />
     <Compile Include="Classes\GridBasedBoard.cs" />
     <Compile Include="Classes\TreeSearch.cs" />
     <Compile Include="Classes\Move.cs" />
     <Compile Include="Classes\Node.cs" />
     <Compile Include="Classes\SimulateData.cs" />
     <Compile Include="Classes\ThreadSafeRandom.cs" />
-    <Compile Include="Classes\TTTBoard.cs" />
-    <Compile Include="Classes\TTTMove.cs" />
+    <Compile Include="Classes\Games\TicTacToe\TTTBoard.cs" />
+    <Compile Include="Classes\Games\TicTacToe\TTTMove.cs" />
     <Compile Include="Exceptions\InvalidMoveException.cs" />
     <Compile Include="Exceptions\InvalidNodeException.cs" />
     <Compile Include="Extensions\ListExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent Condition="'$(OS)' == 'Windows_NT' ">

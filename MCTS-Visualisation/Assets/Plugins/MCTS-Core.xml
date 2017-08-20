@@ -100,94 +100,94 @@
             </summary>
             <param name="move">The last move made before calling this method</param>
         </member>
-        <member name="T:MCTS.Core.C4Board">
+        <member name="T:MCTS.Core.Games.C4Board">
             <summary>
             A Connect 4 game board, which allows a game of Connect 4 to be played out on it
             </summary>
         </member>
-        <member name="M:MCTS.Core.C4Board.#ctor">
+        <member name="M:MCTS.Core.Games.C4Board.#ctor">
             <summary>
             Creates a new Connect 4 board representing an empty game
             </summary>
         </member>
-        <member name="M:MCTS.Core.C4Board.#ctor(MCTS.Core.C4Board)">
+        <member name="M:MCTS.Core.Games.C4Board.#ctor(MCTS.Core.Games.C4Board)">
             <summary>
             Create a new Connect 4 board as a copy from an existing board
             </summary>
             <param name="board">The board to make a copy of</param>
         </member>
-        <member name="M:MCTS.Core.C4Board.Duplicate">
+        <member name="M:MCTS.Core.Games.C4Board.Duplicate">
             <summary>
             Duplicates the current Connect 4 board
             </summary>
             <returns>A clone of the current Connect 4</returns>
         </member>
-        <member name="M:MCTS.Core.C4Board.MakeMove(MCTS.Core.Move)">
+        <member name="M:MCTS.Core.Games.C4Board.MakeMove(MCTS.Core.Move)">
             <summary>
             Makes a move on this Connect 4 board at the specified move position
             </summary>
             <param name="move">The move to make</param>
             <returns>A reference to this Connect 4 board</returns>
         </member>
-        <member name="M:MCTS.Core.C4Board.PossibleMoves">
+        <member name="M:MCTS.Core.Games.C4Board.PossibleMoves">
             <summary>
             Get a list of all possible moves for this Connect 4 board instance
             </summary>
             <returns>A list of all possible moves for this Connect 4 board instance</returns>
         </member>
-        <member name="M:MCTS.Core.C4Board.DetermineWinner">
+        <member name="M:MCTS.Core.Games.C4Board.DetermineWinner">
             <summary>
             Determine if the current game is over
             </summary>
         </member>
-        <member name="M:MCTS.Core.C4Board.DetermineWinner(MCTS.Core.Move)">
+        <member name="M:MCTS.Core.Games.C4Board.DetermineWinner(MCTS.Core.Move)">
             <summary>
             Determine if the current game is over
             Uses knowledge of the last move to save computation time
             </summary>
             <param name="move">The last move made</param>
         </member>
-        <member name="M:MCTS.Core.C4Board.PlayerCount">
+        <member name="M:MCTS.Core.Games.C4Board.PlayerCount">
             <summary>
             Used to obtain the number of players on a Connect 4 board, which is always 2
             </summary>
             <returns>The number of players on a Connect 4 board, which is always 2</returns>
         </member>
-        <member name="M:MCTS.Core.C4Board.ToString">
+        <member name="M:MCTS.Core.Games.C4Board.ToString">
             <summary>
             Gives a string representation of this Connect 4 board
             </summary>
             <returns>A string representation of this Connect 4 board</returns>
         </member>
-        <member name="T:MCTS.Core.C4Move">
+        <member name="T:MCTS.Core.Games.C4Move">
             <summary>
             A move that can be made in Connect 4
             </summary>
         </member>
-        <member name="P:MCTS.Core.C4Move.X">
+        <member name="P:MCTS.Core.Games.C4Move.X">
             <summary>
             X position of this move
             </summary>
         </member>
-        <member name="P:MCTS.Core.C4Move.Y">
+        <member name="P:MCTS.Core.Games.C4Move.Y">
             <summary>
             Y position of this move
             Not chosen by the user, instead it is calculated when the move is made
             </summary>
         </member>
-        <member name="M:MCTS.Core.C4Move.#ctor(System.Int32)">
+        <member name="M:MCTS.Core.Games.C4Move.#ctor(System.Int32)">
             <summary>
             Creates a new Connect 4 move with the given x position
             </summary>
             <param name="xPos">X position of the move to make</param>
         </member>
-        <member name="M:MCTS.Core.C4Move.ToString">
+        <member name="M:MCTS.Core.Games.C4Move.ToString">
             <summary>
             Gives a string representation of this Connect 4 move
             </summary>
             <returns>A string representation of this connect 4 move</returns>
         </member>
-        <member name="M:MCTS.Core.C4Move.Equals(System.Object)">
+        <member name="M:MCTS.Core.Games.C4Move.Equals(System.Object)">
             <summary>
             Equality override for a Connect 4 move
             Two moves are equal if their x positions are equal
@@ -195,163 +195,170 @@
             <param name="obj">The other C4Move instance to compare this one too</param>
             <returns>True if the objects are equal, false otherwise</returns>
         </member>
-        <member name="M:MCTS.Core.C4Move.GetHashCode">
+        <member name="M:MCTS.Core.Games.C4Move.GetHashCode">
             <summary>
             Returns a unique hash code for this instance
             Represented as a 1 digit integer
             </summary>
             <returns>A unique integer for this instance</returns>
         </member>
-        <member name="M:MCTS.Core.C4Move.SetY(System.Int32)">
+        <member name="M:MCTS.Core.Games.C4Move.SetY(System.Int32)">
             <summary>
             Set the Y position of this move
             Used when calculating what cell this move can be played in
             </summary>
         </member>
-        <member name="T:MCTS.Core.ChessBoard">
+        <member name="T:MCTS.Core.Games.ChessBoard">
             <summary>
-            TODO
+            A Chess game board, which allows a game of Chess to be played out on it
             </summary>
         </member>
-        <member name="F:MCTS.Core.ChessBoard.whitePieces">
+        <member name="F:MCTS.Core.Games.ChessBoard.whitePieces">
             <summary>
-            TODO
+            The list of all active white pieces on this board
             </summary>
         </member>
-        <member name="F:MCTS.Core.ChessBoard.blackPieces">
+        <member name="F:MCTS.Core.Games.ChessBoard.blackPieces">
             <summary>
-            TODO
+            The list of all active black pieces on this board
             </summary>
         </member>
-        <member name="M:MCTS.Core.ChessBoard.#ctor">
+        <member name="M:MCTS.Core.Games.ChessBoard.#ctor">
             <summary>
-            TODO
+            Creates a new chess board representing an empty game
             </summary>
         </member>
-        <member name="M:MCTS.Core.ChessBoard.#ctor(MCTS.Core.ChessBoard)">
+        <member name="M:MCTS.Core.Games.ChessBoard.#ctor(MCTS.Core.Games.ChessBoard)">
             <summary>
             Create a new Chess board as a copy from an existing board
             </summary>
             <param name="board">The board to make a copy of</param>
         </member>
-        <member name="M:MCTS.Core.ChessBoard.Duplicate">
+        <member name="M:MCTS.Core.Games.ChessBoard.Duplicate">
             <summary>
             Duplicates the current Chess board
             </summary>
             <returns>A clone of the current Chess Board</returns>
         </member>
-        <member name="M:MCTS.Core.ChessBoard.MakeMove(MCTS.Core.Move)">
+        <member name="M:MCTS.Core.Games.ChessBoard.MakeMove(MCTS.Core.Move)">
             <summary>
-            TODO
+            Makes a move on this board for the current player
             </summary>
-            <param name="move"></param>
+            <param name="move">The move to make</param>
+            <returns>This board instance</returns>
+        </member>
+        <member name="M:MCTS.Core.Games.ChessBoard.PossibleMoves">
+            <summary>
+            Returns a list of all possible moves for the current player
+            </summary>
+            <returns>A list of all possible moves for the current player</returns>
+        </member>
+        <member name="M:MCTS.Core.Games.ChessBoard.DetermineWinner">
+            <summary>
+            Determines if there is a winner on this chess board
+            If there is a winner, the Winner attribute is set to the ID of the winning player
+            If there is a draw, the Winner attribute is set to 0
+            If the game is still in progress, the Winner attribute is set to -1
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.Games.ChessBoard.DetermineWinner(MCTS.Core.Move)">
+            <summary>
+            Determines if there is a winner on this chess board
+            Uses the last played move to narrow down the amount of checks needed
+            If there is a winner, the Winner attribute is set to the ID of the winning player
+            If there is a draw, the Winner attribute is set to 0
+            If the game is still in progress, the Winner attribute is set to -1
+            </summary>
+            <param name="move">The last played move on this board</param>
+        </member>
+        <member name="M:MCTS.Core.Games.ChessBoard.PlayerCount">
+            <summary>
+            Returns the amount of players on this chess board
+            </summary>
+            <returns>The amount of players on this chess board</returns>
+        </member>
+        <member name="M:MCTS.Core.Games.ChessBoard.ToString">
+            <summary>
+            Returns a string representation of this chess board
+            </summary>
+            <returns>A string representation of this chess board</returns>
+        </member>
+        <member name="T:MCTS.Core.Games.ChessMove">
+            <summary>
+            A move that can be made in Chess
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.Games.ChessMove.PieceToMove">
+            <summary>
+            The chess piece being moves
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.Games.ChessMove.ToX">
+            <summary>
+            The destination X position for this move
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.Games.ChessMove.ToY">
+            <summary>
+            The destination Y position for this move
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.Games.ChessMove.#ctor(MCTS.Core.Games.ChessPiece,System.Int32,System.Int32)">
+            <summary>
+            Creates a new chess move, given a piece and destination X and Y coordinates
+            </summary>
+            <param name="toMove">The chess piece to move</param>
+            <param name="toX">The X position to move to</param>
+            <param name="toY">The Y position to move to</param>
+        </member>
+        <member name="M:MCTS.Core.Games.ChessMove.Equals(System.Object)">
+            <summary>
+            Equality checker against another object
+            </summary>
+            <param name="obj">The object to check against, should be a <see cref="T:MCTS.Core.Games.ChessPiece"/></param>
+            <returns>True if this instance is equal to the passed in object, false otherwise</returns>
+        </member>
+        <member name="M:MCTS.Core.Games.ChessMove.GetHashCode">
+            <summary>
+            Returns a unique hashcode representing this chess move
+            </summary>
+            <returns>A unique hashcode representing this chess move</returns>
+        </member>
+        <member name="M:MCTS.Core.Games.ChessMove.ToString">
+            <summary>
+            Returns a string representation of this chess move
+            </summary>
             <returns></returns>
         </member>
-        <member name="M:MCTS.Core.ChessBoard.PossibleMoves">
+        <member name="T:MCTS.Core.Games.ChessPiece">
             <summary>
-            TODO
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:MCTS.Core.ChessBoard.DetermineWinner">
-            <summary>
-            TODO
+            Represents a chess piece, which can be played on a <see cref="T:MCTS.Core.Games.ChessBoard"/>
             </summary>
         </member>
-        <member name="M:MCTS.Core.ChessBoard.DetermineWinner(MCTS.Core.Move)">
-            <summary>
-            TODO
-            </summary>
-            <param name="move"></param>
-        </member>
-        <member name="M:MCTS.Core.ChessBoard.PlayerCount">
-            <summary>
-            TODO
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:MCTS.Core.ChessBoard.ToString">
-            <summary>
-            TODO
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:MCTS.Core.ChessMove">
-            <summary>
-            TODO
-            </summary>
-        </member>
-        <member name="P:MCTS.Core.ChessMove.PieceToMove">
-            <summary>
-            TODO
-            </summary>
-        </member>
-        <member name="P:MCTS.Core.ChessMove.ToX">
-            <summary>
-            TODO
-            </summary>
-        </member>
-        <member name="P:MCTS.Core.ChessMove.ToY">
-            <summary>
-            TODO
-            </summary>
-        </member>
-        <member name="M:MCTS.Core.ChessMove.#ctor(MCTS.Core.ChessPiece,System.Int32,System.Int32)">
-            <summary>
-            TODO
-            </summary>
-            <param name="toMove"></param>
-            <param name="toX"></param>
-            <param name="toY"></param>
-        </member>
-        <member name="M:MCTS.Core.ChessMove.Equals(System.Object)">
-            <summary>
-            TODO
-            </summary>
-            <param name="obj"></param>
-            <returns></returns>
-        </member>
-        <member name="M:MCTS.Core.ChessMove.GetHashCode">
-            <summary>
-            TODO
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:MCTS.Core.ChessMove.ToString">
-            <summary>
-            TODO
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:MCTS.Core.ChessPiece">
-            <summary>
-            Represents a chess piece, which can be played on a <see cref="T:MCTS.Core.ChessBoard"/>
-            </summary>
-        </member>
-        <member name="P:MCTS.Core.ChessPiece.PieceType">
+        <member name="P:MCTS.Core.Games.ChessPiece.PieceType">
             <summary>
             The type of piece that this chess piece is
             </summary>
         </member>
-        <member name="P:MCTS.Core.ChessPiece.XPos">
+        <member name="P:MCTS.Core.Games.ChessPiece.XPos">
             <summary>
             The X position of this chess piece
             </summary>
         </member>
-        <member name="P:MCTS.Core.ChessPiece.YPos">
+        <member name="P:MCTS.Core.Games.ChessPiece.YPos">
             <summary>
             The Y position of this chess piece
             </summary>
         </member>
-        <member name="M:MCTS.Core.ChessPiece.#ctor(MCTS.Core.ChessPieces,System.Int32,System.Int32)">
+        <member name="M:MCTS.Core.Games.ChessPiece.#ctor(MCTS.Core.Games.ChessPieces,System.Int32,System.Int32)">
             <summary>
-            Constructs a new <see cref="T:MCTS.Core.ChessPiece"/> instance
+            Constructs a new <see cref="T:MCTS.Core.Games.ChessPiece"/> instance
             </summary>
             <param name="pieceType">The type of piece to assign this chess piece to</param>
             <param name="xPos">The X position of this chess piece</param>
             <param name="yPos">The Y position of this chess piece</param>
         </member>
-        <member name="M:MCTS.Core.ChessPiece.op_Equality(MCTS.Core.ChessPiece,MCTS.Core.ChessPiece)">
+        <member name="M:MCTS.Core.Games.ChessPiece.op_Equality(MCTS.Core.Games.ChessPiece,MCTS.Core.Games.ChessPiece)">
             <summary>
             Checks equality for two given chess pieces
             </summary>
@@ -359,7 +366,7 @@
             <param name="p2">The second chess piece to check</param>
             <returns>True if both passed in pieces are equal, false otherwise</returns>
         </member>
-        <member name="M:MCTS.Core.ChessPiece.op_Inequality(MCTS.Core.ChessPiece,MCTS.Core.ChessPiece)">
+        <member name="M:MCTS.Core.Games.ChessPiece.op_Inequality(MCTS.Core.Games.ChessPiece,MCTS.Core.Games.ChessPiece)">
             <summary>
             Checks inequality for two given chess pieces
             </summary>
@@ -367,90 +374,192 @@
             <param name="p2">The second chess piece to check</param>
             <returns>False if both passed in pieces are equal, true otherwise</returns>
         </member>
-        <member name="M:MCTS.Core.ChessPiece.Equals(System.Object)">
+        <member name="M:MCTS.Core.Games.ChessPiece.Equals(System.Object)">
             <summary>
             Checks equality against another object
             </summary>
-            <param name="obj">An object to check equality against. Should be a <see cref="T:MCTS.Core.ChessPiece"/></param>
+            <param name="obj">An object to check equality against. Should be a <see cref="T:MCTS.Core.Games.ChessPiece"/></param>
             <returns>True if this object is equal to the passed in piece, false otherwise</returns>
         </member>
-        <member name="M:MCTS.Core.ChessPiece.GetHashCode">
+        <member name="M:MCTS.Core.Games.ChessPiece.GetHashCode">
             <summary>
             Returns a 4 digit hash code which uniquely describes a ChessPiece
             For example, a White Queen at position 3,4 would have a hashcode of - 1534
             </summary>
             <returns>A hashcode uniquely describing this chess piece</returns>
         </member>
-        <member name="M:MCTS.Core.ChessPiece.ToString">
+        <member name="M:MCTS.Core.Games.ChessPiece.ToString">
             <summary>
             Returns a string representation of this chess board
             </summary>
             <returns>A string representation of this chess board</returns>
         </member>
-        <member name="T:MCTS.Core.ChessPieces">
+        <member name="T:MCTS.Core.Games.ChessPieces">
             <summary>
             Enum representing the different types of chess pieces, and integer values assossiated with them
             </summary>
         </member>
-        <member name="F:MCTS.Core.ChessPieces.WHITE_PAWN">
+        <member name="F:MCTS.Core.Games.ChessPieces.WHITE_PAWN">
             <summary>
             The white pawn piece
             </summary>
         </member>
-        <member name="F:MCTS.Core.ChessPieces.WHITE_ROOK">
+        <member name="F:MCTS.Core.Games.ChessPieces.WHITE_ROOK">
             <summary>
             The white rook piece
             </summary>
         </member>
-        <member name="F:MCTS.Core.ChessPieces.WHITE_KNIGHT">
+        <member name="F:MCTS.Core.Games.ChessPieces.WHITE_KNIGHT">
             <summary>
             The white knight piece
             </summary>
         </member>
-        <member name="F:MCTS.Core.ChessPieces.WHITE_BISHOP">
+        <member name="F:MCTS.Core.Games.ChessPieces.WHITE_BISHOP">
             <summary>
             The white bishop piece
             </summary>
         </member>
-        <member name="F:MCTS.Core.ChessPieces.WHITE_QUEEN">
+        <member name="F:MCTS.Core.Games.ChessPieces.WHITE_QUEEN">
             <summary>
             The white queen piece
             </summary>
         </member>
-        <member name="F:MCTS.Core.ChessPieces.WHITE_KING">
+        <member name="F:MCTS.Core.Games.ChessPieces.WHITE_KING">
             <summary>
             The white king piece
             </summary>
         </member>
-        <member name="F:MCTS.Core.ChessPieces.BLACK_PAWN">
+        <member name="F:MCTS.Core.Games.ChessPieces.BLACK_PAWN">
             <summary>
             The black pawn piece
             </summary>
         </member>
-        <member name="F:MCTS.Core.ChessPieces.BLACK_ROOK">
+        <member name="F:MCTS.Core.Games.ChessPieces.BLACK_ROOK">
             <summary>
             The black rook piece
             </summary>
         </member>
-        <member name="F:MCTS.Core.ChessPieces.BLACK_KNIGHT">
+        <member name="F:MCTS.Core.Games.ChessPieces.BLACK_KNIGHT">
             <summary>
             The black knight piece
             </summary>
         </member>
-        <member name="F:MCTS.Core.ChessPieces.BLACK_BISHOP">
+        <member name="F:MCTS.Core.Games.ChessPieces.BLACK_BISHOP">
             <summary>
             The black bishop piece
             </summary>
         </member>
-        <member name="F:MCTS.Core.ChessPieces.BLACK_QUEEN">
+        <member name="F:MCTS.Core.Games.ChessPieces.BLACK_QUEEN">
             <summary>
             The black queen piece
             </summary>
         </member>
-        <member name="F:MCTS.Core.ChessPieces.BLACK_KING">
+        <member name="F:MCTS.Core.Games.ChessPieces.BLACK_KING">
             <summary>
             The black king piece
             </summary>
+        </member>
+        <member name="T:MCTS.Core.Games.TTTBoard">
+            <summary>
+            A Tic-Tac-Toe game board, which allows a game of Tic-Tac-Toe to be played out on it
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.Games.TTTBoard.#ctor">
+            <summary>
+            Creates a new Tic-Tac-Toe board representing an empty game
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.Games.TTTBoard.#ctor(MCTS.Core.Games.TTTBoard)">
+            <summary>
+            Create a new Tic-Tac-Toe board as a copy from an existing board
+            </summary>
+            <param name="board">The board to make a copy of</param>
+        </member>
+        <member name="M:MCTS.Core.Games.TTTBoard.Duplicate">
+            <summary>
+            Duplicates the current Tic-Tac-Toe board
+            </summary>
+            <returns>A clone of the current Tic-Tac-Toe Board</returns>
+        </member>
+        <member name="M:MCTS.Core.Games.TTTBoard.MakeMove(MCTS.Core.Move)">
+            <summary>
+            Makes a move on this Tic-Tac-Toe board at the specified move position
+            </summary>
+            <param name="move">The move to make</param>
+            <returns>A reference to this Tic-Tac-Toe board</returns>
+        </member>
+        <member name="M:MCTS.Core.Games.TTTBoard.PossibleMoves">
+            <summary>
+            Get a list of all possible moves for this Tic-Tac-Toe board instance
+            </summary>
+            <returns>A list of all possible moves for this Tic-Tac-Toe board instance</returns>
+        </member>
+        <member name="M:MCTS.Core.Games.TTTBoard.DetermineWinner">
+            <summary>
+            Determine if the current game is over
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.Games.TTTBoard.DetermineWinner(MCTS.Core.Move)">
+            <summary>
+            Determine if the current game is over
+            Uses knowledge of the last move to save computation time
+            </summary>
+            <param name="move">The last move made</param>
+        </member>
+        <member name="M:MCTS.Core.Games.TTTBoard.PlayerCount">
+            <summary>
+            Used to obtain the number of players on a Tic-Tac-Toe board, which is always 2
+            </summary>
+            <returns>The number of players on a Tic-Tac-Toe board, which is always 2</returns>
+        </member>
+        <member name="M:MCTS.Core.Games.TTTBoard.ToString">
+            <summary>
+            Gives a string representation of this Tic-Tac-Toe board
+            </summary>
+            <returns>A string representation of this Tic-Tac-Toe board</returns>
+        </member>
+        <member name="T:MCTS.Core.Games.TTTMove">
+            <summary>
+            A move that can be made in Tic-Tac-Toe
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.Games.TTTMove.X">
+            <summary>
+            X position of this move
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.Games.TTTMove.Y">
+            <summary>
+            Y position of this move
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.Games.TTTMove.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Creates a new Tic-Tac-Toe move with the given x and y positions
+            </summary>
+            <param name="xPos">X position of the move to make</param>
+            <param name="yPos">Y position of the move to make</param>
+        </member>
+        <member name="M:MCTS.Core.Games.TTTMove.ToString">
+            <summary>
+            Gives a string representation of this Tic-Tac-Toe move
+            </summary>
+            <returns>A string representation of this Tic-Tac-Toe move</returns>
+        </member>
+        <member name="M:MCTS.Core.Games.TTTMove.Equals(System.Object)">
+            <summary>
+            Equality override for a Tic-Tac-Toe move
+            Two moves are equal if their x and y positions are equal
+            </summary>
+            <param name="obj">The other TTTMove instance to compare this one too</param>
+            <returns>True if the objects are equal, false otherwise</returns>
+        </member>
+        <member name="M:MCTS.Core.Games.TTTMove.GetHashCode">
+            <summary>
+            Returns a unique hash code for this instance
+            Represented as a 4 digit integer
+            </summary>
+            <returns>A unique integer for this instance</returns>
         </member>
         <member name="T:MCTS.Core.GridBasedBoard">
             <summary>
@@ -814,108 +923,6 @@
             <param name="minValue">The inclusive minimum value that the random integer can be</param>
             <param name="maxValue">The exclusive maximum value that the random integer can be</param>
             <returns>A new random integer value that is between the inclusive minimum value and exclusing maximum value</returns>
-        </member>
-        <member name="T:MCTS.Core.TTTBoard">
-            <summary>
-            A Tic-Tac-Toe game board, which allows a game of Tic-Tac-Toe to be played out on it
-            </summary>
-        </member>
-        <member name="M:MCTS.Core.TTTBoard.#ctor">
-            <summary>
-            Creates a new Tic-Tac-Toe board representing an empty game
-            </summary>
-        </member>
-        <member name="M:MCTS.Core.TTTBoard.#ctor(MCTS.Core.TTTBoard)">
-            <summary>
-            Create a new Tic-Tac-Toe board as a copy from an existing board
-            </summary>
-            <param name="board">The board to make a copy of</param>
-        </member>
-        <member name="M:MCTS.Core.TTTBoard.Duplicate">
-            <summary>
-            Duplicates the current Tic-Tac-Toe board
-            </summary>
-            <returns>A clone of the current Tic-Tac-Toe Board</returns>
-        </member>
-        <member name="M:MCTS.Core.TTTBoard.MakeMove(MCTS.Core.Move)">
-            <summary>
-            Makes a move on this Tic-Tac-Toe board at the specified move position
-            </summary>
-            <param name="move">The move to make</param>
-            <returns>A reference to this Tic-Tac-Toe board</returns>
-        </member>
-        <member name="M:MCTS.Core.TTTBoard.PossibleMoves">
-            <summary>
-            Get a list of all possible moves for this Tic-Tac-Toe board instance
-            </summary>
-            <returns>A list of all possible moves for this Tic-Tac-Toe board instance</returns>
-        </member>
-        <member name="M:MCTS.Core.TTTBoard.DetermineWinner">
-            <summary>
-            Determine if the current game is over
-            </summary>
-        </member>
-        <member name="M:MCTS.Core.TTTBoard.DetermineWinner(MCTS.Core.Move)">
-            <summary>
-            Determine if the current game is over
-            Uses knowledge of the last move to save computation time
-            </summary>
-            <param name="move">The last move made</param>
-        </member>
-        <member name="M:MCTS.Core.TTTBoard.PlayerCount">
-            <summary>
-            Used to obtain the number of players on a Tic-Tac-Toe board, which is always 2
-            </summary>
-            <returns>The number of players on a Tic-Tac-Toe board, which is always 2</returns>
-        </member>
-        <member name="M:MCTS.Core.TTTBoard.ToString">
-            <summary>
-            Gives a string representation of this Tic-Tac-Toe board
-            </summary>
-            <returns>A string representation of this Tic-Tac-Toe board</returns>
-        </member>
-        <member name="T:MCTS.Core.TTTMove">
-            <summary>
-            A move that can be made in Tic-Tac-Toe
-            </summary>
-        </member>
-        <member name="P:MCTS.Core.TTTMove.X">
-            <summary>
-            X position of this move
-            </summary>
-        </member>
-        <member name="P:MCTS.Core.TTTMove.Y">
-            <summary>
-            Y position of this move
-            </summary>
-        </member>
-        <member name="M:MCTS.Core.TTTMove.#ctor(System.Int32,System.Int32)">
-            <summary>
-            Creates a new Tic-Tac-Toe move with the given x and y positions
-            </summary>
-            <param name="xPos">X position of the move to make</param>
-            <param name="yPos">Y position of the move to make</param>
-        </member>
-        <member name="M:MCTS.Core.TTTMove.ToString">
-            <summary>
-            Gives a string representation of this Tic-Tac-Toe move
-            </summary>
-            <returns>A string representation of this Tic-Tac-Toe move</returns>
-        </member>
-        <member name="M:MCTS.Core.TTTMove.Equals(System.Object)">
-            <summary>
-            Equality override for a Tic-Tac-Toe move
-            Two moves are equal if their x and y positions are equal
-            </summary>
-            <param name="obj">The other TTTMove instance to compare this one too</param>
-            <returns>True if the objects are equal, false otherwise</returns>
-        </member>
-        <member name="M:MCTS.Core.TTTMove.GetHashCode">
-            <summary>
-            Returns a unique hash code for this instance
-            Represented as a 4 digit integer
-            </summary>
-            <returns>A unique integer for this instance</returns>
         </member>
         <member name="T:MCTS.Core.InvalidMoveException">
             <summary>
