@@ -3,9 +3,9 @@
 namespace MCTS.Core
 {
     /// <summary>
-    /// Runs Monte Carlo Tree Search on a given game board
-    /// Every time <see cref="Step"/> is called, the algorithm performs one Select, Expand, Simulate and Backpropagate cycle
-    /// The algorithm will run until the search space is exhausted
+    /// Runs Monte Carlo Tree Search on a given game board <para/>
+    /// Every time <see cref="Step"/> is called, the algorithm performs one Select, Expand, Simulate and Backpropagate cycle <para/>
+    /// The algorithm will run until the search space is exhausted <para/>
     /// A graceful exit can be achieved via <see cref="Finish"/>, which will result in an incomplete but still useful tree
     /// </summary>
     /// <typeparam name="T">The type of node to use for the tree search</typeparam>
@@ -42,7 +42,7 @@ namespace MCTS.Core
         }
 
         /// <summary>
-        /// Perform a step of MCTS
+        /// Perform a step of MCTS <para/>
         /// Selects the highest UCT value node, expands it, simulates its children and backpropagates the results up the tree
         /// </summary>
         public void Step()
@@ -68,7 +68,7 @@ namespace MCTS.Core
         }
 
         /// <summary>
-        /// The first step of MCTS
+        /// The first step of MCTS <para/>
         /// The tree is searched recursively using the Upper Confidence Bound 1 calculation to select the best node to expand
         /// </summary>
         /// <param name="n">The current root node in the search</param>
@@ -106,7 +106,7 @@ namespace MCTS.Core
         }
 
         /// <summary>
-        /// The second step of MCTS
+        /// The second step of MCTS <para/>
         /// A given node is expanded, creating children nodes containing possible plays which can be simulated in the next step
         /// </summary>
         /// <param name="n">The node to expand</param>
@@ -116,8 +116,8 @@ namespace MCTS.Core
         }
 
         /// <summary>
-        /// The third step of MCTS
-        /// Simulates a given number of random playouts from the given node to obtain an average score of the node
+        /// The third step of MCTS <para/>
+        /// Simulates a given number of random playouts from the given node to obtain an average score of the node <para/>
         /// The average score is then backpropogated up the tree to the root node
         /// </summary>
         /// <param name="n">The node to simulate the playout of</param>
@@ -128,7 +128,7 @@ namespace MCTS.Core
         }
 
         /// <summary>
-        /// The fourth and final step of MCTS
+        /// The fourth and final step of MCTS <para/>
         /// Updates the given nodes parent hierarchy with its score value
         /// </summary>
         /// <param name="n">The child to update the hierachy of</param>
@@ -193,7 +193,7 @@ namespace MCTS.Core
         }
 
         /// <summary>
-        /// Signals if the Monte Carlo Tree Search has finished
+        /// Signals if the Monte Carlo Tree Search has finished <para/>
         /// Can be flagged as a result of all possible nodes being generated or a graceful exit
         /// </summary>
         public bool Finished

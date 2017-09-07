@@ -2,7 +2,7 @@
 using UnityEngine;
 
 /// <summary>
-/// A UI element which shows a progress bar which can be customised
+/// A UI element which shows a progress bar which can be customised <para/>
 /// Text can also be displayed across the bar
 /// </summary>
 public class ProgressBar : MonoBehaviour {

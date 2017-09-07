@@ -119,7 +119,7 @@ namespace MCTS.Core.Games
         }
 
         /// <summary>
-        /// Determine if the current game is over
+        /// Determine if the current game is over <para/>
         /// Uses knowledge of the last move to save computation time
         /// </summary>
         /// <param name="move">The last move made</param>

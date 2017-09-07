@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace MCTS.Core
 {
     /// <summary>
-    /// Represents an abstract board state
+    /// Represents an abstract board state <para/>
     /// Can be used for implementations of many different games
     /// </summary>
     public abstract class Board
@@ -15,9 +15,9 @@ namespace MCTS.Core
         protected int currentPlayer;
 
         /// <summary>
-        /// The winner value of the board state
-        /// -1 if no winner yet
-        /// 0 if game is a tie
+        /// The winner value of the board state <para/>
+        /// -1 if no winner yet <para/>
+        /// 0 if game is a tie <para/>
         /// Any positive integer is the winning players ID
         /// </summary>
         protected int winner = -1;
@@ -93,9 +93,9 @@ namespace MCTS.Core
         }
 
         /// <summary>
-        /// Returns the value of the winner integer
-        /// -1 if no winner yet
-        /// 0 if game is a tie
+        /// Returns the value of the winner integer <para/>
+        /// -1 if no winner yet <para/>
+        /// 0 if game is a tie <para/>
         /// Any positive integer is the winning players ID
         /// </summary>
         /// <returns>An integer indicating if the game has a winner, is a draw, or neither</returns>
@@ -124,8 +124,8 @@ namespace MCTS.Core
         public abstract Board Duplicate();
 
         /// <summary>
-        /// Returns amount of players playing on this board
-        /// Can't have static polymorphism and a workaround would be less efficient for execution speed
+        /// Returns amount of players playing on this board <para/>
+        /// Can't have static polymorphism and a workaround would be less efficient for execution speed <para/>
         /// Compromise is to have every instance contain the player count
         /// </summary>
         /// <returns>The amount of players playing on this board</returns>
@@ -137,7 +137,7 @@ namespace MCTS.Core
         protected abstract void DetermineWinner();
 
         /// <summary>
-        /// A more efficient method of determining if there is a winner
+        /// A more efficient method of determining if there is a winner <para/>
         /// Saves time by using knowledge of the last move to remove unnessessary computation
         /// </summary>
         /// <param name="move">The last move made before calling this method</param>

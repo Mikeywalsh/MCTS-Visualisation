@@ -1,7 +1,7 @@
 ﻿namespace MCTS.Core
 {
     /// <summary>
-    /// A thread safe class which holds data about a simulation job
+    /// A thread safe class which holds data about a simulation job <para/>
     /// Allows multiple threads to perform simulations and record the results, until a quota has been met
     /// </summary>
     public class SimulateData
@@ -36,7 +36,7 @@
         }
 
         /// <summary>
-        /// Records a simulation result, incrementing <see cref="Plays"/>, and <see cref="Wins"/> if the simulation resulted in a win
+        /// Records a simulation result, incrementing <see cref="Plays"/>, and <see cref="Wins"/> if the simulation resulted in a win <para/>
         /// If the target play quoto has been reached, then do nothing
         /// </summary>
         /// <param name="won">Did the simulation result in a victory?</param>

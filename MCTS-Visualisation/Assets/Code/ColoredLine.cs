@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 /// <summary>
-/// A struct representing a colored line
+/// A struct representing a colored line <para/>
 /// Contains the lines starting point, destination point and color
 /// </summary>
 public struct ColoredLine {

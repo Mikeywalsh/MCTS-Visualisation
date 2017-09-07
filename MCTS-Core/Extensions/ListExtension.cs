@@ -8,7 +8,7 @@ namespace MCTS.Core
     public static class ListExtension
     {
         /// <summary>
-        /// Picks a random element from the given list and returns it
+        /// Picks a random element from the given list and returns it <para/>
         /// This method is thread-safe
         /// </summary>
         /// <typeparam name="T"> The type that the source list contains</typeparam>

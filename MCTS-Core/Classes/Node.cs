@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace MCTS.Core
 {
     /// <summary>
-    /// A node for use with a Monte Carlo Search Tree
+    /// A node for use with a Monte Carlo Search Tree <para/>
     /// Contains a game state, as well as stats such as visits, score, parent and children
     /// </summary>
     public class Node
@@ -36,7 +36,7 @@ namespace MCTS.Core
         private float totalScore;
 
         /// <summary>
-        /// Signals if all this nodes children have been fully explored
+        /// Signals if all this nodes children have been fully explored <para/>
         /// Used to stop the MCTS algorithm from exploring exhausted nodes
         /// </summary>
         private bool allChildrenFullyExplored;
@@ -112,7 +112,7 @@ namespace MCTS.Core
         }
 
         /// <summary>
-        /// Checks this nodes children to see if they are all fully explored
+        /// Checks this nodes children to see if they are all fully explored <para/>
         /// This is used so that during selection, the algorithm does not attempt to explore exhausted branches
         /// </summary>
         public void CheckChildrenFullyExplored()
@@ -135,7 +135,7 @@ namespace MCTS.Core
         }
 
         /// <summary>
-        /// Simulates a number of playouts from this node and adds the mean score value to this nodes score attribute
+        /// Simulates a number of playouts from this node and adds the mean score value to this nodes score attribute <para/>
         /// Uses <see cref="Task"/>'s to split the simulation workload across multiple threads
         /// </summary>
         /// <param name="playoutCount">The amount of simulations to run, a larger amount will give better results</param>
@@ -177,7 +177,7 @@ namespace MCTS.Core
         }
 
         /// <summary>
-        /// Used in multi thread mode
+        /// Used in multi thread mode <para/>
         /// For use with tasks to simulate a given amount of playouts for a board
         /// </summary>
         /// <param name="board">The board to perform the simulations on</param>
@@ -193,7 +193,7 @@ namespace MCTS.Core
         }
 
         /// <summary>
-        /// Used in single thread mode
+        /// Used in single thread mode <para/>
         /// Simulates an amount of playouts on a given board
         /// </summary>
         /// <param name="board">The board to perform the simulations on</param>
@@ -214,7 +214,7 @@ namespace MCTS.Core
         }
 
         /// <summary>
-        /// Updates the score and visits values of this node and its parents, recursively
+        /// Updates the score and visits values of this node and its parents, recursively <para/>
         /// Used during backpropagation
         /// </summary>
         /// <param name="updateScore">The score to update this node with</param>
@@ -242,7 +242,7 @@ namespace MCTS.Core
         }
 
         /// <summary>
-        /// Signals if all this nodes children have been fully explored
+        /// Signals if all this nodes children have been fully explored <para/>
         /// Used to stop the MCTS algorithm from exploring exhausted nodes
         /// </summary>
         public bool AllChildrenFullyExplored
@@ -251,7 +251,7 @@ namespace MCTS.Core
         }
 
         /// <summary>
-        /// Signals if this node is a leaf node or not
+        /// Signals if this node is a leaf node or not <para/>
         /// A node is a leaf node if its game has ended
         /// </summary>
         public bool IsLeafNode
@@ -300,7 +300,7 @@ namespace MCTS.Core
         }
 
         /// <summary>
-        /// The average score for this node
+        /// The average score for this node <para/>
         /// Determined from the total score and number of visits
         /// </summary>
         public float AverageScore

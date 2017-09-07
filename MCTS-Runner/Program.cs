@@ -7,7 +7,7 @@ using System.Threading;
 namespace MCTS.Runner
 {
     /// <summary>
-    /// A simple command line runner for MCTS
+    /// A simple command line runner for MCTS <para/>
     /// Used for profiling purposes as Unity's profiler is not as good as Visual Studio's, and does not support thread profiling
     /// </summary>
     class Program

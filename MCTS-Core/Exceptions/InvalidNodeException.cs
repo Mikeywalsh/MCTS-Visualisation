@@ -1,7 +1,7 @@
 ﻿using System;
 
 /// <summary>
-/// An exception which should be thrown when an invalid node is being used
+/// An exception which should be thrown when an invalid node is being used <para/>
 /// For example, trying to add children to a leaf node
 /// </summary>
 public class InvalidNodeException : Exception

@@ -5,14 +5,14 @@ using MCTS.Core;
 using MCTS.Core.Games;
 
 /// <summary>
-/// The main script for the application
-/// Handles the running of the MCTS and the positioning of each <see cref="NodeObject"/>
+/// The main script for the application <para/>
+/// Handles the running of the MCTS and the positioning of each <see cref="NodeObject"/> <para/>
 /// Also handles the changeover between the menu UI and navigation UI
 /// </summary>
 public class MainController : MonoBehaviour
 {
     /// <summary>
-    /// The MCTS instance used to create the game tree
+    /// The MCTS instance used to create the game tree <para/>
     /// Should be ran on another thread to avoid freezing of the application
     /// </summary>
     private TreeSearch<NodeObject> mcts;
@@ -28,7 +28,7 @@ public class MainController : MonoBehaviour
     private float timeToRunFor;
 
     /// <summary>
-    /// The time left to run the MCTS for
+    /// The time left to run the MCTS for <para/>
     /// Starts at <see cref="timeToRunFor"/> and counts down to zero
     /// </summary>
     private float timeLeft;
@@ -57,8 +57,8 @@ public class MainController : MonoBehaviour
     }
 
     /// <summary>
-    /// Called when the start/stop button is pressed
-    /// If MCTS is not running, then it will be started
+    /// Called when the start/stop button is pressed <para/>
+    /// If MCTS is not running, then it will be started <para/>
     /// If MCTS is running, this will make it finish early
     /// </summary>
     public void StartStopButtonPressed()
@@ -101,8 +101,8 @@ public class MainController : MonoBehaviour
     }
 
     /// <summary>
-    /// If the user has started running MCTS, then display information about it to the UI whilst it generates
-    /// When the MCTS has finished generating, set the position of each <see cref="NodeObject"/> so that they can be rendered on-screen
+    /// If the user has started running MCTS, then display information about it to the UI whilst it generates <para/>
+    /// When the MCTS has finished generating, set the position of each <see cref="NodeObject"/> so that they can be rendered on-screen <para/>
     /// When each nodes position has been set, switch to the tree navigation UI
     /// </summary>
     void Update()
@@ -156,7 +156,7 @@ public class MainController : MonoBehaviour
     }
 
     /// <summary>
-    /// Sets the position of a <see cref="NodeObject"/> in the world, and all its children, recursively
+    /// Sets the position of a <see cref="NodeObject"/> in the world, and all its children, recursively <para/>
     /// This method is an <see cref="IEnumerator"/> so the tree is given time to be created, instead of the program freezing whilst it creates the tree in one frame
     /// </summary>
     /// <param name="node">The starting node to set the position of</param>

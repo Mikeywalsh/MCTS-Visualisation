@@ -55,14 +55,14 @@ public class UIController : MonoBehaviour
     public Text CurrentNodeText;
 
     /// <summary>
-    /// TODO - Dynamic button creation with a Scroll View instead of a predetermined amount of buttons
-    /// The transform of the gameobject that 'holds' the different child select buttons
+    /// TODO - Dynamic button creation with a Scroll View instead of a predetermined amount of buttons <para/>
+    /// The transform of the gameobject that 'holds' the different child select buttons <para/>
     /// Each child of this transform is a buttom for selecting a child
     /// </summary>
     public Transform ChildButtonHolder;
 
     /// <summary>
-    /// TODO - Dynamic button creation with a Scroll View instead of a predetermined amount of buttons 
+    /// TODO - Dynamic button creation with a Scroll View instead of a predetermined amount of buttons <para/>
     /// A list of buttons for selecting child nodes
     /// </summary>
     public List<Button> ChildButtons;
@@ -83,7 +83,7 @@ public class UIController : MonoBehaviour
     private static Color32 HIGHLIGHTED_BUTTON_COLOR = new Color32(255, 255, 0, 200);
 
     /// <summary>
-    /// Ran when the program starts
+    /// Ran when the program starts <para/>
     /// There should only ever be one object with a UIController, so this should only be run once
     /// </summary>
     public void Start()
@@ -106,8 +106,8 @@ public class UIController : MonoBehaviour
         }
     }
     /// <summary>
-    /// Called when the start button has been
-    /// This will disable all forms on input on the main menu whilst MCTS runs
+    /// Called when the start button has been <para/>
+    /// This will disable all forms on input on the main menu whilst MCTS runs <para/>
     /// The start button is also changed to the stop button
     /// </summary>
     public static void StartButtonPressed()
@@ -125,7 +125,7 @@ public class UIController : MonoBehaviour
     }
 
     /// <summary>
-    /// Called when the stop button has been pressed, signalling the early finish of the MCTS algorithm
+    /// Called when the stop button has been pressed, signalling the early finish of the MCTS algorithm <para/>
     /// The start/stop button is disabled whilst the program attempts to visualise the result
     /// </summary>
     public static void StopButtonPressed()
@@ -145,7 +145,7 @@ public class UIController : MonoBehaviour
     }
 
     /// <summary>
-    /// Called when the MCTS visualisation is ready
+    /// Called when the MCTS visualisation is ready <para/>
     /// Changes the main menu UI to the tree navigation UI
     /// </summary>
     public static void SwitchToNavigationUI()
@@ -155,7 +155,7 @@ public class UIController : MonoBehaviour
     }
 
     /// <summary>
-    /// Displays information about the referenced <see cref="Node"/> object to the UI
+    /// Displays information about the referenced <see cref="Node"/> object to the UI <para/>
     /// Will also update the child buttons with details about the referenced nodes children
     /// </summary>
     /// <param name="n">The node object to display the information of</param>

@@ -80,7 +80,7 @@ namespace MCTS.Core.Games
         }
 
         /// <summary>
-        /// Returns a 4 digit hash code which uniquely describes a ChessPiece
+        /// Returns a 4 digit hash code which uniquely describes a ChessPiece <para/>
         /// For example, a White Queen at position 3,4 would have a hashcode of - 1534
         /// </summary>
         /// <returns>A hashcode uniquely describing this chess piece</returns>

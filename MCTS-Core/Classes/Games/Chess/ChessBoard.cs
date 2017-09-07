@@ -121,9 +121,9 @@ namespace MCTS.Core.Games
         }
 
         /// <summary>
-        /// Determines if there is a winner on this chess board
-        /// If there is a winner, the Winner attribute is set to the ID of the winning player
-        /// If there is a draw, the Winner attribute is set to 0
+        /// Determines if there is a winner on this chess board <para/>
+        /// If there is a winner, the Winner attribute is set to the ID of the winning player <para/>
+        /// If there is a draw, the Winner attribute is set to 0 <para/>
         /// If the game is still in progress, the Winner attribute is set to -1
         /// </summary>
         protected override void DetermineWinner()
@@ -132,10 +132,10 @@ namespace MCTS.Core.Games
         }
 
         /// <summary>
-        /// Determines if there is a winner on this chess board
-        /// Uses the last played move to narrow down the amount of checks needed
-        /// If there is a winner, the Winner attribute is set to the ID of the winning player
-        /// If there is a draw, the Winner attribute is set to 0
+        /// Determines if there is a winner on this chess board <para/>
+        /// Uses the last played move to narrow down the amount of checks needed <para/>
+        /// If there is a winner, the Winner attribute is set to the ID of the winning player <para/>
+        /// If there is a draw, the Winner attribute is set to 0 <para/>
         /// If the game is still in progress, the Winner attribute is set to -1
         /// </summary>
         /// <param name="move">The last played move on this board</param>

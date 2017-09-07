@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// A class responsible for controlling the camera, including how it moves, and what node it is focused on currently
+/// </summary>
 public class CameraControl : MonoBehaviour
 {
     /// <summary>
-    /// The currently selected node
+    /// The currently selected node <para/>
     /// Information about the current node and its children is displayed in the UI
     /// </summary>
     public NodeObject CurrentNode;
@@ -79,7 +82,7 @@ public class CameraControl : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns an integer representing the value of the numerical key, if one has been pressed this frame
+    /// Returns an integer representing the value of the numerical key, if one has been pressed this frame <para/>
     /// Allows the user to navigate the tree with keys instead of the on-screen buttons
     /// </summary>
     /// <returns>An integer representing the value of the numerical key that was pressed. -1 if no key was pressed</returns>
@@ -103,7 +106,6 @@ public class CameraControl : MonoBehaviour
             return 8;
         else if (Input.GetKeyDown(KeyCode.Alpha9))
             return 9;
-
 
         return -1;
     }

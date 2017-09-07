@@ -42,7 +42,7 @@
         }
 
         /// <summary>
-        /// Equality override for a Tic-Tac-Toe move
+        /// Equality override for a Tic-Tac-Toe move <para/>
         /// Two moves are equal if their x and y positions are equal
         /// </summary>
         /// <param name="obj">The other TTTMove instance to compare this one too</param>
@@ -60,7 +60,7 @@
         }
 
         /// <summary>
-        /// Returns a unique hash code for this instance
+        /// Returns a unique hash code for this instance <para/>
         /// Represented as a 4 digit integer
         /// </summary>
         /// <returns>A unique integer for this instance</returns>

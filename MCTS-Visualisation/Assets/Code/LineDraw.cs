@@ -6,13 +6,13 @@ using UnityEditor;
 #endif
 
 /// <summary>
-/// This class is responsible for the drawing of lines between nodes to the screen
+/// This class is responsible for the drawing of lines between nodes to the screen <para/>
 /// This should be attached to a camera being used to view the game tree
 /// </summary>
 public class LineDraw : MonoBehaviour
 {
     /// <summary>
-    /// A static list containing <see cref="ColoredLine"/> structs for each line that needs to be rendered
+    /// A static list containing <see cref="ColoredLine"/> structs for each line that needs to be rendered <para/>
     /// Storing the lines this way instead of accessing each needed node via references is a huge speed increase
     /// </summary>
     public static List<ColoredLine> Lines = new List<ColoredLine>();
@@ -33,7 +33,7 @@ public class LineDraw : MonoBehaviour
     public static Color[] lineColors = new Color[] { Color.red, Color.green, Color.blue, Color.magenta, Color.yellow, Color.white, Color.cyan };
 
     /// <summary>
-    /// Called as soon as this object is created
+    /// Called as soon as this object is created <para/>
     /// Creates the material used to render lines from the shader located in the Resources folder
     /// </summary>
     private void Awake()

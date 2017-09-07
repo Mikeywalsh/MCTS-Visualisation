@@ -11,7 +11,7 @@
         public int X { get; private set; }
 
         /// <summary>
-        /// Y position of this move
+        /// Y position of this move <para/>
         /// Not chosen by the user, instead it is calculated when the move is made
         /// </summary>
         public int Y { get; private set; }
@@ -40,7 +40,7 @@
         }
 
         /// <summary>
-        /// Equality override for a Connect 4 move
+        /// Equality override for a Connect 4 move <para/>
         /// Two moves are equal if their x positions are equal
         /// </summary>
         /// <param name="obj">The other C4Move instance to compare this one too</param>
@@ -57,7 +57,7 @@
         }
 
         /// <summary>
-        /// Returns a unique hash code for this instance
+        /// Returns a unique hash code for this instance <para/>
         /// Represented as a 1 digit integer
         /// </summary>
         /// <returns>A unique integer for this instance</returns>
@@ -67,7 +67,7 @@
         }
 
         /// <summary>
-        /// Set the Y position of this move
+        /// Set the Y position of this move <para/>
         /// Used when calculating what cell this move can be played in
         /// </summary>
         public void SetY(int val)

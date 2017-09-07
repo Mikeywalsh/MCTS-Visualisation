@@ -4,6 +4,9 @@ using MCTS.Core.Games;
 
 namespace MCTS.Test
 {
+    /// <summary>
+    /// This class tests all aspects of the <see cref="TTTMove"/> class
+    /// </summary>
     public class TTTMoveTest
     {
         [Test]

@@ -3,7 +3,7 @@
 namespace MCTS.Core
 {
     /// <summary>
-    /// An abstract extension of <see cref="Board"/>
+    /// An abstract extension of <see cref="Board"/> <para/>
     /// Contains common elements of grid based board games, such as Tic-Tac-Toe, Connect 4, Chess, etc
     /// </summary>
     public abstract class GridBasedBoard : Board
