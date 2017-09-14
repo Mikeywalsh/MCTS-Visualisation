@@ -71,7 +71,6 @@ namespace MCTS.Core
             {
                 children.Capacity = 0;
                 allChildrenFullyExplored = true;
-                parentNode.CheckChildrenFullyExplored();
 
                 //Since this is a leaf node, we can tell the score without any simulation just from looking at the Winner attribute on the game board
                 totalScore = (gameBoard.Winner == gameBoard.PreviousPlayer ? 1 : 0);
@@ -109,6 +108,9 @@ namespace MCTS.Core
                 child.Initialise(this, newBoard);
                 children.Add(child);
             }
+
+            //Check if all children have been explored for this node
+            CheckChildrenFullyExplored();
         }
 
         /// <summary>
