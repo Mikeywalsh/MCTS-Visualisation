@@ -6,45 +6,45 @@ namespace MCTS.Core
 {
     /// <summary>
     /// A node for use with a Monte Carlo Search Tree <para/>
-    /// Contains a game state, as well as stats such as visits, score, parent and children
+    /// Contains a game state, as well as stats such as Visits, score, Parent and Children
     /// </summary>
     public class Node
     {
         /// <summary>
-        /// This nodes parent node
+        /// This nodes Parent node
         /// </summary>
-        private Node parent;
+        public Node Parent { get; private set; }
 
         /// <summary>
-        /// The gameboard state for this node
+        /// The GameBoard state for this node
         /// </summary>
-        private Board gameBoard;
+        public Board GameBoard { get; private set; }
 
         /// <summary>
-        /// A list of all the children of this node
+        /// A list of all the Children of this node
         /// </summary>
-        private List<Node> children;
+        public List<Node> Children { get; private set; }
 
         /// <summary>
         /// The amount of times this node has been visited directly or via backpropagation
         /// </summary>
-        private int visits;
+        public int Visits { get; private set; }
 
         /// <summary>
         /// The total score this node has as a result of direct simulation or backpropagation
         /// </summary>
-        private float totalScore;
+        public float TotalScore { get; private set; }
 
         /// <summary>
-        /// A flag indicating if this node and its children, if it has any, have been fully explored <para/>
+        /// A flag indicating if this node and its Children, if it has any, have been fully explored <para/>
         /// Used to stop the MCTS algorithm from exploring exhausted nodes
         /// </summary>
-        private bool fullyExplored;
+        public bool FullyExplored { get; private set; }
 
         /// <summary>
-        /// The depth of this node in the game tree
+        /// The Depth of this node in the game tree
         /// </summary>
-        private int depth;
+        public int Depth { get; private set; }
 
         /// <summary>
         /// The maximum amount of tasks that can be used during simulation
@@ -57,84 +57,84 @@ namespace MCTS.Core
         private const int MULTI_THREAD_MODE_PLAYOUT_REQUIREMENT = 50;
 
         /// <summary>
-        /// Creates a new node with the given board and parent node
+        /// Creates a new node with the given board and Parent node
         /// </summary>
-        /// <param name="parentNode">The parent of this node, null if this is the root node</param>
+        /// <param name="ParentNode">The Parent of this node, null if this is the root node</param>
         /// <param name="board">The game board for this node</param>
-        public void Initialise(Node parentNode, Board board)
+        public void Initialise(Node ParentNode, Board board)
         {
-            parent = parentNode;
-            gameBoard = board;
-            children = new List<Node>(gameBoard.PossibleMoves().Count);
+            Parent = ParentNode;
+            GameBoard = board;
+            Children = new List<Node>(GameBoard.PossibleMoves().Count);
 
             if (IsLeafNode)
             {
-                children.Capacity = 0;
+                Children.Capacity = 0;
 
                 //Since this is a leaf node, we know it has been fully explored upon creation
-                fullyExplored = true;
+                FullyExplored = true;
 
                 //Since this is a leaf node, we can tell the score without any simulation just from looking at the Winner attribute on the game board
-                totalScore = (gameBoard.Winner == gameBoard.PreviousPlayer ? 1 : 0);
-                visits = 1;
+                TotalScore = (GameBoard.Winner == GameBoard.PreviousPlayer ? 1 : 0);
+                Visits = 1;
             }
 
-            if (parentNode == null)
+            if (ParentNode == null)
             {
-                depth = 0;
+                Depth = 0;
             }
             else
             {
-                depth = parentNode.Depth + 1;
+                Depth = ParentNode.Depth + 1;
             }
         }
 
         /// <summary>
-        /// Creates a child for each possible move for this node and adds it to the list of children
+        /// Creates a child for each possible move for this node and adds it to the list of Children
         /// </summary>
         public void CreateAllChildren()
         {
             if (IsLeafNode)
             {
-                throw new InvalidNodeException("This node is a leaf node, cannot create children for it");
+                throw new InvalidNodeException("This node is a leaf node, cannot create Children for it");
             }
 
             //Create a new child node for each possible move from this node
-            foreach (Move move in gameBoard.PossibleMoves())
+            foreach (Move move in GameBoard.PossibleMoves())
             {
-                Board newBoard = gameBoard.Duplicate();
+                Board newBoard = GameBoard.Duplicate();
                 newBoard.MakeMove(move);
 
-                //Create a child node with the same type as this node, initialise it, and add it to the list of children
+                //Create a child node with the same type as this node, initialise it, and add it to the list of Children
                 Node child = (Node)Activator.CreateInstance(GetType());
                 child.Initialise(this, newBoard);
-                children.Add(child);
+                Children.Add(child);
             }
 
-            //Check if all children have been explored for this node
+            //Check if all Children have been explored for this node
             CheckFullyExplored();
         }
 
         /// <summary>
-        /// Checks this nodes children to see if they are all fully explored <para/>
+        /// Checks this nodes Children to see if they are all fully explored <para/>
         /// This is used so that during selection, the algorithm does not attempt to explore exhausted branches
         /// </summary>
         public void CheckFullyExplored()
         {
-            if (fullyExplored)
+            if (FullyExplored)
                 return;
 
-            foreach (Node child in children)
+            foreach (Node child in Children)
             {
                 if (!child.FullyExplored)
                     return;
             }
 
-            fullyExplored = true;
+            FullyExplored = true;
 
-            if (parent != null)
+            if (Parent != null)
             {
-                parent.CheckFullyExplored();
+                Parent.CheckFullyExplored();
             }
         }
 
@@ -151,7 +151,7 @@ namespace MCTS.Core
             if (playoutCount < MULTI_THREAD_MODE_PLAYOUT_REQUIREMENT)
             {
                 //Get the amount of wins for the simulation job
-                wins = SimulatePlayouts(gameBoard, playoutCount);
+                wins = SimulatePlayouts(GameBoard, playoutCount);
             }
             else
             {
@@ -164,7 +164,7 @@ namespace MCTS.Core
                 //Split the amount of playouts to be simulated across multiple tasks
                 for (int i = 0; i < MAX_SIMULATION_TASKS; i++)
                 {
-                    tasks[i] = Task.Factory.StartNew(() => SimulatePlayouts(gameBoard, sim));
+                    tasks[i] = Task.Factory.StartNew(() => SimulatePlayouts(GameBoard, sim));
                 }
 
                 //Ensure the other tasks have finished
@@ -176,8 +176,8 @@ namespace MCTS.Core
 
             //Calculate the total simulation score for this node
             float simScore = (float)wins / playoutCount;
-            totalScore = simScore;
-            visits = 1;
+            TotalScore = simScore;
+            Visits = 1;
         }
 
         /// <summary>
@@ -218,7 +218,7 @@ namespace MCTS.Core
         }
 
         /// <summary>
-        /// Updates the score and visits values of this node and its parents, recursively <para/>
+        /// Updates the score and Visits values of this node and its Parents, recursively <para/>
         /// Used during backpropagation
         /// </summary>
         /// <param name="updateScore">The score to update this node with</param>
@@ -226,32 +226,23 @@ namespace MCTS.Core
         public void Update(float updateScore, int player)
         {
             //Update this nodes score depending on the current player at this node
-            if (gameBoard.CurrentPlayer == player)
+            if (GameBoard.CurrentPlayer == player)
             {
-                totalScore += updateScore;
+                TotalScore += updateScore;
             }
             else
             {
-                totalScore += (1 - updateScore);
+                TotalScore += (1 - updateScore);
             }
 
-            //Increment the visits attribute
-            visits++;
+            //Increment the Visits attribute
+            Visits++;
 
-            //Update this nodes parents with the new score
-            if (parent != null)
+            //Update this nodes Parents with the new score
+            if (Parent != null)
             {
-                parent.Update(updateScore, player);
+                Parent.Update(updateScore, player);
             }
-        }
-
-        /// <summary>
-        /// A flag indicating if this node and its children, if it has any, have been fully explored <para/>
-        /// Used to stop the MCTS algorithm from exploring exhausted nodes
-        /// </summary>
-        public bool FullyExplored
-        {
-            get { return fullyExplored; }
         }
 
         /// <summary>
@@ -260,64 +251,16 @@ namespace MCTS.Core
         /// </summary>
         public bool IsLeafNode
         {
-            get { return gameBoard.Winner != -1; }
-        }
-
-        /// <summary>
-        /// This nodes parent node
-        /// </summary>
-        public Node Parent
-        {
-            get { return parent; }
-        }
-
-        /// <summary>
-        /// The gameboard state for this node
-        /// </summary>
-        public Board GameBoard
-        {
-            get { return gameBoard; }
-        }
-
-        /// <summary>
-        /// A list of all this nodes children nodes
-        /// </summary>
-        public List<Node> Children
-        {
-            get { return children; }
-        }
-
-        /// <summary>
-        /// How many times this node has been visited
-        /// </summary>
-        public int Visits
-        {
-            get { return visits; }
-        }
-
-        /// <summary>
-        /// The total score for this node as a result of simulation and backpropagation
-        /// </summary>
-        public float TotalScore
-        {
-            get { return totalScore; }
+            get { return GameBoard.Winner != -1; }
         }
 
         /// <summary>
         /// The average score for this node <para/>
-        /// Determined from the total score and number of visits
+        /// Determined from the total score and number of Visits
         /// </summary>
         public float AverageScore
         {
-            get { return totalScore / visits; }
-        }
-
-        /// <summary>
-        /// The depth of this node in the game tree
-        /// </summary>
-        public int Depth
-        {
-            get { return depth; }
+            get { return TotalScore / Visits; }
         }
     }
 }

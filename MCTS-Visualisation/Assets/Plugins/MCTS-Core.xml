@@ -706,43 +706,43 @@
         <member name="T:MCTS.Core.Node">
             <summary>
             A node for use with a Monte Carlo Search Tree <para/>
-            Contains a game state, as well as stats such as visits, score, parent and children
+            Contains a game state, as well as stats such as Visits, score, Parent and Children
             </summary>
         </member>
-        <member name="F:MCTS.Core.Node.parent">
+        <member name="P:MCTS.Core.Node.Parent">
             <summary>
-            This nodes parent node
+            This nodes Parent node
             </summary>
         </member>
-        <member name="F:MCTS.Core.Node.gameBoard">
+        <member name="P:MCTS.Core.Node.GameBoard">
             <summary>
-            The gameboard state for this node
+            The GameBoard state for this node
             </summary>
         </member>
-        <member name="F:MCTS.Core.Node.children">
+        <member name="P:MCTS.Core.Node.Children">
             <summary>
-            A list of all the children of this node
+            A list of all the Children of this node
             </summary>
         </member>
-        <member name="F:MCTS.Core.Node.visits">
+        <member name="P:MCTS.Core.Node.Visits">
             <summary>
             The amount of times this node has been visited directly or via backpropagation
             </summary>
         </member>
-        <member name="F:MCTS.Core.Node.totalScore">
+        <member name="P:MCTS.Core.Node.TotalScore">
             <summary>
             The total score this node has as a result of direct simulation or backpropagation
             </summary>
         </member>
-        <member name="F:MCTS.Core.Node.fullyExplored">
+        <member name="P:MCTS.Core.Node.FullyExplored">
             <summary>
-            A flag indicating if this node and its children, if it has any, have been fully explored <para/>
+            A flag indicating if this node and its Children, if it has any, have been fully explored <para/>
             Used to stop the MCTS algorithm from exploring exhausted nodes
             </summary>
         </member>
-        <member name="F:MCTS.Core.Node.depth">
+        <member name="P:MCTS.Core.Node.Depth">
             <summary>
-            The depth of this node in the game tree
+            The Depth of this node in the game tree
             </summary>
         </member>
         <member name="F:MCTS.Core.Node.MAX_SIMULATION_TASKS">
@@ -757,19 +757,19 @@
         </member>
         <member name="M:MCTS.Core.Node.Initialise(MCTS.Core.Node,MCTS.Core.Board)">
             <summary>
-            Creates a new node with the given board and parent node
+            Creates a new node with the given board and Parent node
             </summary>
-            <param name="parentNode">The parent of this node, null if this is the root node</param>
+            <param name="ParentNode">The Parent of this node, null if this is the root node</param>
             <param name="board">The game board for this node</param>
         </member>
         <member name="M:MCTS.Core.Node.CreateAllChildren">
             <summary>
-            Creates a child for each possible move for this node and adds it to the list of children
+            Creates a child for each possible move for this node and adds it to the list of Children
             </summary>
         </member>
         <member name="M:MCTS.Core.Node.CheckFullyExplored">
             <summary>
-            Checks this nodes children to see if they are all fully explored <para/>
+            Checks this nodes Children to see if they are all fully explored <para/>
             This is used so that during selection, the algorithm does not attempt to explore exhausted branches
             </summary>
         </member>
@@ -800,17 +800,11 @@
         </member>
         <member name="M:MCTS.Core.Node.Update(System.Single,System.Int32)">
             <summary>
-            Updates the score and visits values of this node and its parents, recursively <para/>
+            Updates the score and Visits values of this node and its Parents, recursively <para/>
             Used during backpropagation
             </summary>
             <param name="updateScore">The score to update this node with</param>
             <param name="player">The current player on the board at this node</param>
-        </member>
-        <member name="P:MCTS.Core.Node.FullyExplored">
-            <summary>
-            A flag indicating if this node and its children, if it has any, have been fully explored <para/>
-            Used to stop the MCTS algorithm from exploring exhausted nodes
-            </summary>
         </member>
         <member name="P:MCTS.Core.Node.IsLeafNode">
             <summary>
@@ -818,40 +812,10 @@
             A node is a leaf node if its game has ended
             </summary>
         </member>
-        <member name="P:MCTS.Core.Node.Parent">
-            <summary>
-            This nodes parent node
-            </summary>
-        </member>
-        <member name="P:MCTS.Core.Node.GameBoard">
-            <summary>
-            The gameboard state for this node
-            </summary>
-        </member>
-        <member name="P:MCTS.Core.Node.Children">
-            <summary>
-            A list of all this nodes children nodes
-            </summary>
-        </member>
-        <member name="P:MCTS.Core.Node.Visits">
-            <summary>
-            How many times this node has been visited
-            </summary>
-        </member>
-        <member name="P:MCTS.Core.Node.TotalScore">
-            <summary>
-            The total score for this node as a result of simulation and backpropagation
-            </summary>
-        </member>
         <member name="P:MCTS.Core.Node.AverageScore">
             <summary>
             The average score for this node <para/>
-            Determined from the total score and number of visits
-            </summary>
-        </member>
-        <member name="P:MCTS.Core.Node.Depth">
-            <summary>
-            The depth of this node in the game tree
+            Determined from the total score and number of Visits
             </summary>
         </member>
         <member name="T:MCTS.Core.SimulateData">
