@@ -599,17 +599,17 @@
             </summary>
             <typeparam name="T">The type of node to use for the tree search</typeparam>
         </member>
-        <member name="F:MCTS.Core.TreeSearch`1.root">
+        <member name="P:MCTS.Core.TreeSearch`1.Root">
             <summary>
             The root node of the search tree
             </summary>
         </member>
-        <member name="F:MCTS.Core.TreeSearch`1.finished">
+        <member name="P:MCTS.Core.TreeSearch`1.Finished">
             <summary>
             Signals if the MCTS algorithm has finished running
             </summary>
         </member>
-        <member name="F:MCTS.Core.TreeSearch`1.playoutsPerSimulation">
+        <member name="P:MCTS.Core.TreeSearch`1.PlayoutsPerSimulation">
             <summary>
             The amount of playouts each node undergoes during simulation
             </summary>
@@ -677,25 +677,9 @@
             Can be called to gracefully halt execution of the algorithm
             </summary>
         </member>
-        <member name="P:MCTS.Core.TreeSearch`1.Root">
-            <summary>
-            The root node of the Monte Carlo Tree Search
-            </summary>
-        </member>
-        <member name="P:MCTS.Core.TreeSearch`1.Finished">
-            <summary>
-            Signals if the Monte Carlo Tree Search has finished <para/>
-            Can be flagged as a result of all possible nodes being generated or a graceful exit
-            </summary>
-        </member>
         <member name="P:MCTS.Core.TreeSearch`1.NodesVisited">
             <summary>
             The total number of nodes that have been visited so far
-            </summary>
-        </member>
-        <member name="P:MCTS.Core.TreeSearch`1.PlayoutsPerSimulation">
-            <summary>
-            The amount of playouts each node undergoes during simulation
             </summary>
         </member>
         <member name="T:MCTS.Core.Move">

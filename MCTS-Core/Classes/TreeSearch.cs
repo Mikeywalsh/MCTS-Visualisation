@@ -14,17 +14,17 @@ namespace MCTS.Core
         /// <summary>
         /// The root node of the search tree
         /// </summary>
-        private T root;
+        public T Root { get; private set; }
 
         /// <summary>
         /// Signals if the MCTS algorithm has finished running
         /// </summary>
-        private bool finished;
+        public bool Finished { get; private set; }
 
         /// <summary>
         /// The amount of playouts each node undergoes during simulation
         /// </summary>
-        private int playoutsPerSimulation;
+        public int PlayoutsPerSimulation { get; private set; }
 
         /// <summary>
         /// Creates a new Monte Carlo Tree Search with the given game board
@@ -34,11 +34,11 @@ namespace MCTS.Core
         public TreeSearch(Board gameBoard, int playsPerSimulation)
         {
             //Create the root node of the search tree using the provided node type
-            root = (T)Activator.CreateInstance(typeof(T));
-            root.Initialise(null, gameBoard);
+            Root = (T)Activator.CreateInstance(typeof(T));
+            Root.Initialise(null, gameBoard);
 
             //Set the number of playouts to be done on each node during simulation
-            playoutsPerSimulation = playsPerSimulation;
+            PlayoutsPerSimulation = playsPerSimulation;
         }
 
         /// <summary>
@@ -47,11 +47,11 @@ namespace MCTS.Core
         /// </summary>
         public void Step()
         {
-            Node bestNode = Selection(root);
+            Node bestNode = Selection(Root);
 
             if (bestNode == null)
             {
-                finished = true;
+                Finished = true;
                 return;
             }
 
@@ -61,7 +61,7 @@ namespace MCTS.Core
             {
                 if (!child.IsLeafNode)
                 {
-                    Simulation(child, playoutsPerSimulation);
+                    Simulation(child, PlayoutsPerSimulation);
                 }
                 Backprogation(child);
             }
@@ -150,7 +150,7 @@ namespace MCTS.Core
             if (n.Visits == 0)
                 return float.MaxValue;
 
-            return n.AverageScore + (Math.Sqrt(2) * Math.Sqrt(Math.Log(root.Visits) / n.Visits));
+            return n.AverageScore + (Math.Sqrt(2) * Math.Sqrt(Math.Log(Root.Visits) / n.Visits));
         }
 
         /// <summary>
@@ -181,24 +181,7 @@ namespace MCTS.Core
         /// </summary>
         public void Finish()
         {
-            finished = true;
-        }
-
-        /// <summary>
-        /// The root node of the Monte Carlo Tree Search
-        /// </summary>
-        public Node Root
-        {
-            get { return root; }
-        }
-
-        /// <summary>
-        /// Signals if the Monte Carlo Tree Search has finished <para/>
-        /// Can be flagged as a result of all possible nodes being generated or a graceful exit
-        /// </summary>
-        public bool Finished
-        {
-            get { return finished; }
+            Finished = true;
         }
 
         /// <summary>
@@ -206,15 +189,7 @@ namespace MCTS.Core
         /// </summary>
         public int NodesVisited
         {
-            get { return root.Visits; }
-        }
-
-        /// <summary>
-        /// The amount of playouts each node undergoes during simulation
-        /// </summary>
-        public int PlayoutsPerSimulation
-        {
-            get { return playoutsPerSimulation; }
+            get { return Root.Visits; }
         }
     }
 }
