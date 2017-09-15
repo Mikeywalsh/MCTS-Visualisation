@@ -8,7 +8,6 @@ namespace MCTS.Core
     /// </summary>
     public abstract class GridBasedBoard : Board
     {
-
         /// <summary>
         /// The contents of this game board
         /// </summary>

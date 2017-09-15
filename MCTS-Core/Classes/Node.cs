@@ -100,7 +100,7 @@ namespace MCTS.Core
             }
 
             //Create a new child node for each possible move from this node
-            foreach (Move move in GameBoard.PossibleMoves())
+            foreach (IMove move in GameBoard.PossibleMoves())
             {
                 Board newBoard = GameBoard.Duplicate();
                 newBoard.MakeMove(move);

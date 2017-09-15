@@ -24,7 +24,7 @@ namespace MCTS.Core
         /// <summary>
         /// A list of all possible moves that can follow from this board state
         /// </summary>
-        protected List<Move> possibleMoves;
+        protected List<IMove> possibleMoves;
 
         /// <summary>
         /// Simulates random plays on this board until the game has ended
@@ -108,13 +108,13 @@ namespace MCTS.Core
         /// </summary>
         /// <param name="move">The move to make</param>
         /// <returns>A board instance which has had the passed in move made</returns>
-        public abstract Board MakeMove(Move move);
+        public abstract Board MakeMove(IMove move);
 
         /// <summary>
         /// Gets a list of possible moves that can follow from this board state
         /// </summary>
         /// <returns>A list of moves that can follow from this board state</returns>
-        public abstract List<Move> PossibleMoves();
+        public abstract List<IMove> PossibleMoves();
 
         /// <summary>
         /// Performs a deep copy of the current board state and returns the copy
@@ -140,6 +140,6 @@ namespace MCTS.Core
         /// Saves time by using knowledge of the last move to remove unnessessary computation
         /// </summary>
         /// <param name="move">The last move made before calling this method</param>
-        protected abstract void DetermineWinner(Move move);
+        protected abstract void DetermineWinner(IMove move);
     }
 }

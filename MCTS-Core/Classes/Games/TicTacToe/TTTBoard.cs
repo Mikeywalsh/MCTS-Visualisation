@@ -16,7 +16,7 @@ namespace MCTS.Core.Games
             boardContents = new int[3, 3];
 
             //Create the list of possible moves
-            possibleMoves = new List<Move>();
+            possibleMoves = new List<IMove>();
 
             //Add a move for every cell, since this is an empty game board
             for (int y = 0; y < Height; y++)
@@ -36,7 +36,7 @@ namespace MCTS.Core.Games
         {
             currentPlayer = board.CurrentPlayer;
             boardContents = (int[,])board.boardContents.Clone();
-            possibleMoves = new List<Move>(board.possibleMoves);
+            possibleMoves = new List<IMove>(board.possibleMoves);
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace MCTS.Core.Games
         /// </summary>
         /// <param name="move">The move to make</param>
         /// <returns>A reference to this Tic-Tac-Toe board</returns>
-        public override Board MakeMove(Move move)
+        public override Board MakeMove(IMove move)
         {
             TTTMove m = (TTTMove)move;
 
@@ -84,7 +84,7 @@ namespace MCTS.Core.Games
         /// Get a list of all possible moves for this Tic-Tac-Toe board instance
         /// </summary>
         /// <returns>A list of all possible moves for this Tic-Tac-Toe board instance</returns>
-        public override List<Move> PossibleMoves()
+        public override List<IMove> PossibleMoves()
         {
             return possibleMoves;
         }
@@ -123,7 +123,7 @@ namespace MCTS.Core.Games
         /// Uses knowledge of the last move to save computation time
         /// </summary>
         /// <param name="move">The last move made</param>
-        protected override void DetermineWinner(Move move)
+        protected override void DetermineWinner(IMove move)
         {
             TTTMove m = (TTTMove)move;
 

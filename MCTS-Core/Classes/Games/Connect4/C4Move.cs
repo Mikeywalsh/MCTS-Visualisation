@@ -3,7 +3,7 @@
     /// <summary>
     /// A move that can be made in Connect 4
     /// </summary>
-    public class C4Move : Move
+    public class C4Move : IMove
     {
         /// <summary>
         /// X position of this move

@@ -53,7 +53,7 @@
     <Compile Include="Classes\Games\Chess\ChessPieces.cs" />
     <Compile Include="Classes\GridBasedBoard.cs" />
     <Compile Include="Classes\TreeSearch.cs" />
-    <Compile Include="Classes\Move.cs" />
+    <Compile Include="Classes\IMove.cs" />
     <Compile Include="Classes\Node.cs" />
     <Compile Include="Classes\SimulateData.cs" />
     <Compile Include="Classes\ThreadSafeRandom.cs" />

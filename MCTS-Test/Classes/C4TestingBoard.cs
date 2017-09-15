@@ -15,7 +15,7 @@ namespace MCTS.Test
         /// </summary>
         /// <param name="move">The move to make</param>
         /// <returns>A reference to this testing Connect 4 board</returns>
-        public override Board MakeMove(Move move)
+        public override Board MakeMove(IMove move)
         {
             C4Move m = (C4Move)move;
 

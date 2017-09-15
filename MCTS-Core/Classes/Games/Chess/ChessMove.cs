@@ -6,7 +6,7 @@ namespace MCTS.Core.Games
     /// <summary>
     /// A move that can be made in Chess
     /// </summary>
-    public class ChessMove : Move
+    public class ChessMove : IMove
     {
         /// <summary>
         /// The chess piece being moves
