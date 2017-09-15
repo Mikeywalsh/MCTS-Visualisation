@@ -36,10 +36,10 @@ namespace MCTS.Core
         private float totalScore;
 
         /// <summary>
-        /// Signals if all this nodes children have been fully explored <para/>
+        /// A flag indicating if this node and its children, if it has any, have been fully explored <para/>
         /// Used to stop the MCTS algorithm from exploring exhausted nodes
         /// </summary>
-        private bool allChildrenFullyExplored;
+        private bool fullyExplored;
 
         /// <summary>
         /// The depth of this node in the game tree
@@ -70,7 +70,9 @@ namespace MCTS.Core
             if (IsLeafNode)
             {
                 children.Capacity = 0;
-                allChildrenFullyExplored = true;
+
+                //Since this is a leaf node, we know it has been fully explored upon creation
+                fullyExplored = true;
 
                 //Since this is a leaf node, we can tell the score without any simulation just from looking at the Winner attribute on the game board
                 totalScore = (gameBoard.Winner == gameBoard.PreviousPlayer ? 1 : 0);
@@ -110,29 +112,29 @@ namespace MCTS.Core
             }
 
             //Check if all children have been explored for this node
-            CheckChildrenFullyExplored();
+            CheckFullyExplored();
         }
 
         /// <summary>
         /// Checks this nodes children to see if they are all fully explored <para/>
         /// This is used so that during selection, the algorithm does not attempt to explore exhausted branches
         /// </summary>
-        public void CheckChildrenFullyExplored()
+        public void CheckFullyExplored()
         {
-            if (allChildrenFullyExplored)
+            if (fullyExplored)
                 return;
 
             foreach (Node child in children)
             {
-                if (!child.AllChildrenFullyExplored)
+                if (!child.FullyExplored)
                     return;
             }
 
-            allChildrenFullyExplored = true;
+            fullyExplored = true;
 
             if (parent != null)
             {
-                parent.CheckChildrenFullyExplored();
+                parent.CheckFullyExplored();
             }
         }
 
@@ -244,12 +246,12 @@ namespace MCTS.Core
         }
 
         /// <summary>
-        /// Signals if all this nodes children have been fully explored <para/>
+        /// A flag indicating if this node and its children, if it has any, have been fully explored <para/>
         /// Used to stop the MCTS algorithm from exploring exhausted nodes
         /// </summary>
-        public bool AllChildrenFullyExplored
+        public bool FullyExplored
         {
-            get { return allChildrenFullyExplored; }
+            get { return fullyExplored; }
         }
 
         /// <summary>

@@ -734,9 +734,9 @@
             The total score this node has as a result of direct simulation or backpropagation
             </summary>
         </member>
-        <member name="F:MCTS.Core.Node.allChildrenFullyExplored">
+        <member name="F:MCTS.Core.Node.fullyExplored">
             <summary>
-            Signals if all this nodes children have been fully explored <para/>
+            A flag indicating if this node and its children, if it has any, have been fully explored <para/>
             Used to stop the MCTS algorithm from exploring exhausted nodes
             </summary>
         </member>
@@ -767,7 +767,7 @@
             Creates a child for each possible move for this node and adds it to the list of children
             </summary>
         </member>
-        <member name="M:MCTS.Core.Node.CheckChildrenFullyExplored">
+        <member name="M:MCTS.Core.Node.CheckFullyExplored">
             <summary>
             Checks this nodes children to see if they are all fully explored <para/>
             This is used so that during selection, the algorithm does not attempt to explore exhausted branches
@@ -806,9 +806,9 @@
             <param name="updateScore">The score to update this node with</param>
             <param name="player">The current player on the board at this node</param>
         </member>
-        <member name="P:MCTS.Core.Node.AllChildrenFullyExplored">
+        <member name="P:MCTS.Core.Node.FullyExplored">
             <summary>
-            Signals if all this nodes children have been fully explored <para/>
+            A flag indicating if this node and its children, if it has any, have been fully explored <para/>
             Used to stop the MCTS algorithm from exploring exhausted nodes
             </summary>
         </member>

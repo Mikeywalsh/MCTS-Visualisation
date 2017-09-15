@@ -90,7 +90,7 @@ namespace MCTS.Core
 
                 foreach (Node child in n.Children)
                 {
-                    if (!child.AllChildrenFullyExplored)
+                    if (!child.FullyExplored)
                     {
                         double currentUCB1 = UCB1(child);
                         if (currentUCB1 > highestUCB)
