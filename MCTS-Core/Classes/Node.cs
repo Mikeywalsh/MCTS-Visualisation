@@ -186,7 +186,6 @@ namespace MCTS.Core
         /// </summary>
         /// <param name="board">The board to perform the simulations on</param>
         /// <param name="sim">The thread safe simulate data holder which allows multiple threads to record their results at once</param>
-        /// <returns>The sum of wins for the current player after simulating the board</returns>
         private static void SimulatePlayouts(Board board, SimulateData sim)
         {
             while (sim.Plays != sim.TargetPlays)
