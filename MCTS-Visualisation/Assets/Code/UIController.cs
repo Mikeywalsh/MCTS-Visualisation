@@ -181,7 +181,7 @@ public class UIController : MonoBehaviour
                 //Enable the button and set its text appropriately if there is a child for this button
                 uiController.ChildButtons[i].gameObject.SetActive(true);
                 uiController.ChildButtons[i].GetComponentInChildren<Text>().text = "Child: " + (i + 1) +
-                                                                                    "\nVisits: " + n.Children[i].Visits.ToString("0.00");
+                                                                                    "\nVisits: " + n.Children[i].UCBValue().ToString("0.000");
 
                 //Highlight the button if its corresponding node is the best child node to choose
                 if(n.Children[i] == bestChild)

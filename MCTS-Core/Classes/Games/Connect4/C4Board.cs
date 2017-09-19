@@ -12,16 +12,8 @@ namespace MCTS.Core.Games
         /// </summary>
         public C4Board()
         {
-            currentPlayer = 1;
+            currentPlayer = 2;
             boardContents = new int[7, 6];
-            //boardContents = new int[,] {
-            //    {1,1,2,0,0,0 },
-            //    {2,1,0,0,0,0 },
-            //    {1,2,1,2,2,2 },
-            //    {2,2,1,2,1,1 },
-            //    {1,2,1,2,2,1 },
-            //    {0,0,0,0,0,0 },
-            //    {1,1,1,2,2,0 } };
 
             //Create the list of possible moves
             possibleMoves = new List<IMove>();
@@ -43,6 +35,7 @@ namespace MCTS.Core.Games
         private C4Board(C4Board board)
         {
             currentPlayer = board.CurrentPlayer;
+            winner = board.Winner;
             boardContents = (int[,])board.boardContents.Clone();
             possibleMoves = new List<IMove>(board.possibleMoves);
         }

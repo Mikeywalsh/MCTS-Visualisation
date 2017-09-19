@@ -87,6 +87,7 @@ namespace MCTS.Core.Games
         private ChessBoard(ChessBoard board)
         {
             currentPlayer = board.CurrentPlayer;
+            winner = board.Winner;
             boardContents = (int[,])board.boardContents.Clone();
         }
 

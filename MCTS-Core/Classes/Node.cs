@@ -69,16 +69,11 @@ namespace MCTS.Core
 
             if (IsLeafNode)
             {
-                Children.Capacity = 0;
-
                 //Since this is a leaf node, we know it has been fully explored upon creation
                 FullyExplored = true;
-
-                //Since this is a leaf node, we can tell the score without any simulation just from looking at the Winner attribute on the game board
-                TotalScore = (GameBoard.Winner == GameBoard.PreviousPlayer ? 1 : 0);
-                Visits = 1;
             }
 
+            //Set the depth of this node
             if (ParentNode == null)
             {
                 Depth = 0;
@@ -174,9 +169,9 @@ namespace MCTS.Core
                 score = sim.Score;
             }
 
-            //Calculate the total score for the simulation job
-            TotalScore = score / playoutCount;
-            Visits = 1;
+            //Save the total score for the simulation job
+            TotalScore = score;
+            Visits = playoutCount;
         }
 
         /// <summary>
@@ -239,7 +234,7 @@ namespace MCTS.Core
         /// </summary>
         /// <param name="updateScore">The score to update this node with</param>
         /// <param name="player">The current player on the board at this node</param>
-        public void Update(float updateScore, int player)
+        public void Update(float updateScore, int visitsAmount, int player)
         {
             //Update this nodes score depending on the current player at this node
             if (GameBoard.CurrentPlayer == player)
@@ -248,20 +243,32 @@ namespace MCTS.Core
             }
 
             //Increment the Visits attribute
-            Visits++;
+            Visits+= visitsAmount;
 
             //Update this nodes Parents with the new score
             if (Parent != null)
             {
-                Parent.Update(updateScore, player);
+                Parent.Update(updateScore, visitsAmount, player);
             }
         }
 
         /// <summary>
-        /// Get the best child node of this node, used in calculating the best possible move from the point of this node <param/>
-        /// The best child is the child with the most visits, if two children have the same amount, then the child with the highest score is chosen
+        /// Gets the Upper Confidence Bound value of this node
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The Upper Confidence Bound value of this node</returns>
+        public double UCBValue()
+        {
+            if (Visits == 0)
+                return double.MaxValue;
+
+            return AverageScore + (Math.Sqrt(2) * Math.Sqrt(Math.Log(Parent.Visits) / Visits));
+        }
+
+        /// <summary>
+        /// Get the best child node of this node, used in calculating the best possible move from the point of this node <param/>
+        /// The best child is the child with the highest average score
+        /// </summary>
+        /// <returns>The child node with the highest score</returns>
         public Node GetBestChild()
         {
             //If this node doesnt have any children, or it has children that haven't been simulated, then return null
@@ -272,21 +279,14 @@ namespace MCTS.Core
 
             //Calculate the best child of the current node, so that the most optimal choice can be made
             Node bestChild = null;
-            float highestChildVisits = float.MinValue;
+            float bestChildScore = float.MinValue;
 
             foreach (Node child in Children)
             {
-                if (child.Visits > highestChildVisits)
+                if (child.AverageScore > bestChildScore)
                 {
                     bestChild = child;
-                    highestChildVisits = bestChild.Visits;
-                }
-                else if (child.Visits == highestChildVisits)
-                {
-                    if (child.TotalScore > bestChild.TotalScore)
-                    {
-                        bestChild = child;
-                    }
+                    bestChildScore = bestChild.AverageScore;
                 }
             }
 

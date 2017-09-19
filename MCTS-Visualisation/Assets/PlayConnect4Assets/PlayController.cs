@@ -45,25 +45,8 @@ public class PlayController : MonoBehaviour {
                 return;
             }
 
-            //If the search has finished, get the best child. The best child is the child with the most visits, if two children have the same amount, then the child with the highest score is chosen
-            Node bestChild = null;
-            float highestChildVisits = float.MinValue;
-
-            foreach (Node child in mcts.Root.Children)
-            {
-                if (child.Visits > highestChildVisits)
-                {
-                    bestChild = child;
-                    highestChildVisits = bestChild.Visits;
-                }
-                else if (child.Visits == highestChildVisits)
-                {
-                    if (child.TotalScore > bestChild.TotalScore)
-                    {
-                        bestChild = child;
-                    }
-                }
-            }
+            //If the search has finished, get the best child choice
+            Node bestChild = mcts.Root.GetBestChild();
 
             //Determine what move was made on the best child
             for (int y = 0; y < board.Height; y++)
@@ -86,7 +69,7 @@ public class PlayController : MonoBehaviour {
     public void StartAITurn()
     {
         //Initialise MCTS on the given game board
-        mcts = new TreeSearch<Node>(board, 100);
+        mcts = new TreeSearch<Node>(board, 500);
 
         //Run mcts in another thread
         aiThread = new Thread(new ThreadStart(() => RunMCTS(mcts)));
