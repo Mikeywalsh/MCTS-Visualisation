@@ -258,6 +258,42 @@ namespace MCTS.Core
         }
 
         /// <summary>
+        /// Get the best child node of this node, used in calculating the best possible move from the point of this node <param/>
+        /// The best child is the child with the most visits, if two children have the same amount, then the child with the highest score is chosen
+        /// </summary>
+        /// <returns></returns>
+        public Node GetBestChild()
+        {
+            //If this node doesnt have any children, or it has children that haven't been simulated, then return null
+            if(Visits <= 1)
+            {
+                return null;
+            }
+
+            //Calculate the best child of the current node, so that the most optimal choice can be made
+            Node bestChild = null;
+            float highestChildVisits = float.MinValue;
+
+            foreach (Node child in Children)
+            {
+                if (child.Visits > highestChildVisits)
+                {
+                    bestChild = child;
+                    highestChildVisits = bestChild.Visits;
+                }
+                else if (child.Visits == highestChildVisits)
+                {
+                    if (child.TotalScore > bestChild.TotalScore)
+                    {
+                        bestChild = child;
+                    }
+                }
+            }
+
+            return bestChild;
+        }
+
+        /// <summary>
         /// Signals if this node is a leaf node or not <para/>
         /// A node is a leaf node if its game has ended
         /// </summary>
