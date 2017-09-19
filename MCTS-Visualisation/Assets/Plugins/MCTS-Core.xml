@@ -789,6 +789,13 @@
             <param name="updateScore">The score to update this node with</param>
             <param name="player">The current player on the board at this node</param>
         </member>
+        <member name="M:MCTS.Core.Node.GetBestChild">
+            <summary>
+            Get the best child node of this node, used in calculating the best possible move from the point of this node <param/>
+            The best child is the child with the most visits, if two children have the same amount, then the child with the highest score is chosen
+            </summary>
+            <returns></returns>
+        </member>
         <member name="P:MCTS.Core.Node.IsLeafNode">
             <summary>
             Signals if this node is a leaf node or not <para/>

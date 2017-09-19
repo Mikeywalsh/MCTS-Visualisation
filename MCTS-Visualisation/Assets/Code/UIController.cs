@@ -169,26 +169,8 @@ public class UIController : MonoBehaviour
                                             "\nContents: " +
                                             n.GameBoard.ToString();
 
-        //Calculate the best child of the current node, so that the user can see the most optimal choice
-        Node bestChild = null;
-        float highestChildVisits = float.MinValue;
-        
-        //The best child is the child with the most visits, if two children have the same amount, then the child with the highest score is chosen
-        foreach(Node child in n.Children)
-        {
-            if(child.Visits > highestChildVisits)
-            {
-                bestChild = child;
-                highestChildVisits = bestChild.Visits;
-            }
-            else if(child.Visits == highestChildVisits)
-            {
-                if(child.TotalScore > bestChild.TotalScore)
-                {
-                    bestChild = child;
-                }
-            }
-        }
+        //Get the best child node of this node, if it has children nodes that have been simulated
+        Node bestChild = n.GetBestChild();
 
         //TODO - Dynamic button creation with a Scroll View instead of a predetermined amount of buttons
         //Update the child buttons with details about the referenced nodes children
