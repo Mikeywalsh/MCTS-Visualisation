@@ -1,0 +1,8 @@
+language: csharp
+solution: MCTS.sln
+install:
+  - nuget restore MCTS.sln
+  - nuget install NUnit.Console -Version 3.7.0 -OutputDirectory testrunner
+script:
+  - xbuild /p:Configuration=Debug MCTS.sln
+  - mono ./testrunner/NUnit.ConsoleRunner.3.7.0/tools/nunit3-console.exe ./MCTS-Test/bin/Debug/MCTS-Test.dll
