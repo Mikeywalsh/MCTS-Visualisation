@@ -17,9 +17,9 @@
         public int Plays { get; private set; }
 
         /// <summary>
-        /// The amount of wins so far
+        /// The total score so far
         /// </summary>
-        public int Wins { get; private set; }
+        public float Score { get; private set; }
 
         /// <summary>
         /// The quota for the amount of simulations to run
@@ -39,8 +39,8 @@
         /// Records a simulation result, incrementing <see cref="Plays"/>, and <see cref="Wins"/> if the simulation resulted in a win <para/>
         /// If the target play quoto has been reached, then do nothing
         /// </summary>
-        /// <param name="won">Did the simulation result in a victory?</param>
-        public void AddResult(bool won)
+        /// <param name="scoreResult">The resultant score from the playout</param>
+        public void AddResult(float scoreResult)
         {
             lock (mutex)
             {
@@ -48,8 +48,7 @@
                     return;
 
                 Plays++;
-                if (won)
-                    Wins++;
+                Score += scoreResult;
             }
         }
     }

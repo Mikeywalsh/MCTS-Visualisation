@@ -163,13 +163,13 @@ public class MainController : MonoBehaviour
     IEnumerator SetNodePosition(NodeObject node)
     {
         node.SetPosition();
+        nodesGenerated++;
 
         foreach (Node child in node.Children)
         {
             yield return new WaitForSeconds(.1f);
 
             StartCoroutine(SetNodePosition((NodeObject)child));
-            nodesGenerated++;
         }
     }
 

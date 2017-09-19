@@ -145,13 +145,13 @@ namespace MCTS.Core
         /// <param name="playoutCount">The amount of simulations to run, a larger amount will give better results</param>
         public void StartSimulatePlayouts(int playoutCount)
         {
-            int wins = 0;
+            float score = 0;
 
             //Run simulations in single thread mode if the amount of playouts is below the multi thread requirement. Run in multi thread mode otherwise
             if (playoutCount < MULTI_THREAD_MODE_PLAYOUT_REQUIREMENT)
             {
-                //Get the amount of wins for the simulation job
-                wins = SimulatePlayouts(GameBoard, playoutCount);
+                //Get the resultant score for the simulation job
+                score= SimulatePlayouts(GameBoard, playoutCount);
             }
             else
             {
@@ -170,13 +170,12 @@ namespace MCTS.Core
                 //Ensure the other tasks have finished
                 Task.WaitAll(tasks);
 
-                //Get the amount of wins for the simulation job
-                wins = sim.Wins;
+                //Get the resultant score for the simulation job
+                score = sim.Score;
             }
 
-            //Calculate the total simulation score for this node
-            float simScore = (float)wins / playoutCount;
-            TotalScore = simScore;
+            //Calculate the total score for the simulation job
+            TotalScore = score / playoutCount;
             Visits = 1;
         }
 
@@ -191,7 +190,18 @@ namespace MCTS.Core
             while (sim.Plays != sim.TargetPlays)
             {
                 int winner = board.SimulateUntilEnd();
-                sim.AddResult(winner == board.PreviousPlayer);
+                float score = 0;
+
+                if(winner == board.PreviousPlayer)
+                {
+                    score = 1;
+                }
+                else if(winner == 0)
+                {
+                    score = 0.5f;
+                }
+
+                sim.AddResult(score);
             }
         }
 
@@ -201,19 +211,26 @@ namespace MCTS.Core
         /// </summary>
         /// <param name="board">The board to perform the simulations on</param>
         /// <param name="playoutCount">The amount of simulations to run on this board</param>
-        /// <returns>The sum of wins for the current player after simulating the board</returns>
-        private static int SimulatePlayouts(Board board, int playoutCount)
+        /// <returns>The resultant score of the player at this node after simulating the board</returns>
+        private static float SimulatePlayouts(Board board, int playoutCount)
         {
-            int wins = 0;
+            float score = 0;
 
             for (int i = 0; i < playoutCount; i++)
             {
                 int winner = board.SimulateUntilEnd();
+
                 if (winner == board.PreviousPlayer)
-                    wins++;
+                {
+                    score += 1;
+                }
+                else if(winner == 0)
+                {
+                    score += 0.5f;
+                }
             }
 
-            return wins;
+            return score;
         }
 
         /// <summary>
@@ -228,10 +245,6 @@ namespace MCTS.Core
             if (GameBoard.CurrentPlayer == player)
             {
                 TotalScore += updateScore;
-            }
-            else
-            {
-                TotalScore += (1 - updateScore);
             }
 
             //Increment the Visits attribute

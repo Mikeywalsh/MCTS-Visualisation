@@ -171,14 +171,22 @@ public class UIController : MonoBehaviour
 
         //Calculate the best child of the current node, so that the user can see the most optimal choice
         Node bestChild = null;
-        float bestChildScore = float.MinValue;
+        float highestChildVisits = float.MinValue;
         
+        //The best child is the child with the most visits, if two children have the same amount, then the child with the highest score is chosen
         foreach(Node child in n.Children)
         {
-            if(child.AverageScore > bestChildScore)
+            if(child.Visits > highestChildVisits)
             {
                 bestChild = child;
-                bestChildScore = bestChild.AverageScore;
+                highestChildVisits = bestChild.Visits;
+            }
+            else if(child.Visits == highestChildVisits)
+            {
+                if(child.TotalScore > bestChild.TotalScore)
+                {
+                    bestChild = child;
+                }
             }
         }
 
@@ -191,7 +199,7 @@ public class UIController : MonoBehaviour
                 //Enable the button and set its text appropriately if there is a child for this button
                 uiController.ChildButtons[i].gameObject.SetActive(true);
                 uiController.ChildButtons[i].GetComponentInChildren<Text>().text = "Child: " + (i + 1) +
-                                                                                    "\nAvg Score: " + n.Children[i].AverageScore.ToString("0.00");
+                                                                                    "\nVisits: " + n.Children[i].Visits.ToString("0.00");
 
                 //Highlight the button if its corresponding node is the best child node to choose
                 if(n.Children[i] == bestChild)

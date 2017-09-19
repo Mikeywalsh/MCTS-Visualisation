@@ -771,7 +771,6 @@
             </summary>
             <param name="board">The board to perform the simulations on</param>
             <param name="sim">The thread safe simulate data holder which allows multiple threads to record their results at once</param>
-            <returns>The sum of wins for the current player after simulating the board</returns>
         </member>
         <member name="M:MCTS.Core.Node.SimulatePlayouts(MCTS.Core.Board,System.Int32)">
             <summary>
@@ -780,7 +779,7 @@
             </summary>
             <param name="board">The board to perform the simulations on</param>
             <param name="playoutCount">The amount of simulations to run on this board</param>
-            <returns>The sum of wins for the current player after simulating the board</returns>
+            <returns>The resultant score of the player at this node after simulating the board</returns>
         </member>
         <member name="M:MCTS.Core.Node.Update(System.Single,System.Int32)">
             <summary>
@@ -818,9 +817,9 @@
             The amount of plays so far
             </summary>
         </member>
-        <member name="P:MCTS.Core.SimulateData.Wins">
+        <member name="P:MCTS.Core.SimulateData.Score">
             <summary>
-            The amount of wins so far
+            The total score so far
             </summary>
         </member>
         <member name="P:MCTS.Core.SimulateData.TargetPlays">
@@ -834,12 +833,12 @@
             </summary>
             <param name="target">The target amount of simulations to run</param>
         </member>
-        <member name="M:MCTS.Core.SimulateData.AddResult(System.Boolean)">
+        <member name="M:MCTS.Core.SimulateData.AddResult(System.Single)">
             <summary>
-            Records a simulation result, incrementing <see cref="P:MCTS.Core.SimulateData.Plays"/>, and <see cref="P:MCTS.Core.SimulateData.Wins"/> if the simulation resulted in a win <para/>
+            Records a simulation result, incrementing <see cref="P:MCTS.Core.SimulateData.Plays"/>, and <see cref="!:Wins"/> if the simulation resulted in a win <para/>
             If the target play quoto has been reached, then do nothing
             </summary>
-            <param name="won">Did the simulation result in a victory?</param>
+            <param name="scoreResult">The resultant score from the playout</param>
         </member>
         <member name="T:MCTS.Core.ThreadSafeRandom">
             <summary>

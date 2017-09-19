@@ -39,6 +39,9 @@ namespace MCTS.Core
 
             //Set the number of playouts to be done on each node during simulation
             PlayoutsPerSimulation = playsPerSimulation;
+
+            //Simulate the root node to begin
+            Simulation(Root, PlayoutsPerSimulation);
         }
 
         /// <summary>
@@ -136,7 +139,7 @@ namespace MCTS.Core
         {
             if (n.Parent != null)
             {
-                n.Parent.Update(n.AverageScore, n.GameBoard.CurrentPlayer);
+                n.Parent.Update(n.TotalScore, n.GameBoard.CurrentPlayer);
             }
         }
 
