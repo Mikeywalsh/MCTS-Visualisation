@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641258, b: 0.574817, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -903,7 +903,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Child x
 
-    Visits: y'
+    Score: y'
 --- !u!222 &267182057
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1047,7 +1047,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Child x
 
-    Visits: y'
+    Score: y'
 --- !u!222 &360643043
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1123,7 +1123,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Child x
 
-    Visits: y'
+    Score: y'
 --- !u!222 &374721485
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2260,7 +2260,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Child x
 
-    Visits: y'
+    Score: y'
 --- !u!222 &877213998
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2597,7 +2597,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Child x
 
-    Visits: y'
+    Score: y'
 --- !u!222 &1202649824
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3057,7 +3057,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Child x
 
-    Visits: y'
+    Score: y'
 --- !u!222 &1432209676
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3328,7 +3328,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Child x
 
-    Visits: y'
+    Score: y'
 --- !u!222 &1516478350
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3588,7 +3588,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Child x
 
-    Visits: y'
+    Score: y'
 --- !u!222 &1674991657
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4059,7 +4059,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Child x
 
-    Visits: y'
+    Score: y'
 --- !u!222 &1795604398
 CanvasRenderer:
   m_ObjectHideFlags: 0

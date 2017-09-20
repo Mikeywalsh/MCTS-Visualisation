@@ -658,13 +658,6 @@
             </summary>
             <param name="n">The child to update the hierachy of</param>
         </member>
-        <member name="M:MCTS.Core.TreeSearch`1.UCB1(MCTS.Core.Node)">
-            <summary>
-            Gets the Upper Confidence Bound 1 value of a given node
-            </summary>
-            <param name="n">The node to get the value of</param>
-            <returns>The Upper Confidence Bound 1 value of the given node</returns>
-        </member>
         <member name="M:MCTS.Core.TreeSearch`1.BestNodeChoice(MCTS.Core.Node)">
             <summary>
             Given a root node, will choose a child which maximises reward, based on the game tree constructed so far
@@ -739,6 +732,16 @@
             The minimum amount of playouts needed before simulations will be ran in multi thread mode
             </summary>
         </member>
+        <member name="F:MCTS.Core.Node.WIN_SCORE">
+            <summary>
+            The score awarded to a player after a win
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.Node.DRAW_SCORE">
+            <summary>
+            The score awarded to a player after a draw
+            </summary>
+        </member>
         <member name="M:MCTS.Core.Node.Initialise(MCTS.Core.Node,MCTS.Core.Board)">
             <summary>
             Creates a new node with the given board and Parent node
@@ -789,10 +792,16 @@
             <param name="updateScore">The score to update this node with</param>
             <param name="player">The current player on the board at this node</param>
         </member>
+        <member name="M:MCTS.Core.Node.UCBValue">
+            <summary>
+            Gets the Upper Confidence Bound 1 value of this node
+            </summary>
+            <returns>The Upper Confidence Bound 1 value of this node</returns>
+        </member>
         <member name="M:MCTS.Core.Node.GetBestChild">
             <summary>
             Get the best child node of this node, used in calculating the best possible move from the point of this node <param/>
-            The best child is the child with the most visits, if two children have the same amount, then the child with the highest score is chosen
+            The best child is the child with the highest score
             </summary>
             <returns></returns>
         </member>

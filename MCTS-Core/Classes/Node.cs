@@ -280,8 +280,23 @@ namespace MCTS.Core
         }
 
         /// <summary>
+        /// Gets the Upper Confidence Bound 1 value of this node
+        /// </summary>
+        /// <returns>The Upper Confidence Bound 1 value of this node</returns>
+        public double UCBValue()
+        {
+            //If this node hasnt been explored, return the max value
+            if(Visits == 0)
+            {
+                return double.MaxValue;
+            }
+
+            return AverageScore + Math.Sqrt(2 * Math.Log(Parent.Visits) / Visits);
+        }
+
+        /// <summary>
         /// Get the best child node of this node, used in calculating the best possible move from the point of this node <param/>
-        /// The best child is the child with the most visits, if two children have the same amount, then the child with the highest score is chosen
+        /// The best child is the child with the highest score
         /// </summary>
         /// <returns></returns>
         public Node GetBestChild()
@@ -294,21 +309,14 @@ namespace MCTS.Core
 
             //Calculate the best child of the current node, so that the most optimal choice can be made
             Node bestChild = null;
-            float highestChildVisits = float.MinValue;
+            float highestChildScore = float.MinValue;
 
             foreach (Node child in Children)
             {
-                if (child.Visits > highestChildVisits)
+                if (child.AverageScore > highestChildScore)
                 {
                     bestChild = child;
-                    highestChildVisits = bestChild.Visits;
-                }
-                else if (child.Visits == highestChildVisits)
-                {
-                    if (child.TotalScore > bestChild.TotalScore)
-                    {
-                        bestChild = child;
-                    }
+                    highestChildScore = bestChild.AverageScore;
                 }
             }
 

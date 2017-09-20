@@ -95,7 +95,7 @@ namespace MCTS.Core
                 {
                     if (!child.FullyExplored)
                     {
-                        double currentUCB1 = UCB1(child);
+                        double currentUCB1 = child.UCBValue();
                         if (currentUCB1 > highestUCB)
                         {
                             highestUCB = currentUCB1;
@@ -141,19 +141,6 @@ namespace MCTS.Core
             {
                 n.Parent.Update(n.TotalScore, n.GameBoard.CurrentPlayer);
             }
-        }
-
-        /// <summary>
-        /// Gets the Upper Confidence Bound 1 value of a given node
-        /// </summary>
-        /// <param name="n">The node to get the value of</param>
-        /// <returns>The Upper Confidence Bound 1 value of the given node</returns>
-        private double UCB1(Node n)
-        {
-            if (n.Visits == 0)
-                return float.MaxValue;
-
-            return n.AverageScore + (Math.Sqrt(2) * Math.Sqrt(Math.Log(Root.Visits) / n.Visits));
         }
 
         /// <summary>
