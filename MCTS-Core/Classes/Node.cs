@@ -57,6 +57,16 @@ namespace MCTS.Core
         private const int MULTI_THREAD_MODE_PLAYOUT_REQUIREMENT = 50;
 
         /// <summary>
+        /// The score awarded to a player after a win
+        /// </summary>
+        private const float WIN_SCORE = 1;
+
+        /// <summary>
+        /// The score awarded to a player after a draw
+        /// </summary>
+        private const float DRAW_SCORE = 0.5f;
+
+        /// <summary>
         /// Creates a new node with the given board and Parent node
         /// </summary>
         /// <param name="ParentNode">The Parent of this node, null if this is the root node</param>
@@ -75,7 +85,19 @@ namespace MCTS.Core
                 FullyExplored = true;
 
                 //Since this is a leaf node, we can tell the score without any simulation just from looking at the Winner attribute on the game board
-                TotalScore = (GameBoard.Winner == GameBoard.PreviousPlayer ? 1 : 0);
+                if(GameBoard.Winner == GameBoard.PreviousPlayer)
+                {
+                    TotalScore = WIN_SCORE;
+                }
+                else if(GameBoard.Winner == 0)
+                {
+                    TotalScore = DRAW_SCORE;
+                }
+                else
+                {
+                    TotalScore = 0;
+                }
+
                 Visits = 1;
             }
 
@@ -194,11 +216,11 @@ namespace MCTS.Core
 
                 if(winner == board.PreviousPlayer)
                 {
-                    score = 1;
+                    score = WIN_SCORE;
                 }
                 else if(winner == 0)
                 {
-                    score = 0.5f;
+                    score = DRAW_SCORE;
                 }
 
                 sim.AddResult(score);
@@ -222,11 +244,11 @@ namespace MCTS.Core
 
                 if (winner == board.PreviousPlayer)
                 {
-                    score += 1;
+                    score += WIN_SCORE;
                 }
                 else if(winner == 0)
                 {
-                    score += 0.5f;
+                    score += DRAW_SCORE;
                 }
             }
 
