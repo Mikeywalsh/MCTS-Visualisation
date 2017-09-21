@@ -801,7 +801,7 @@
         <member name="M:MCTS.Core.Node.GetBestChild">
             <summary>
             Get the best child node of this node, used in calculating the best possible move from the point of this node <param/>
-            The best child is the child with the highest score
+            The best child is the child with the highest amount of visits
             </summary>
             <returns></returns>
         </member>

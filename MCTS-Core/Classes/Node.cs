@@ -296,7 +296,7 @@ namespace MCTS.Core
 
         /// <summary>
         /// Get the best child node of this node, used in calculating the best possible move from the point of this node <param/>
-        /// The best child is the child with the highest score
+        /// The best child is the child with the highest amount of visits
         /// </summary>
         /// <returns></returns>
         public Node GetBestChild()
@@ -309,14 +309,21 @@ namespace MCTS.Core
 
             //Calculate the best child of the current node, so that the most optimal choice can be made
             Node bestChild = null;
-            float highestChildScore = float.MinValue;
+            float highestChildVisits = float.MinValue;
 
             foreach (Node child in Children)
             {
-                if (child.AverageScore > highestChildScore)
+                if (child.Visits > highestChildVisits)
                 {
                     bestChild = child;
-                    highestChildScore = bestChild.AverageScore;
+                    highestChildVisits = bestChild.Visits;
+                }
+                else if(child.Visits == highestChildVisits)
+                {
+                    if (child.AverageScore > bestChild.AverageScore)
+                    {
+                        bestChild = child;
+                    }
                 }
             }
 
