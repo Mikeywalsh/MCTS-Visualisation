@@ -55,7 +55,6 @@
     <Compile Include="Classes\TreeSearch.cs" />
     <Compile Include="Classes\IMove.cs" />
     <Compile Include="Classes\Node.cs" />
-    <Compile Include="Classes\SimulateData.cs" />
     <Compile Include="Classes\ThreadSafeRandom.cs" />
     <Compile Include="Classes\Games\TicTacToe\TTTBoard.cs" />
     <Compile Include="Classes\Games\TicTacToe\TTTMove.cs" />

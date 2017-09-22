@@ -138,11 +138,11 @@ public class MainController : MonoBehaviour
         //Display information on the progress bar about how many node objects have been created, until every node in the tree has its own gameobject
         if (!allNodesGenerated)
         {
-            if (nodesGenerated < mcts.NodesVisited)
+            if (nodesGenerated < mcts.UniqueNodes)
             {
-                UIController.UpdateProgressBar(0.5f + ((float)nodesGenerated / mcts.NodesVisited / 2), "Creating node objects: " + nodesGenerated + "/" + mcts.NodesVisited);
+                UIController.UpdateProgressBar(0.5f + ((float)nodesGenerated / mcts.NodesVisited / 2), "Creating node objects: " + nodesGenerated + "/" + mcts.UniqueNodes);
             }
-            else if (nodesGenerated == mcts.NodesVisited)
+            else if (nodesGenerated == mcts.UniqueNodes)
             {
                 //If every node has had a gameobject created for it, then switch to the navigation UI and start to render the game tree
                 UIController.SwitchToNavigationUI();

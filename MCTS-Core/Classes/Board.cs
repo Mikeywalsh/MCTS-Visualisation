@@ -27,10 +27,20 @@ namespace MCTS.Core
         protected List<IMove> possibleMoves;
 
         /// <summary>
+        /// The score awarded to a player after a win
+        /// </summary>
+        private const float WIN_SCORE = 1;
+
+        /// <summary>
+        /// The score awarded to a player after a draw
+        /// </summary>
+        private const float DRAW_SCORE = 0.5f;
+
+        /// <summary>
         /// Simulates random plays on this board until the game has ended
         /// </summary>
-        /// <returns>The value of the winner variable at the end of the game</returns>
-        public int SimulateUntilEnd()
+        /// <returns>The resultant board after it has been simulated</returns>
+        public Board SimulateUntilEnd()
         {
             Board temp = Duplicate();
 
@@ -39,7 +49,27 @@ namespace MCTS.Core
                 temp.MakeMove(temp.possibleMoves.PickRandom());
             }
 
-            return temp.winner;
+            return temp;
+        }
+
+        /// <summary>
+        /// Gets the score for the provided player at this board state<para/>
+        /// No score is returned if the game is not over
+        /// </summary>
+        /// <param name="player">The player to get the score of at this board state</param>
+        /// <returns>The score for the given player at this board state</returns>
+        public float GetScore(int player)
+        {
+            if(winner == 0)
+            {
+                return DRAW_SCORE;
+            }
+            else if(winner == player)
+            {
+                return WIN_SCORE;
+            }
+
+            return 0;
         }
 
         /// <summary>

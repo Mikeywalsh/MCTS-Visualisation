@@ -163,6 +163,7 @@ public class UIController : MonoBehaviour
     {
         //Show information about the current node
         uiController.CurrentNodeText.text = "Current Node Depth: " + n.Depth +
+                                            "\nCurrent Player: " + n.GameBoard.CurrentPlayer +
                                             "\nTotal Score: " + n.TotalScore +
                                             "\nAverage Score: " + n.AverageScore +
                                             "\nVisits: " + n.Visits +

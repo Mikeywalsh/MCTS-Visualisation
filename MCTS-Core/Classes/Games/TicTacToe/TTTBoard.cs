@@ -35,6 +35,7 @@ namespace MCTS.Core.Games
         private TTTBoard(TTTBoard board)
         {
             currentPlayer = board.CurrentPlayer;
+            winner = board.Winner;
             boardContents = (int[,])board.boardContents.Clone();
             possibleMoves = new List<IMove>(board.possibleMoves);
         }

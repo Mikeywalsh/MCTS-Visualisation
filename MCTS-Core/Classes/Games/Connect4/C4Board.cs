@@ -43,6 +43,7 @@ namespace MCTS.Core.Games
         private C4Board(C4Board board)
         {
             currentPlayer = board.CurrentPlayer;
+            winner = board.Winner;
             boardContents = (int[,])board.boardContents.Clone();
             possibleMoves = new List<IMove>(board.possibleMoves);
         }
