@@ -26,6 +26,8 @@ namespace MCTS.Core
         /// </summary>
         public int PlayoutsPerSimulation { get; private set; }
 
+        public int UniqueNodes { get; private set; }
+
         /// <summary>
         /// Creates a new Monte Carlo Tree Search with the given game board
         /// </summary>
@@ -40,8 +42,7 @@ namespace MCTS.Core
             //Set the number of playouts to be done on each node during simulation
             PlayoutsPerSimulation = playsPerSimulation;
 
-            //Simulate the root node to begin
-            Simulation(Root, PlayoutsPerSimulation);
+            UniqueNodes = 1;
         }
 
         /// <summary>
@@ -50,20 +51,32 @@ namespace MCTS.Core
         /// </summary>
         public void Step()
         {
-            Node bestNode = Selection(Root);
+            //Selection
+            Node currentNode = Selection(Root);
 
-            if (bestNode == null)
+            if (currentNode == null)
             {
                 Finished = true;
                 return;
             }
 
-            Expansion(bestNode);
+            //Expansion
+            Node nodeBeforeExpansion = currentNode;
+            currentNode = currentNode.Expand();
 
-            foreach (Node child in bestNode.Children)
+            if(nodeBeforeExpansion != currentNode)
             {
-                Simulation(child, PlayoutsPerSimulation);
-                Backprogation(child);
+                UniqueNodes++;
+            }
+            
+            //Simulation
+            Board resultState = currentNode.GameBoard.SimulateUntilEnd();
+
+            //Backpropogation
+            while(currentNode != null)
+            {
+                currentNode.Update(resultState.GetScore(currentNode.GameBoard.PreviousPlayer));
+                currentNode = currentNode.Parent;
             }
         }
 
@@ -79,7 +92,7 @@ namespace MCTS.Core
             {
                 return null;
             }
-            else if (n.Children.Count == 0)
+            else if (n.Children.Count == 0 || n.UnexpandedMoves.Count != 0)
             {
                 return n;
             }
@@ -90,53 +103,18 @@ namespace MCTS.Core
 
                 foreach (Node child in n.Children)
                 {
-                    if (!child.FullyExplored)
-                    {
-                        double currentUCB = child.UCBValue();
-                        if (currentUCB > highestUCB)
+                    //if (!child.FullyExplored)
+                    //{
+                        double currentUCB1 = child.UCBValue();
+                        if (currentUCB1 > highestUCB)
                         {
-                            highestUCB = currentUCB;
+                            highestUCB = currentUCB1;
                             highestUCBChild = child;
                         }
-                    }
+                    //}
                 }
 
                 return Selection(highestUCBChild);
-            }
-        }
-
-        /// <summary>
-        /// The second step of MCTS <para/>
-        /// A given node is expanded, creating children nodes containing possible plays which can be simulated in the next step
-        /// </summary>
-        /// <param name="n">The node to expand</param>
-        private void Expansion(Node n)
-        {
-            n.CreateAllChildren();
-        }
-
-        /// <summary>
-        /// The third step of MCTS <para/>
-        /// Simulates a given number of random playouts from the given node to obtain an average score of the node <para/>
-        /// The average score is then backpropogated up the tree to the root node
-        /// </summary>
-        /// <param name="n">The node to simulate the playout of</param>
-        /// <param name="playoutAmount">The amount of playout simulations to run</param>
-        private void Simulation(Node n, int playoutAmount)
-        {
-            n.StartSimulatePlayouts(playoutAmount);
-        }
-
-        /// <summary>
-        /// The fourth and final step of MCTS <para/>
-        /// Updates the given nodes parent hierarchy with its score value
-        /// </summary>
-        /// <param name="n">The child to update the hierachy of</param>
-        private void Backprogation(Node n)
-        {
-            if (n.Parent != null)
-            {
-                n.Parent.Update(n.TotalScore, PlayoutsPerSimulation, n.GameBoard.CurrentPlayer);
             }
         }
 
@@ -176,7 +154,7 @@ namespace MCTS.Core
         /// </summary>
         public int NodesVisited
         {
-            get { return Root.Visits / PlayoutsPerSimulation; }
+            get { return Root.Visits; }
         }
     }
 }

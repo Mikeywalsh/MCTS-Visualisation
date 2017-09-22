@@ -163,6 +163,7 @@ public class UIController : MonoBehaviour
     {
         //Show information about the current node
         uiController.CurrentNodeText.text = "Current Node Depth: " + n.Depth +
+                                            "\nCurrent Player: " + n.GameBoard.CurrentPlayer +
                                             "\nTotal Score: " + n.TotalScore +
                                             "\nAverage Score: " + n.AverageScore +
                                             "\nVisits: " + n.Visits +
@@ -181,7 +182,7 @@ public class UIController : MonoBehaviour
                 //Enable the button and set its text appropriately if there is a child for this button
                 uiController.ChildButtons[i].gameObject.SetActive(true);
                 uiController.ChildButtons[i].GetComponentInChildren<Text>().text = "Child: " + (i + 1) +
-                                                                                    "\nVisits: " + n.Children[i].UCBValue().ToString("0.000");
+                                                                                    "\nVisits: " + n.Children[i].Visits;
 
                 //Highlight the button if its corresponding node is the best child node to choose
                 if(n.Children[i] == bestChild)

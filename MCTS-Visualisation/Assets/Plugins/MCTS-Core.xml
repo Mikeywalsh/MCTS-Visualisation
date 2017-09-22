@@ -28,11 +28,29 @@
             A list of all possible moves that can follow from this board state
             </summary>
         </member>
+        <member name="F:MCTS.Core.Board.WIN_SCORE">
+            <summary>
+            The score awarded to a player after a win
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.Board.DRAW_SCORE">
+            <summary>
+            The score awarded to a player after a draw
+            </summary>
+        </member>
         <member name="M:MCTS.Core.Board.SimulateUntilEnd">
             <summary>
             Simulates random plays on this board until the game has ended
             </summary>
-            <returns>The value of the winner variable at the end of the game</returns>
+            <returns>The resultant board after it has been simulated</returns>
+        </member>
+        <member name="M:MCTS.Core.Board.GetScore(System.Int32)">
+            <summary>
+            Gets the score for the provided player at this board state<para/>
+            No score is returned if the game is not over
+            </summary>
+            <param name="player">The player to get the score of at this board state</param>
+            <returns>The score for the given player at this board state</returns>
         </member>
         <member name="P:MCTS.Core.Board.CurrentPlayer">
             <summary>
@@ -635,29 +653,6 @@
             <param name="n">The current root node in the search</param>
             <returns>The best node to expand, obtained using Upper Confidence Bound 1</returns>
         </member>
-        <member name="M:MCTS.Core.TreeSearch`1.Expansion(MCTS.Core.Node)">
-            <summary>
-            The second step of MCTS <para/>
-            A given node is expanded, creating children nodes containing possible plays which can be simulated in the next step
-            </summary>
-            <param name="n">The node to expand</param>
-        </member>
-        <member name="M:MCTS.Core.TreeSearch`1.Simulation(MCTS.Core.Node,System.Int32)">
-            <summary>
-            The third step of MCTS <para/>
-            Simulates a given number of random playouts from the given node to obtain an average score of the node <para/>
-            The average score is then backpropogated up the tree to the root node
-            </summary>
-            <param name="n">The node to simulate the playout of</param>
-            <param name="playoutAmount">The amount of playout simulations to run</param>
-        </member>
-        <member name="M:MCTS.Core.TreeSearch`1.Backprogation(MCTS.Core.Node)">
-            <summary>
-            The fourth and final step of MCTS <para/>
-            Updates the given nodes parent hierarchy with its score value
-            </summary>
-            <param name="n">The child to update the hierachy of</param>
-        </member>
         <member name="M:MCTS.Core.TreeSearch`1.BestNodeChoice(MCTS.Core.Node)">
             <summary>
             Given a root node, will choose a child which maximises reward, based on the game tree constructed so far
@@ -711,12 +706,6 @@
             The total score this node has as a result of direct simulation or backpropagation
             </summary>
         </member>
-        <member name="P:MCTS.Core.Node.FullyExplored">
-            <summary>
-            A flag indicating if this node and its Children, if it has any, have been fully explored <para/>
-            Used to stop the MCTS algorithm from exploring exhausted nodes
-            </summary>
-        </member>
         <member name="P:MCTS.Core.Node.Depth">
             <summary>
             The Depth of this node in the game tree
@@ -739,62 +728,30 @@
             <param name="ParentNode">The Parent of this node, null if this is the root node</param>
             <param name="board">The game board for this node</param>
         </member>
-        <member name="M:MCTS.Core.Node.CreateAllChildren">
+        <member name="M:MCTS.Core.Node.Expand">
             <summary>
-            Creates a child for each possible move for this node and adds it to the list of Children
+            If there are still possible moves left for this node, create a child node with one of them played on it
             </summary>
         </member>
-        <member name="M:MCTS.Core.Node.CheckFullyExplored">
+        <member name="M:MCTS.Core.Node.Update(System.Single)">
             <summary>
-            Checks this nodes Children to see if they are all fully explored <para/>
-            This is used so that during selection, the algorithm does not attempt to explore exhausted branches
-            </summary>
-        </member>
-        <member name="M:MCTS.Core.Node.StartSimulatePlayouts(System.Int32)">
-            <summary>
-            Simulates a number of playouts from this node and adds the mean score value to this nodes score attribute <para/>
-            Uses <see cref="T:System.Threading.Tasks.Task"/>'s to split the simulation workload across multiple threads
-            </summary>
-            <param name="playoutCount">The amount of simulations to run, a larger amount will give better results</param>
-        </member>
-        <member name="M:MCTS.Core.Node.SimulatePlayouts(MCTS.Core.Board,MCTS.Core.SimulateData)">
-            <summary>
-            Used in multi thread mode <para/>
-            For use with tasks to simulate a given amount of playouts for a board
-            </summary>
-            <param name="board">The board to perform the simulations on</param>
-            <param name="sim">The thread safe simulate data holder which allows multiple threads to record their results at once</param>
-        </member>
-        <member name="M:MCTS.Core.Node.SimulatePlayouts(MCTS.Core.Board,System.Int32)">
-            <summary>
-            Used in single thread mode <para/>
-            Simulates an amount of playouts on a given board
-            </summary>
-            <param name="board">The board to perform the simulations on</param>
-            <param name="playoutCount">The amount of simulations to run on this board</param>
-            <returns>The resultant score of the player at this node after simulating the board</returns>
-        </member>
-        <member name="M:MCTS.Core.Node.Update(System.Single,System.Int32,System.Int32)">
-            <summary>
-            Updates the score and Visits values of this node and its Parents, recursively <para/>
+            Updates the score and Visits values of this node and its Parents
             Used during backpropagation
             </summary>
-            <param name="updateScore">The score to update this node with</param>
-            <param name="player">The current player on the board at this node</param>
+            <param name="score">The score to update this node with</param>
         </member>
         <member name="M:MCTS.Core.Node.UCBValue">
             <summary>
-            Gets the Upper Confidence Bound value of this node
+            Gets the Upper Confidence Bound 1 value of this node
             </summary>
-            <param name="n">The node to get the value of</param>
-            <returns>The Upper Confidence Bound value of this node</returns>
+            <returns>The Upper Confidence Bound 1 value of this node</returns>
         </member>
         <member name="M:MCTS.Core.Node.GetBestChild">
             <summary>
             Get the best child node of this node, used in calculating the best possible move from the point of this node <param/>
-            The best child is the child with the highest average score
+            The best child is the child with the highest amount of visits
             </summary>
-            <returns>The child node with the highest score</returns>
+            <returns></returns>
         </member>
         <member name="P:MCTS.Core.Node.IsLeafNode">
             <summary>
@@ -807,45 +764,6 @@
             The average score for this node <para/>
             Determined from the total score and number of Visits
             </summary>
-        </member>
-        <member name="T:MCTS.Core.SimulateData">
-            <summary>
-            A thread safe class which holds data about a simulation job <para/>
-            Allows multiple threads to perform simulations and record the results, until a quota has been met
-            </summary>
-        </member>
-        <member name="F:MCTS.Core.SimulateData.mutex">
-            <summary>
-            A lock used 
-            </summary>
-        </member>
-        <member name="P:MCTS.Core.SimulateData.Plays">
-            <summary>
-            The amount of plays so far
-            </summary>
-        </member>
-        <member name="P:MCTS.Core.SimulateData.Score">
-            <summary>
-            The total score so far
-            </summary>
-        </member>
-        <member name="P:MCTS.Core.SimulateData.TargetPlays">
-            <summary>
-            The quota for the amount of simulations to run
-            </summary>
-        </member>
-        <member name="M:MCTS.Core.SimulateData.#ctor(System.Int32)">
-            <summary>
-            Creates a new SimulateData instance with the given target simulation quota
-            </summary>
-            <param name="target">The target amount of simulations to run</param>
-        </member>
-        <member name="M:MCTS.Core.SimulateData.AddResult(System.Single)">
-            <summary>
-            Records a simulation result, incrementing <see cref="P:MCTS.Core.SimulateData.Plays"/>, and <see cref="!:Wins"/> if the simulation resulted in a win <para/>
-            If the target play quoto has been reached, then do nothing
-            </summary>
-            <param name="scoreResult">The resultant score from the playout</param>
         </member>
         <member name="T:MCTS.Core.ThreadSafeRandom">
             <summary>

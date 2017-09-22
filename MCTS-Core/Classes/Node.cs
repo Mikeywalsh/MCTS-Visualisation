@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MCTS.Core.Games;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -35,11 +36,7 @@ namespace MCTS.Core
         /// </summary>
         public float TotalScore { get; private set; }
 
-        /// <summary>
-        /// A flag indicating if this node and its Children, if it has any, have been fully explored <para/>
-        /// Used to stop the MCTS algorithm from exploring exhausted nodes
-        /// </summary>
-        public bool FullyExplored { get; private set; }
+        public List<IMove> UnexpandedMoves { get; private set; }
 
         /// <summary>
         /// The Depth of this node in the game tree
@@ -66,14 +63,8 @@ namespace MCTS.Core
             Parent = ParentNode;
             GameBoard = board;
             Children = new List<Node>(GameBoard.PossibleMoves().Count);
+            UnexpandedMoves = new List<IMove>(GameBoard.PossibleMoves());
 
-            if (IsLeafNode)
-            {
-                //Since this is a leaf node, we know it has been fully explored upon creation
-                FullyExplored = true;
-            }
-
-            //Set the depth of this node
             if (ParentNode == null)
             {
                 Depth = 0;
@@ -85,208 +76,90 @@ namespace MCTS.Core
         }
 
         /// <summary>
-        /// Creates a child for each possible move for this node and adds it to the list of Children
+        /// If there are still possible moves left for this node, create a child node with one of them played on it
         /// </summary>
-        public void CreateAllChildren()
+        public Node Expand()
         {
-            if (IsLeafNode)
+            if (UnexpandedMoves.Count == 0 || IsLeafNode)
             {
-                throw new InvalidNodeException("This node is a leaf node, cannot create Children for it");
+                return this;
             }
 
-            //Create a new child node for each possible move from this node
-            foreach (IMove move in GameBoard.PossibleMoves())
-            {
-                Board newBoard = GameBoard.Duplicate();
-                newBoard.MakeMove(move);
+            //Create a new child node
+            TTTMove move = (TTTMove)UnexpandedMoves.PickRandom();
 
-                //Create a child node with the same type as this node, initialise it, and add it to the list of Children
-                Node child = (Node)Activator.CreateInstance(GetType());
-                child.Initialise(this, newBoard);
-                Children.Add(child);
-            }
+            Board newBoard = GameBoard.Duplicate();
+            newBoard.MakeMove(move);
 
-            //Check if all Children have been explored for this node
-            CheckFullyExplored();
+            //Create a child node with the same type as this node, initialise it, and add it to the list of Children
+            Node child = (Node)Activator.CreateInstance(GetType());
+            child.Initialise(this, newBoard);
+            Children.Add(child);
+
+            UnexpandedMoves.Remove(move);
+            
+            return child;
         }
 
         /// <summary>
-        /// Checks this nodes Children to see if they are all fully explored <para/>
-        /// This is used so that during selection, the algorithm does not attempt to explore exhausted branches
-        /// </summary>
-        public void CheckFullyExplored()
-        {
-            if (FullyExplored)
-                return;
-
-            foreach (Node child in Children)
-            {
-                if (!child.FullyExplored)
-                    return;
-            }
-
-            FullyExplored = true;
-
-            if (Parent != null)
-            {
-                Parent.CheckFullyExplored();
-            }
-        }
-
-        /// <summary>
-        /// Simulates a number of playouts from this node and adds the mean score value to this nodes score attribute <para/>
-        /// Uses <see cref="Task"/>'s to split the simulation workload across multiple threads
-        /// </summary>
-        /// <param name="playoutCount">The amount of simulations to run, a larger amount will give better results</param>
-        public void StartSimulatePlayouts(int playoutCount)
-        {
-            float score = 0;
-
-            //Run simulations in single thread mode if the amount of playouts is below the multi thread requirement. Run in multi thread mode otherwise
-            if (playoutCount < MULTI_THREAD_MODE_PLAYOUT_REQUIREMENT)
-            {
-                //Get the resultant score for the simulation job
-                score= SimulatePlayouts(GameBoard, playoutCount);
-            }
-            else
-            {
-                //Create an array of tasks to use
-                Task[] tasks = new Task[MAX_SIMULATION_TASKS];
-
-                //Create a thread safe container for the simulation result data
-                SimulateData sim = new SimulateData(playoutCount);
-
-                //Split the amount of playouts to be simulated across multiple tasks
-                for (int i = 0; i < MAX_SIMULATION_TASKS; i++)
-                {
-                    tasks[i] = Task.Factory.StartNew(() => SimulatePlayouts(GameBoard, sim));
-                }
-
-                //Ensure the other tasks have finished
-                Task.WaitAll(tasks);
-
-                //Get the resultant score for the simulation job
-                score = sim.Score;
-            }
-
-            //Save the total score for the simulation job
-            TotalScore = score;
-            Visits = playoutCount;
-        }
-
-        /// <summary>
-        /// Used in multi thread mode <para/>
-        /// For use with tasks to simulate a given amount of playouts for a board
-        /// </summary>
-        /// <param name="board">The board to perform the simulations on</param>
-        /// <param name="sim">The thread safe simulate data holder which allows multiple threads to record their results at once</param>
-        private static void SimulatePlayouts(Board board, SimulateData sim)
-        {
-            while (sim.Plays != sim.TargetPlays)
-            {
-                int winner = board.SimulateUntilEnd();
-                float score = 0;
-
-                if(winner == board.PreviousPlayer)
-                {
-                    score = 1;
-                }
-                else if(winner == 0)
-                {
-                    score = 0.5f;
-                }
-
-                sim.AddResult(score);
-            }
-        }
-
-        /// <summary>
-        /// Used in single thread mode <para/>
-        /// Simulates an amount of playouts on a given board
-        /// </summary>
-        /// <param name="board">The board to perform the simulations on</param>
-        /// <param name="playoutCount">The amount of simulations to run on this board</param>
-        /// <returns>The resultant score of the player at this node after simulating the board</returns>
-        private static float SimulatePlayouts(Board board, int playoutCount)
-        {
-            float score = 0;
-
-            for (int i = 0; i < playoutCount; i++)
-            {
-                int winner = board.SimulateUntilEnd();
-
-                if (winner == board.PreviousPlayer)
-                {
-                    score += 1;
-                }
-                else if(winner == 0)
-                {
-                    score += 0.5f;
-                }
-            }
-
-            return score;
-        }
-
-        /// <summary>
-        /// Updates the score and Visits values of this node and its Parents, recursively <para/>
+        /// Updates the score and Visits values of this node and its Parents
         /// Used during backpropagation
         /// </summary>
-        /// <param name="updateScore">The score to update this node with</param>
-        /// <param name="player">The current player on the board at this node</param>
-        public void Update(float updateScore, int visitsAmount, int player)
+        /// <param name="score">The score to update this node with</param>
+        public void Update(float score)
         {
-            //Update this nodes score depending on the current player at this node
-            if (GameBoard.CurrentPlayer == player)
-            {
-                TotalScore += updateScore;
-            }
+            //Update this nodes score
+            TotalScore += score;
 
             //Increment the Visits attribute
-            Visits+= visitsAmount;
-
-            //Update this nodes Parents with the new score
-            if (Parent != null)
-            {
-                Parent.Update(updateScore, visitsAmount, player);
-            }
+            Visits++;
         }
 
         /// <summary>
-        /// Gets the Upper Confidence Bound value of this node
+        /// Gets the Upper Confidence Bound 1 value of this node
         /// </summary>
-        /// <returns>The Upper Confidence Bound value of this node</returns>
+        /// <returns>The Upper Confidence Bound 1 value of this node</returns>
         public double UCBValue()
         {
+            //If this node hasnt been explored, return the max value
             if (Visits == 0)
+            {
                 return double.MaxValue;
+            }
 
-            return AverageScore + (Math.Sqrt(2) * Math.Sqrt(Math.Log(Parent.Visits) / Visits));
+            return AverageScore + Math.Sqrt(2 * Math.Log(Parent.Visits) / Visits);
         }
 
         /// <summary>
         /// Get the best child node of this node, used in calculating the best possible move from the point of this node <param/>
-        /// The best child is the child with the highest average score
+        /// The best child is the child with the highest amount of visits
         /// </summary>
-        /// <returns>The child node with the highest score</returns>
+        /// <returns></returns>
         public Node GetBestChild()
         {
             //If this node doesnt have any children, or it has children that haven't been simulated, then return null
-            if(Visits <= 1)
+            if (Visits <= 1)
             {
                 return null;
             }
 
             //Calculate the best child of the current node, so that the most optimal choice can be made
             Node bestChild = null;
-            float bestChildScore = float.MinValue;
+            float highestChildVisits = float.MinValue;
 
             foreach (Node child in Children)
             {
-                if (child.AverageScore > bestChildScore)
+                if (child.Visits > highestChildVisits)
                 {
                     bestChild = child;
-                    bestChildScore = bestChild.AverageScore;
+                    highestChildVisits = bestChild.Visits;
+                }
+                else if (child.Visits == highestChildVisits)
+                {
+                    if (child.AverageScore > bestChild.AverageScore)
+                    {
+                        bestChild = child;
+                    }
                 }
             }
 
