@@ -31,7 +31,7 @@ namespace MCTS.Runner
             startingBoard = GetStartingBoard();
 
             //Start the MCTS
-            StartMCTS(startingBoard, 100);
+            StartMCTS(startingBoard);
 
             //Update the display with information about the tree search every 0.1 seconds
             while (true)
@@ -98,13 +98,12 @@ namespace MCTS.Runner
         }
 
         /// <summary>
-        /// Starts a new monte carlo tree search with the provided game board and playout count
+        /// Starts a new monte carlo tree search with the provided game board
         /// </summary>
         /// <param name="gameBoard">The starting gameboard to perform mcts from</param>
-        /// <param name="playoutCount">The amount of playouts to do for each simulation on a node</param>
-        public static void StartMCTS(Board gameBoard, int playoutCount)
+        public static void StartMCTS(Board gameBoard)
         {
-            mcts = new TreeSearch<Node>(gameBoard, playoutCount);
+            mcts = new TreeSearch<Node>(gameBoard);
             RunUntilEnd();
         }
 

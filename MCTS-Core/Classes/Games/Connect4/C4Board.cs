@@ -14,14 +14,6 @@ namespace MCTS.Core.Games
         {
             currentPlayer = 1;
             boardContents = new int[7, 6];
-            //boardContents = new int[,] {
-            //    {1,1,2,0,0,0 },
-            //    {2,1,0,0,0,0 },
-            //    {1,2,1,2,2,2 },
-            //    {2,2,1,2,1,1 },
-            //    {1,2,1,2,2,1 },
-            //    {0,0,0,0,0,0 },
-            //    {1,1,1,2,2,0 } };
 
             //Create the list of possible moves
             possibleMoves = new List<IMove>();
@@ -29,10 +21,7 @@ namespace MCTS.Core.Games
             //Add a move for every column, since this is an empty game board
             for (int x = 0; x < Width; x++)
             {
-                //if (boardContents[x, Height - 1] == 0)
-                //{
                 possibleMoves.Add(new C4Move(x));
-                //}
             }
         }
 

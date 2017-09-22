@@ -30,11 +30,6 @@ public class UIController : MonoBehaviour
     public Dropdown GameChoiceDropdown;
 
     /// <summary>
-    /// The input field that allows the user to specify the amount of playouts per simulation
-    /// </summary>
-    public InputField PlayoutAmountInput;
-
-    /// <summary>
     /// The button which either starts MCTS or finished it early, depending on when it is pressed
     /// </summary>
     public Button StartStopButton;
@@ -117,7 +112,6 @@ public class UIController : MonoBehaviour
 
         //Disable every form of input on the main menu
         uiController.GameChoiceDropdown.interactable = false;
-        uiController.PlayoutAmountInput.interactable = false;
         uiController.TimeToRunInput.interactable = false;
 
         //Enable the progress bar
@@ -206,23 +200,13 @@ public class UIController : MonoBehaviour
     }
 
     /// <summary>
-    /// Validates the playout and time input when they are changed, so that the start button cannot be pressed until they are valid
+    /// Validates the time input when it is changed, so that the start button cannot be pressed until it is valid
     /// </summary>
     public void ValidateInput()
     {
-        int playoutInput;
         float timeInput;
 
-        bool validPlayoutInput = int.TryParse(PlayoutAmountInput.text, out playoutInput);
         bool validTimeInput = float.TryParse(TimeToRunInput.text, out timeInput);
-
-        if(validPlayoutInput)
-        {
-            if (playoutInput < 1)
-            {
-                validPlayoutInput = false;
-            }
-        }
 
         if(validTimeInput)
         {
@@ -232,7 +216,7 @@ public class UIController : MonoBehaviour
             }
         }
 
-        if(validPlayoutInput && validTimeInput)
+        if(validTimeInput)
         {
             StartStopButton.interactable = true;
         }
@@ -250,17 +234,6 @@ public class UIController : MonoBehaviour
         get
         {
             return uiController.GameChoiceDropdown.value;
-        }
-    }
-
-    /// <summary>
-    /// Gets the current input value from the playouts per simulation input as an integer
-    /// </summary>
-    public static int GetPlayoutInput
-    {
-        get
-        {
-            return int.Parse(uiController.PlayoutAmountInput.text);
         }
     }
 

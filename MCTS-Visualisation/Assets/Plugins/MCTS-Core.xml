@@ -627,17 +627,16 @@
             Signals if the MCTS algorithm has finished running
             </summary>
         </member>
-        <member name="P:MCTS.Core.TreeSearch`1.PlayoutsPerSimulation">
+        <member name="P:MCTS.Core.TreeSearch`1.UniqueNodes">
             <summary>
-            The amount of playouts each node undergoes during simulation
+            The amount of unique nodes to be created
             </summary>
         </member>
-        <member name="M:MCTS.Core.TreeSearch`1.#ctor(MCTS.Core.Board,System.Int32)">
+        <member name="M:MCTS.Core.TreeSearch`1.#ctor(MCTS.Core.Board)">
             <summary>
             Creates a new Monte Carlo Tree Search with the given game board
             </summary>
             <param name="gameBoard">The game board to perform the MCTS with</param>
-            <param name="playsPerSimulation">The amount of playouts to do for each simulation</param>
         </member>
         <member name="M:MCTS.Core.TreeSearch`1.Step">
             <summary>
@@ -711,14 +710,9 @@
             The Depth of this node in the game tree
             </summary>
         </member>
-        <member name="F:MCTS.Core.Node.MAX_SIMULATION_TASKS">
+        <member name="P:MCTS.Core.Node.UnexpandedMoves">
             <summary>
-            The maximum amount of tasks that can be used during simulation
-            </summary>
-        </member>
-        <member name="F:MCTS.Core.Node.MULTI_THREAD_MODE_PLAYOUT_REQUIREMENT">
-            <summary>
-            The minimum amount of playouts needed before simulations will be ran in multi thread mode
+            A list of possible moves from this nodes board state that have not yet been expanded
             </summary>
         </member>
         <member name="M:MCTS.Core.Node.Initialise(MCTS.Core.Node,MCTS.Core.Board)">
