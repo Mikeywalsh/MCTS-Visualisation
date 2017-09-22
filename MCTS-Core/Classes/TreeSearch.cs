@@ -22,26 +22,21 @@ namespace MCTS.Core
         public bool Finished { get; private set; }
 
         /// <summary>
-        /// The amount of playouts each node undergoes during simulation
+        /// The amount of unique nodes to be created
         /// </summary>
-        public int PlayoutsPerSimulation { get; private set; }
-
         public int UniqueNodes { get; private set; }
 
         /// <summary>
         /// Creates a new Monte Carlo Tree Search with the given game board
         /// </summary>
         /// <param name="gameBoard">The game board to perform the MCTS with</param>
-        /// <param name="playsPerSimulation">The amount of playouts to do for each simulation</param>
-        public TreeSearch(Board gameBoard, int playsPerSimulation)
+        public TreeSearch(Board gameBoard)
         {
             //Create the root node of the search tree using the provided node type
             Root = (T)Activator.CreateInstance(typeof(T));
             Root.Initialise(null, gameBoard);
 
-            //Set the number of playouts to be done on each node during simulation
-            PlayoutsPerSimulation = playsPerSimulation;
-
+            //Set the unique node amount to 1, to accomodate the root node
             UniqueNodes = 1;
         }
 
@@ -56,8 +51,7 @@ namespace MCTS.Core
 
             if (currentNode == null)
             {
-                Finished = true;
-                return;
+                throw new InvalidNodeException("Something has went wrong during selection. Null node returned.");
             }
 
             //Expansion

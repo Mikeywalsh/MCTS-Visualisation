@@ -36,22 +36,15 @@ namespace MCTS.Core
         /// </summary>
         public float TotalScore { get; private set; }
 
-        public List<IMove> UnexpandedMoves { get; private set; }
-
         /// <summary>
         /// The Depth of this node in the game tree
         /// </summary>
         public int Depth { get; private set; }
 
         /// <summary>
-        /// The maximum amount of tasks that can be used during simulation
+        /// A list of possible moves from this nodes board state that have not yet been expanded
         /// </summary>
-        private const int MAX_SIMULATION_TASKS = 4;
-
-        /// <summary>
-        /// The minimum amount of playouts needed before simulations will be ran in multi thread mode
-        /// </summary>
-        private const int MULTI_THREAD_MODE_PLAYOUT_REQUIREMENT = 50;
+        public List<IMove> UnexpandedMoves { get; private set; }
 
         /// <summary>
         /// Creates a new node with the given board and Parent node
@@ -86,7 +79,7 @@ namespace MCTS.Core
             }
 
             //Create a new child node
-            TTTMove move = (TTTMove)UnexpandedMoves.PickRandom();
+            IMove move = (IMove)UnexpandedMoves.PickRandom();
 
             Board newBoard = GameBoard.Duplicate();
             newBoard.MakeMove(move);

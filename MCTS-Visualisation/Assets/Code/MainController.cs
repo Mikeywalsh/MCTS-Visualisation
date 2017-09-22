@@ -83,7 +83,7 @@ public class MainController : MonoBehaviour
             }
 
             //Initialise MCTS on the given game board
-            mcts = new TreeSearch<NodeObject>(board, UIController.GetPlayoutInput);
+            mcts = new TreeSearch<NodeObject>(board);
 
             //Obtain the time to run mcts for from the input user amount
             timeToRunFor = UIController.GetTimeToRunInput;
@@ -140,7 +140,7 @@ public class MainController : MonoBehaviour
         {
             if (nodesGenerated < mcts.UniqueNodes)
             {
-                UIController.UpdateProgressBar(0.5f + ((float)nodesGenerated / mcts.NodesVisited / 2), "Creating node objects: " + nodesGenerated + "/" + mcts.UniqueNodes);
+                UIController.UpdateProgressBar(0.5f + ((float)nodesGenerated / mcts.UniqueNodes / 2), "Creating node objects: " + nodesGenerated + "/" + mcts.UniqueNodes);
             }
             else if (nodesGenerated == mcts.UniqueNodes)
             {

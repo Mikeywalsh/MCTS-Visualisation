@@ -21,10 +21,7 @@ namespace MCTS.Core.Games
             //Add a move for every column, since this is an empty game board
             for (int x = 0; x < Width; x++)
             {
-                //if (boardContents[x, Height - 1] == 0)
-                //{
                 possibleMoves.Add(new C4Move(x));
-                //}
             }
         }
 
