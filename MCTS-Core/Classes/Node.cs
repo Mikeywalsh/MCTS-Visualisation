@@ -44,7 +44,7 @@ namespace MCTS.Core
         /// <summary>
         /// A list of possible moves from this nodes board state that have not yet been expanded
         /// </summary>
-        public List<IMove> UnexpandedMoves { get; private set; }
+        public List<Move> UnexpandedMoves { get; private set; }
 
         /// <summary>
         /// Creates a new node with the given board and Parent node
@@ -56,7 +56,7 @@ namespace MCTS.Core
             Parent = ParentNode;
             GameBoard = board;
             Children = new List<Node>(GameBoard.PossibleMoves().Count);
-            UnexpandedMoves = new List<IMove>(GameBoard.PossibleMoves());
+            UnexpandedMoves = new List<Move>(GameBoard.PossibleMoves());
 
             if (ParentNode == null)
             {
@@ -79,7 +79,7 @@ namespace MCTS.Core
             }
 
             //Create a new child node
-            IMove move = (IMove)UnexpandedMoves.PickRandom();
+            Move move = (Move)UnexpandedMoves.PickRandom();
 
             Board newBoard = GameBoard.Duplicate();
             newBoard.MakeMove(move);

@@ -104,7 +104,7 @@ namespace MCTS.Core.Games
         /// </summary>
         /// <param name="move">The move to make</param>
         /// <returns>This board instance</returns>
-        public override Board MakeMove(IMove move)
+        public override Board MakeMove(Move move)
         {
             throw new NotImplementedException();
         }
@@ -113,9 +113,9 @@ namespace MCTS.Core.Games
         /// Returns a list of all possible moves for the current player
         /// </summary>
         /// <returns>A list of all possible moves for the current player</returns>
-        public override List<IMove> PossibleMoves()
+        public override List<Move> PossibleMoves()
         {
-            List<IMove> moves = new List<IMove>();
+            List<Move> moves = new List<Move>();
 
             return moves;
         }
@@ -139,7 +139,7 @@ namespace MCTS.Core.Games
         /// If the game is still in progress, the Winner attribute is set to -1
         /// </summary>
         /// <param name="move">The last played move on this board</param>
-        protected override void DetermineWinner(IMove move)
+        protected override void DetermineWinner(Move move)
         {
             throw new NotImplementedException();
         }

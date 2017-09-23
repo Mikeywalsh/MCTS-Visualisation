@@ -79,7 +79,7 @@
             </summary>
             <returns>An integer indicating if the game has a winner, is a draw, or neither</returns>
         </member>
-        <member name="M:MCTS.Core.Board.MakeMove(MCTS.Core.IMove)">
+        <member name="M:MCTS.Core.Board.MakeMove(MCTS.Core.Move)">
             <summary>
             Performs a move on this board state for the current player and returns the updated state.
             </summary>
@@ -111,7 +111,7 @@
             Determines if there is a winner or not for this board state and updates the winner integer accordingly
             </summary>
         </member>
-        <member name="M:MCTS.Core.Board.DetermineWinner(MCTS.Core.IMove)">
+        <member name="M:MCTS.Core.Board.DetermineWinner(MCTS.Core.Move)">
             <summary>
             A more efficient method of determining if there is a winner <para/>
             Saves time by using knowledge of the last move to remove unnessessary computation
@@ -140,7 +140,7 @@
             </summary>
             <returns>A clone of the current Connect 4</returns>
         </member>
-        <member name="M:MCTS.Core.Games.C4Board.MakeMove(MCTS.Core.IMove)">
+        <member name="M:MCTS.Core.Games.C4Board.MakeMove(MCTS.Core.Move)">
             <summary>
             Makes a move on this Connect 4 board at the specified move position
             </summary>
@@ -158,7 +158,7 @@
             Determine if the current game is over
             </summary>
         </member>
-        <member name="M:MCTS.Core.Games.C4Board.DetermineWinner(MCTS.Core.IMove)">
+        <member name="M:MCTS.Core.Games.C4Board.DetermineWinner(MCTS.Core.Move)">
             <summary>
             Determine if the current game is over <para/>
             Uses knowledge of the last move to save computation time
@@ -258,7 +258,7 @@
             </summary>
             <returns>A clone of the current Chess Board</returns>
         </member>
-        <member name="M:MCTS.Core.Games.ChessBoard.MakeMove(MCTS.Core.IMove)">
+        <member name="M:MCTS.Core.Games.ChessBoard.MakeMove(MCTS.Core.Move)">
             <summary>
             Makes a move on this board for the current player
             </summary>
@@ -279,7 +279,7 @@
             If the game is still in progress, the Winner attribute is set to -1
             </summary>
         </member>
-        <member name="M:MCTS.Core.Games.ChessBoard.DetermineWinner(MCTS.Core.IMove)">
+        <member name="M:MCTS.Core.Games.ChessBoard.DetermineWinner(MCTS.Core.Move)">
             <summary>
             Determines if there is a winner on this chess board <para/>
             Uses the last played move to narrow down the amount of checks needed <para/>
@@ -499,7 +499,7 @@
             </summary>
             <returns>A clone of the current Tic-Tac-Toe Board</returns>
         </member>
-        <member name="M:MCTS.Core.Games.TTTBoard.MakeMove(MCTS.Core.IMove)">
+        <member name="M:MCTS.Core.Games.TTTBoard.MakeMove(MCTS.Core.Move)">
             <summary>
             Makes a move on this Tic-Tac-Toe board at the specified move position
             </summary>
@@ -517,7 +517,7 @@
             Determine if the current game is over
             </summary>
         </member>
-        <member name="M:MCTS.Core.Games.TTTBoard.DetermineWinner(MCTS.Core.IMove)">
+        <member name="M:MCTS.Core.Games.TTTBoard.DetermineWinner(MCTS.Core.Move)">
             <summary>
             Determine if the current game is over <para/>
             Uses knowledge of the last move to save computation time
@@ -612,8 +612,7 @@
             <summary>
             Runs Monte Carlo Tree Search on a given game board <para/>
             Every time <see cref="M:MCTS.Core.TreeSearch`1.Step"/> is called, the algorithm performs one Select, Expand, Simulate and Backpropagate cycle <para/>
-            The algorithm will run until the search space is exhausted <para/>
-            A graceful exit can be achieved via <see cref="M:MCTS.Core.TreeSearch`1.Finish"/>, which will result in an incomplete but still useful tree
+            The algorithm will run until the <see cref="M:MCTS.Core.TreeSearch`1.Finish"/> method is called
             </summary>
             <typeparam name="T">The type of node to use for the tree search</typeparam>
         </member>
@@ -629,7 +628,7 @@
         </member>
         <member name="P:MCTS.Core.TreeSearch`1.UniqueNodes">
             <summary>
-            The amount of unique nodes to be created
+            The amount of unique nodes in the tree
             </summary>
         </member>
         <member name="M:MCTS.Core.TreeSearch`1.#ctor(MCTS.Core.Board)">
@@ -669,10 +668,29 @@
             The total number of nodes that have been visited so far
             </summary>
         </member>
-        <member name="T:MCTS.Core.IMove">
+        <member name="T:MCTS.Core.Move">
             <summary>
-            A marker interface used to allow each game move to have a common ancestor, so that they can be abstractly referenced in the <see cref="T:MCTS.Core.Board"/> class
+            An abstract class that any moves of <see cref="T:MCTS.Core.Board"/> types must implement
             </summary>
+        </member>
+        <member name="M:MCTS.Core.Move.Equals(System.Object)">
+            <summary>
+            Equality override which returns true if this instance is equal to a passed in object
+            </summary>
+            <param name="obj">The other object to compare with</param>
+            <returns>True if this instance is equal to the passed in object</returns>
+        </member>
+        <member name="M:MCTS.Core.Move.GetHashCode">
+            <summary>
+            Returns a unique hash code for this move instance
+            </summary>
+            <returns>A unique integer for this instance</returns>
+        </member>
+        <member name="M:MCTS.Core.Move.ToString">
+            <summary>
+            Returns a string representation of this move instance
+            </summary>
+            <returns>A string representation of this move instance</returns>
         </member>
         <member name="T:MCTS.Core.Node">
             <summary>

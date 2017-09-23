@@ -3,7 +3,7 @@
     /// <summary>
     /// A move that can be made in Tic-Tac-Toe
     /// </summary>
-    public class TTTMove : IMove
+    public class TTTMove : Move
     {
 
         /// <summary>

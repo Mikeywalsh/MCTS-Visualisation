@@ -16,7 +16,7 @@ namespace MCTS.Core.Games
             boardContents = new int[7, 6];
 
             //Create the list of possible moves
-            possibleMoves = new List<IMove>();
+            possibleMoves = new List<Move>();
 
             //Add a move for every column, since this is an empty game board
             for (int x = 0; x < Width; x++)
@@ -34,7 +34,7 @@ namespace MCTS.Core.Games
             currentPlayer = board.CurrentPlayer;
             winner = board.Winner;
             boardContents = (int[,])board.boardContents.Clone();
-            possibleMoves = new List<IMove>(board.possibleMoves);
+            possibleMoves = new List<Move>(board.possibleMoves);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace MCTS.Core.Games
         /// </summary>
         /// <param name="move">The move to make</param>
         /// <returns>A reference to this Connect 4 board</returns>
-        public override Board MakeMove(IMove move)
+        public override Board MakeMove(Move move)
         {
             C4Move m = (C4Move)move;
 
@@ -90,7 +90,7 @@ namespace MCTS.Core.Games
         /// Get a list of all possible moves for this Connect 4 board instance
         /// </summary>
         /// <returns>A list of all possible moves for this Connect 4 board instance</returns>
-        public override List<IMove> PossibleMoves()
+        public override List<Move> PossibleMoves()
         {
             return possibleMoves;
         }
@@ -167,7 +167,7 @@ namespace MCTS.Core.Games
         /// Uses knowledge of the last move to save computation time
         /// </summary>
         /// <param name="move">The last move made</param>
-        protected override void DetermineWinner(IMove move)
+        protected override void DetermineWinner(Move move)
         {
             //This method seems a bit confusing, but it is just changing the worst case number of win checks from 196 to 16
             C4Move m = (C4Move)move;
