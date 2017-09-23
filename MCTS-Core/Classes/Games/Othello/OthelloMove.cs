@@ -1,9 +1,9 @@
 ﻿namespace MCTS.Core.Games
 {
     /// <summary>
-    /// A move that can be made in Tic-Tac-Toe
+    /// A move that can be made in Othello
     /// </summary>
-    public class TTTMove : Move
+    public class OthelloMove : Move
     {
         /// <summary>
         /// X position of this move
@@ -16,15 +16,15 @@
         public int Y { get; private set; }
 
         /// <summary>
-        /// Creates a new Tic-Tac-Toe move with the given x and y positions
+        /// Creates a new Othello move with the given x and y positions
         /// </summary>
         /// <param name="xPos">X position of the move to make</param>
         /// <param name="yPos">Y position of the move to make</param>
-        public TTTMove(int xPos, int yPos)
+        public OthelloMove(int xPos, int yPos)
         {
-            if (xPos > 2 || yPos > 2 || xPos < 0 || yPos < 0)
+            if (xPos > 7 || yPos > 7 || xPos < 0 || yPos < 0)
             {
-                throw new InvalidMoveException("Move: " + "(" + xPos + "," + yPos + ")" + " is out of bounds of the 3x3 game area");
+                throw new InvalidMoveException("Move: " + "(" + xPos + "," + yPos + ")" + " is out of bounds of the 8x8 game area");
             }
 
             X = xPos;
@@ -32,25 +32,25 @@
         }
 
         /// <summary>
-        /// Gives a string representation of this Tic-Tac-Toe move
+        /// Gives a string representation of this Othello move
         /// </summary>
-        /// <returns>A string representation of this Tic-Tac-Toe move</returns>
+        /// <returns>A string representation of this Othello move</returns>
         public override string ToString()
         {
             return "(" + X + "," + Y + ")";
         }
 
         /// <summary>
-        /// Equality override for a Tic-Tac-Toe move <para/>
+        /// Equality override for a Othello move <para/>
         /// Two moves are equal if their x and y positions are equal
         /// </summary>
-        /// <param name="obj">The other TTTMove instance to compare this one too</param>
+        /// <param name="obj">The other OthelloMove instance to compare this one too</param>
         /// <returns>True if the objects are equal, false otherwise</returns>
         public override bool Equals(object obj)
         {
-            if (obj is TTTMove)
+            if (obj is OthelloMove)
             {
-                TTTMove other = (TTTMove)obj;
+                OthelloMove other = (OthelloMove)obj;
                 if (other.X == X && other.Y == Y)
                     return true;
             }

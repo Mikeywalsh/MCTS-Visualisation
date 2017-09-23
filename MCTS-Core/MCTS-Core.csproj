@@ -51,6 +51,7 @@
     <Compile Include="Classes\Games\Chess\ChessMove.cs" />
     <Compile Include="Classes\Games\Chess\ChessPiece.cs" />
     <Compile Include="Classes\Games\Chess\ChessPieces.cs" />
+    <Compile Include="Classes\Games\Othello\OthelloMove.cs" />
     <Compile Include="Classes\GridBasedBoard.cs" />
     <Compile Include="Classes\TreeSearch.cs" />
     <Compile Include="Classes\Move.cs" />
@@ -63,9 +64,7 @@
     <Compile Include="Extensions\ListExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Classes\Games\Othello\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent Condition="'$(OS)' == 'Windows_NT' ">
