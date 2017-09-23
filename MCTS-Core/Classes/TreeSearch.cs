@@ -5,8 +5,7 @@ namespace MCTS.Core
     /// <summary>
     /// Runs Monte Carlo Tree Search on a given game board <para/>
     /// Every time <see cref="Step"/> is called, the algorithm performs one Select, Expand, Simulate and Backpropagate cycle <para/>
-    /// The algorithm will run until the search space is exhausted <para/>
-    /// A graceful exit can be achieved via <see cref="Finish"/>, which will result in an incomplete but still useful tree
+    /// The algorithm will run until the <see cref="Finish"/> method is called
     /// </summary>
     /// <typeparam name="T">The type of node to use for the tree search</typeparam>
     public class TreeSearch<T> where T : Node
@@ -22,7 +21,7 @@ namespace MCTS.Core
         public bool Finished { get; private set; }
 
         /// <summary>
-        /// The amount of unique nodes to be created
+        /// The amount of unique nodes in the tree
         /// </summary>
         public int UniqueNodes { get; private set; }
 
@@ -58,16 +57,16 @@ namespace MCTS.Core
             Node nodeBeforeExpansion = currentNode;
             currentNode = currentNode.Expand();
 
-            if(nodeBeforeExpansion != currentNode)
+            if (nodeBeforeExpansion != currentNode)
             {
                 UniqueNodes++;
             }
-            
+
             //Simulation
             Board resultState = currentNode.GameBoard.SimulateUntilEnd();
 
             //Backpropogation
-            while(currentNode != null)
+            while (currentNode != null)
             {
                 currentNode.Update(resultState.GetScore(currentNode.GameBoard.PreviousPlayer));
                 currentNode = currentNode.Parent;
@@ -97,15 +96,12 @@ namespace MCTS.Core
 
                 foreach (Node child in n.Children)
                 {
-                    //if (!child.FullyExplored)
-                    //{
-                        double currentUCB1 = child.UCBValue();
-                        if (currentUCB1 > highestUCB)
-                        {
-                            highestUCB = currentUCB1;
-                            highestUCBChild = child;
-                        }
-                    //}
+                    double currentUCB1 = child.UCBValue();
+                    if (currentUCB1 > highestUCB)
+                    {
+                        highestUCB = currentUCB1;
+                        highestUCBChild = child;
+                    }
                 }
 
                 return Selection(highestUCBChild);
