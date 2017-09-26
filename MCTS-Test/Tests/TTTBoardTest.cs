@@ -209,5 +209,12 @@ namespace MCTS.Test
             //Player 1 should have won the game
             Assert.AreEqual(1, board.Winner);
         }
+
+        [Test]
+        public void SimulateTest()
+        {
+            TTTBoard board = new TTTBoard();
+            board.SimulateUntilEnd();
+        }
     }
 }

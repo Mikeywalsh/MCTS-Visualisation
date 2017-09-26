@@ -212,6 +212,13 @@ namespace MCTS.Test
             Assert.AreEqual(1, board.Winner);
         }
 
+        [Test]
+        public void SimulateTest()
+        {
+            C4Board board = new C4Board();
+            board.SimulateUntilEnd();
+        }
+
         /// <summary>
         /// Convienence method used for creating moves with y positions for <see cref="C4TestingBoard"/>
         /// </summary>
