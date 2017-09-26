@@ -12,7 +12,7 @@ namespace MCTS.Core.Games
         /// </summary>
         public TTTBoard()
         {
-            currentPlayer = 1;
+            CurrentPlayer = 1;
             boardContents = new int[3, 3];
 
             //Create the list of possible moves
@@ -34,7 +34,7 @@ namespace MCTS.Core.Games
         /// <param name="board">The board to make a copy of</param>
         private TTTBoard(TTTBoard board)
         {
-            currentPlayer = board.CurrentPlayer;
+            CurrentPlayer = board.CurrentPlayer;
             winner = board.Winner;
             boardContents = (int[,])board.boardContents.Clone();
             possibleMoves = new List<Move>(board.possibleMoves);
@@ -62,7 +62,7 @@ namespace MCTS.Core.Games
             if (boardContents[m.X, m.Y] == 0)
             {
                 //Make the move on this board
-                boardContents[m.X, m.Y] = currentPlayer;
+                boardContents[m.X, m.Y] = CurrentPlayer;
 
                 //Remove the move just performed from the list of possible moves
                 possibleMoves.Remove(m);
@@ -71,7 +71,7 @@ namespace MCTS.Core.Games
                 DetermineWinner(move);
 
                 //Swap out the current player
-                currentPlayer = NextPlayer;
+                CurrentPlayer = NextPlayer;
             }
             else
             {
@@ -100,7 +100,7 @@ namespace MCTS.Core.Games
             {
                 if (boardContents[0, i] != 0 && boardContents[0, i] == boardContents[1, i] && boardContents[0, i] == boardContents[2, i] || boardContents[i, 0] != 0 && boardContents[i, 0] == boardContents[i, 1] && boardContents[i, 0] == boardContents[i, 2])
                 {
-                    winner = currentPlayer;
+                    winner = CurrentPlayer;
                     return;
                 }
             }
@@ -108,7 +108,7 @@ namespace MCTS.Core.Games
             //Then check each diagonal
             if (boardContents[0, 0] != 0 && boardContents[0, 0] == boardContents[1, 1] && boardContents[0, 0] == boardContents[2, 2] || boardContents[0, 2] != 0 && boardContents[0, 2] == boardContents[1, 1] && boardContents[0, 2] == boardContents[2, 0])
             {
-                winner = currentPlayer;
+                winner = CurrentPlayer;
                 return;
             }
 
@@ -131,14 +131,14 @@ namespace MCTS.Core.Games
             //Check the row and column of the last move
             if (boardContents[0, m.Y] == boardContents[1, m.Y] && boardContents[1, m.Y] == boardContents[2, m.Y] || boardContents[m.X, 0] == boardContents[m.X, 1] && boardContents[m.X, 1] == boardContents[m.X, 2])
             {
-                winner = currentPlayer;
+                winner = CurrentPlayer;
                 return;
             }
 
             //Then check each diagonal
             if (boardContents[0, 0] != 0 && boardContents[0, 0] == boardContents[1, 1] && boardContents[0, 0] == boardContents[2, 2] || boardContents[0, 2] != 0 && boardContents[0, 2] == boardContents[1, 1] && boardContents[0, 2] == boardContents[2, 0])
             {
-                winner = currentPlayer;
+                winner = CurrentPlayer;
                 return;
             }
 
@@ -156,30 +156,6 @@ namespace MCTS.Core.Games
         protected override int PlayerCount()
         {
             return 2;
-        }
-
-        /// <summary>
-        /// Gives a string representation of this Tic-Tac-Toe board
-        /// </summary>
-        /// <returns>A string representation of this Tic-Tac-Toe board</returns>
-        public override string ToString()
-        {
-            string result = "\n";
-
-            for (int y = 0; y < 3; y++)
-            {
-                for (int x = 0; x < 3; x++)
-                {
-                    result += boardContents[x, y] + " ";
-                }
-
-                if (y != 2)
-                {
-                    result += '\n';
-                }
-            }
-
-            return result;
         }
     }
 }

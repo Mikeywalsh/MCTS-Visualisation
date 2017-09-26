@@ -24,7 +24,7 @@ namespace MCTS.Core.Games
         /// </summary>
         public ChessBoard()
         {
-            currentPlayer = 1;
+            CurrentPlayer = 1;
             boardContents = new int[8, 8];
 
             #region Create starting white pieces
@@ -86,7 +86,7 @@ namespace MCTS.Core.Games
         /// <param name="board">The board to make a copy of</param>
         private ChessBoard(ChessBoard board)
         {
-            currentPlayer = board.CurrentPlayer;
+            CurrentPlayer = board.CurrentPlayer;
             boardContents = (int[,])board.boardContents.Clone();
         }
 

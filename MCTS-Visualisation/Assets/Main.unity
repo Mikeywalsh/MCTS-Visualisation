@@ -283,7 +283,6 @@ MonoBehaviour:
   NavigationElements: {fileID: 917959827}
   MenuElements: {fileID: 607521072}
   GameChoiceDropdown: {fileID: 262869827}
-  PlayoutAmountInput: {fileID: 0}
   StartStopButton: {fileID: 967129885}
   VisualisationProgressBar: {fileID: 1444588842}
   TimeToRunInput: {fileID: 1808233706}
@@ -721,6 +720,8 @@ MonoBehaviour:
     - m_Text: Tic Tac Toe
       m_Image: {fileID: 0}
     - m_Text: Connect 4
+      m_Image: {fileID: 0}
+    - m_Text: Othello
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3217,8 +3218,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 144, y: -139.5}
-  m_SizeDelta: {x: 287, y: 279}
+  m_AnchoredPosition: {x: 144, y: -184}
+  m_SizeDelta: {x: 287, y: 368}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1524565495
 MonoBehaviour:
@@ -4490,8 +4491,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -50, y: -6}
-  m_SizeDelta: {x: 186, y: 19}
+  m_AnchoredPosition: {x: -68.76, y: -6}
+  m_SizeDelta: {x: 148.48, y: 19}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2090739448
 MonoBehaviour:

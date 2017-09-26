@@ -51,8 +51,10 @@
     <Compile Include="Classes\Games\Chess\ChessMove.cs" />
     <Compile Include="Classes\Games\Chess\ChessPiece.cs" />
     <Compile Include="Classes\Games\Chess\ChessPieces.cs" />
+    <Compile Include="Classes\Games\Othello\OthelloBoard.cs" />
     <Compile Include="Classes\Games\Othello\OthelloMove.cs" />
     <Compile Include="Classes\GridBasedBoard.cs" />
+    <Compile Include="Classes\Point.cs" />
     <Compile Include="Classes\TreeSearch.cs" />
     <Compile Include="Classes\Move.cs" />
     <Compile Include="Classes\Node.cs" />

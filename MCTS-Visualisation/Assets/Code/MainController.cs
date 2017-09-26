@@ -78,6 +78,9 @@ public class MainController : MonoBehaviour
                 case 1:
                     board = new C4Board();
                     break;
+                case 2:
+                    board = new OthelloBoard();
+                    break;
                 default:
                     throw new System.Exception("Unknown game type index has been input");
             }

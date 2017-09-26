@@ -1,4 +1,6 @@
-﻿namespace MCTS.Core.Games
+﻿using System.Collections.Generic;
+
+namespace MCTS.Core.Games
 {
     /// <summary>
     /// A move that can be made in Othello
@@ -6,29 +8,34 @@
     public class OthelloMove : Move
     {
         /// <summary>
-        /// X position of this move
+        /// Position of this move
         /// </summary>
-        public int X { get; private set; }
+        public Point Position { get; private set; }
 
         /// <summary>
-        /// Y position of this move
+        /// A list of cells that will be captured as a result of this move
         /// </summary>
-        public int Y { get; private set; }
+        public List<Point> CapturableCells { get; private set; }
 
         /// <summary>
         /// Creates a new Othello move with the given x and y positions
         /// </summary>
-        /// <param name="xPos">X position of the move to make</param>
-        /// <param name="yPos">Y position of the move to make</param>
-        public OthelloMove(int xPos, int yPos)
+        /// <param name="pos">Position of the move to make</param>
+        /// <param name="cellsToCapture">A list of cells that will be captured as a result of this move</param>
+        public OthelloMove(Point pos, List<Point> cellsToCapture)
         {
-            if (xPos > 7 || yPos > 7 || xPos < 0 || yPos < 0)
+            if (pos.X > 7 || pos.Y > 7 || pos.X < 0 || pos.Y < 0)
             {
-                throw new InvalidMoveException("Move: " + "(" + xPos + "," + yPos + ")" + " is out of bounds of the 8x8 game area");
+                throw new InvalidMoveException("Move: " + "(" + pos.X + "," + pos.Y + ")" + " is out of bounds of the 8x8 game area");
             }
 
-            X = xPos;
-            Y = yPos;
+            if(cellsToCapture.Count == 0)
+            {
+                throw new InvalidMoveException("No cells will be captured as a result of this move, at least one cell must be captured");
+            }
+
+            CapturableCells = cellsToCapture;
+            Position = pos;
         }
 
         /// <summary>
@@ -37,7 +44,7 @@
         /// <returns>A string representation of this Othello move</returns>
         public override string ToString()
         {
-            return "(" + X + "," + Y + ")";
+            return "(" + Position.X + "," + Position.Y + ")";
         }
 
         /// <summary>
@@ -51,7 +58,7 @@
             if (obj is OthelloMove)
             {
                 OthelloMove other = (OthelloMove)obj;
-                if (other.X == X && other.Y == Y)
+                if (other.Position.X == Position.X && other.Position.Y == Position.Y)
                     return true;
             }
 
@@ -65,7 +72,7 @@
         /// <returns>A unique integer for this instance</returns>
         public override int GetHashCode()
         {
-            return int.Parse(X.ToString() + Y.ToString());
+            return int.Parse(Position.X.ToString() + Position.Y.ToString());
         }
     }
 }

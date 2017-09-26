@@ -66,6 +66,8 @@ namespace MCTS.Runner
                 return "Tic Tac Toe";
             else if (board.GetType() == typeof(C4Board))
                 return "Connect 4";
+            else if (board.GetType() == typeof(OthelloBoard))
+                return "Othello";
             else
                 return "INVALID BOARD";
         }
@@ -81,6 +83,7 @@ namespace MCTS.Runner
                 Console.WriteLine("What game would you like to run MCTS on?");
                 Console.WriteLine("(1) Tic Tac Toe");
                 Console.WriteLine("(2) Connect 4");
+                Console.WriteLine("(3) Othello");
                 Console.Write("Input your choice: ");
 
                 string input = Console.ReadLine();
@@ -93,6 +96,8 @@ namespace MCTS.Runner
                         return new TTTBoard();
                     case "2":
                         return new C4Board();
+                    case "3":
+                        return new OthelloBoard();
                 }
             }
         }

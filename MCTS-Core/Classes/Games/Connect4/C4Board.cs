@@ -12,7 +12,7 @@ namespace MCTS.Core.Games
         /// </summary>
         public C4Board()
         {
-            currentPlayer = 1;
+            CurrentPlayer = 1;
             boardContents = new int[7, 6];
 
             //Create the list of possible moves
@@ -31,7 +31,7 @@ namespace MCTS.Core.Games
         /// <param name="board">The board to make a copy of</param>
         private C4Board(C4Board board)
         {
-            currentPlayer = board.CurrentPlayer;
+            CurrentPlayer = board.CurrentPlayer;
             winner = board.Winner;
             boardContents = (int[,])board.boardContents.Clone();
             possibleMoves = new List<Move>(board.possibleMoves);
@@ -61,7 +61,7 @@ namespace MCTS.Core.Games
                 if (boardContents[m.X, y] == 0)
                 {
                     //Make the move on this board
-                    boardContents[m.X, y] = currentPlayer;
+                    boardContents[m.X, y] = CurrentPlayer;
 
                     //Set the y position of the move
                     m.SetY(y);
@@ -76,7 +76,7 @@ namespace MCTS.Core.Games
                     DetermineWinner(m);
 
                     //Swap out the current player
-                    currentPlayer = NextPlayer;
+                    CurrentPlayer = NextPlayer;
 
                     return this;
                 }
@@ -249,30 +249,6 @@ namespace MCTS.Core.Games
         protected override int PlayerCount()
         {
             return 2;
-        }
-
-        /// <summary>
-        /// Gives a string representation of this Connect 4 board
-        /// </summary>
-        /// <returns>A string representation of this Connect 4 board</returns>
-        public override string ToString()
-        {
-            string result = "\n";
-
-            for (int y = Height - 1; y >= 0; y--)
-            {
-                for (int x = 0; x < Width; x++)
-                {
-                    result += boardContents[x, y] + " ";
-                }
-
-                if (y != 0)
-                {
-                    result += '\n';
-                }
-            }
-
-            return result;
         }
     }
 }

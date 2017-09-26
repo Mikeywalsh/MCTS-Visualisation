@@ -49,5 +49,29 @@ namespace MCTS.Core
                 return boardContents.GetLength(1);
             }
         }
+
+        /// <summary>
+        /// Gives a string representation of this grid based board
+        /// </summary>
+        /// <returns>A string representation of this grid based board</returns>
+        public override string ToString()
+        {
+            string result = "\n";
+
+            for (int y = Height - 1; y >= 0; y--)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    result += boardContents[x, y] + " ";
+                }
+
+                if (y != 0)
+                {
+                    result += '\n';
+                }
+            }
+
+            return result;
+        }
     }
 }

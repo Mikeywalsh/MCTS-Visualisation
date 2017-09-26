@@ -10,7 +10,7 @@
             Can be used for implementations of many different games
             </summary>
         </member>
-        <member name="F:MCTS.Core.Board.currentPlayer">
+        <member name="P:MCTS.Core.Board.CurrentPlayer">
             <summary>
             The playerID of the current player
             </summary>
@@ -51,12 +51,6 @@
             </summary>
             <param name="player">The player to get the score of at this board state</param>
             <returns>The score for the given player at this board state</returns>
-        </member>
-        <member name="P:MCTS.Core.Board.CurrentPlayer">
-            <summary>
-            Returns the playerID of the current player
-            </summary>
-            <returns>The playerID of the current player</returns>
         </member>
         <member name="P:MCTS.Core.Board.PreviousPlayer">
             <summary>
@@ -170,12 +164,6 @@
             Used to obtain the number of players on a Connect 4 board, which is always 2
             </summary>
             <returns>The number of players on a Connect 4 board, which is always 2</returns>
-        </member>
-        <member name="M:MCTS.Core.Games.C4Board.ToString">
-            <summary>
-            Gives a string representation of this Connect 4 board
-            </summary>
-            <returns>A string representation of this Connect 4 board</returns>
         </member>
         <member name="T:MCTS.Core.Games.C4Move">
             <summary>
@@ -477,6 +465,116 @@
             The black king piece
             </summary>
         </member>
+        <member name="T:MCTS.Core.Games.OthelloBoard">
+            <summary>
+            An Othello game board, which allows a game of Othello to be played out on it
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.Games.OthelloBoard.#ctor">
+            <summary>
+            Creates a new Othello board representing an empty game
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.Games.OthelloBoard.#ctor(MCTS.Core.Games.OthelloBoard)">
+            <summary>
+            Private constructor used for deep copies of a board instance
+            </summary>
+            <param name="board">The board instance to make a deep copy of</param>
+        </member>
+        <member name="M:MCTS.Core.Games.OthelloBoard.GetSandwichedPieces(MCTS.Core.Point,System.Int32)">
+            <summary>
+            Gets a list of sandwiched pieces on this board, meaning pieces that would be sandwiched between two of the passed in players pieces if one was placed at the passed in point
+            </summary>
+            <param name="pos">The position being checked for sandwiched pieces</param>
+            <param name="player">The player playing the piece</param>
+            <returns>A list of sandwiched pieces as a result of the passed in player making a move at the passed in board position</returns>
+        </member>
+        <member name="M:MCTS.Core.Games.OthelloBoard.Duplicate">
+            <summary>
+            Duplicate this baord state, returning a deep copy of it
+            </summary>
+            <returns>A deep copy of this board state</returns>
+        </member>
+        <member name="M:MCTS.Core.Games.OthelloBoard.MakeMove(MCTS.Core.Move)">
+            <summary>
+            Makes a move on this Othello board at the specified move position
+            </summary>
+            <param name="move">The move to make</param>
+            <returns>A reference to this Othello board</returns>
+        </member>
+        <member name="M:MCTS.Core.Games.OthelloBoard.PossibleMoves">
+            <summary>
+            Returns the possibleMoves list for this board instance, which contains a list of all possible moves tat can be taken from this board state
+            </summary>
+            <returns>A list of possible moves that can be taken from this baord state</returns>
+        </member>
+        <member name="M:MCTS.Core.Games.OthelloBoard.CalculatePossibleMoves">
+            <summary>
+            Calculates the possible moves that can be made from this board state for the current player and stores the result in the possibleMoves list
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.Games.OthelloBoard.DetermineWinner">
+            <summary>
+            Determines the winner of the current Othello game <para/>
+            The winner is the player with the most pieces on the board when there are no possible moves left in the game
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.Games.OthelloBoard.DetermineWinner(MCTS.Core.Move)">
+            <summary>
+            There is no way to speed up the calculation of a winner based on the last move in Othello <para/>
+            This method must still be kept as to not break polymorphism
+            </summary>
+            <param name="move">The previous move made on this board</param>
+        </member>
+        <member name="M:MCTS.Core.Games.OthelloBoard.PlayerCount">
+            <summary>
+            Gets the amount of players on this board
+            </summary>
+            <returns>The amount of players on this baord</returns>
+        </member>
+        <member name="T:MCTS.Core.Games.OthelloMove">
+            <summary>
+            A move that can be made in Othello
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.Games.OthelloMove.Position">
+            <summary>
+            Position of this move
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.Games.OthelloMove.CapturableCells">
+            <summary>
+            A list of cells that will be captured as a result of this move
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.Games.OthelloMove.#ctor(MCTS.Core.Point,System.Collections.Generic.List{MCTS.Core.Point})">
+            <summary>
+            Creates a new Othello move with the given x and y positions
+            </summary>
+            <param name="pos">Position of the move to make</param>
+            <param name="cellsToCapture">A list of cells that will be captured as a result of this move</param>
+        </member>
+        <member name="M:MCTS.Core.Games.OthelloMove.ToString">
+            <summary>
+            Gives a string representation of this Othello move
+            </summary>
+            <returns>A string representation of this Othello move</returns>
+        </member>
+        <member name="M:MCTS.Core.Games.OthelloMove.Equals(System.Object)">
+            <summary>
+            Equality override for a Othello move <para/>
+            Two moves are equal if their x and y positions are equal
+            </summary>
+            <param name="obj">The other OthelloMove instance to compare this one too</param>
+            <returns>True if the objects are equal, false otherwise</returns>
+        </member>
+        <member name="M:MCTS.Core.Games.OthelloMove.GetHashCode">
+            <summary>
+            Returns a unique hash code for this instance <para/>
+            Represented as a 4 digit integer
+            </summary>
+            <returns>A unique integer for this instance</returns>
+        </member>
         <member name="T:MCTS.Core.Games.TTTBoard">
             <summary>
             A Tic-Tac-Toe game board, which allows a game of Tic-Tac-Toe to be played out on it
@@ -529,12 +627,6 @@
             Used to obtain the number of players on a Tic-Tac-Toe board, which is always 2
             </summary>
             <returns>The number of players on a Tic-Tac-Toe board, which is always 2</returns>
-        </member>
-        <member name="M:MCTS.Core.Games.TTTBoard.ToString">
-            <summary>
-            Gives a string representation of this Tic-Tac-Toe board
-            </summary>
-            <returns>A string representation of this Tic-Tac-Toe board</returns>
         </member>
         <member name="T:MCTS.Core.Games.TTTMove">
             <summary>
@@ -607,6 +699,34 @@
             <summary>
             The height of this game board
             </summary>
+        </member>
+        <member name="M:MCTS.Core.GridBasedBoard.ToString">
+            <summary>
+            Gives a string representation of this grid based board
+            </summary>
+            <returns>A string representation of this grid based board</returns>
+        </member>
+        <member name="T:MCTS.Core.Point">
+            <summary>
+            A 2D point that uses integers, used to easily refer to cells in a 2D array
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.Point.X">
+            <summary>
+            The X coordinate of this point
+            </summary>
+        </member>
+        <member name="F:MCTS.Core.Point.Y">
+            <summary>
+            The Y coordinate of this point
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.Point.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Creates a new point with the given X and Y coordinates
+            </summary>
+            <param name="x">The X coordinate of the point to set</param>
+            <param name="y">The Y coordinate of the point to set</param>
         </member>
         <member name="T:MCTS.Core.TreeSearch`1">
             <summary>

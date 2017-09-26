@@ -11,7 +11,7 @@ namespace MCTS.Core
         /// <summary>
         /// The playerID of the current player
         /// </summary>
-        protected int currentPlayer;
+        public int CurrentPlayer { get; protected set; }
 
         /// <summary>
         /// The winner value of the board state <para/>
@@ -46,7 +46,7 @@ namespace MCTS.Core
 
             while (temp.Winner == -1)
             {
-                temp.MakeMove(temp.possibleMoves.PickRandom());
+                temp.MakeMove(temp.PossibleMoves().PickRandom());
             }
 
             return temp;
@@ -71,15 +71,7 @@ namespace MCTS.Core
 
             return 0;
         }
-
-        /// <summary>
-        /// Returns the playerID of the current player
-        /// </summary>
-        /// <returns>The playerID of the current player</returns>
-        public int CurrentPlayer
-        {
-            get { return currentPlayer; }
-        }
+  
 
         /// <summary>
         /// Returns the playerID of the previous player
@@ -90,13 +82,13 @@ namespace MCTS.Core
             get
             {
                 //Return the previous player, if the previous player ID is less than 1, wrap around
-                if (currentPlayer - 1 <= 0)
+                if (CurrentPlayer - 1 <= 0)
                 {
                     return PlayerCount();
                 }
                 else
                 {
-                    return currentPlayer - 1;
+                    return CurrentPlayer - 1;
                 }
             }
         }
@@ -110,13 +102,13 @@ namespace MCTS.Core
             get
             {
                 //Return the next player, if the next player ID is past the max player count, wrap around
-                if (currentPlayer + 1 > PlayerCount())
+                if (CurrentPlayer + 1 > PlayerCount())
                 {
                     return 1;
                 }
                 else
                 {
-                    return currentPlayer + 1;
+                    return CurrentPlayer + 1;
                 }
             }
         }
