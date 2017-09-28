@@ -47,10 +47,6 @@
     <Compile Include="Classes\Board.cs" />
     <Compile Include="Classes\Games\Connect4\C4Board.cs" />
     <Compile Include="Classes\Games\Connect4\C4Move.cs" />
-    <Compile Include="Classes\Games\Chess\ChessBoard.cs" />
-    <Compile Include="Classes\Games\Chess\ChessMove.cs" />
-    <Compile Include="Classes\Games\Chess\ChessPiece.cs" />
-    <Compile Include="Classes\Games\Chess\ChessPieces.cs" />
     <Compile Include="Classes\Games\Othello\OthelloBoard.cs" />
     <Compile Include="Classes\Games\Othello\OthelloMove.cs" />
     <Compile Include="Classes\GridBasedBoard.cs" />

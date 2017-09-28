@@ -50,7 +50,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests\C4BoardTest.cs" />
     <Compile Include="Tests\C4MoveTest.cs" />
-    <Compile Include="Tests\ChessBoardTest.cs" />
     <Compile Include="Tests\TTTBoardTest.cs" />
     <Compile Include="Tests\TTTMoveTest.cs" />
   </ItemGroup>
