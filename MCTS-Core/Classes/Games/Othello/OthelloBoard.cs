@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace MCTS.Core.Games
 {
@@ -25,9 +21,7 @@ namespace MCTS.Core.Games
             boardContents[4, 3] = 1;
             boardContents[4, 4] = 2;
 
-            //Set the amount of free cells
-            //freeCells = (Width * Height) - 4;
-
+            //Begin by populating the possible moves list
             CalculatePossibleMoves();
         }
 
@@ -51,8 +45,10 @@ namespace MCTS.Core.Games
         /// <returns>A list of sandwiched pieces as a result of the passed in player making a move at the passed in board position</returns>
         private List<Point> GetSandwichedPieces(Point pos, int player)
         {
+            //The list of all points that represent cells that will be sandwiched
             List<Point> result = new List<Point>();
 
+            //The list of points that will be sandwiched in the current direction
             List<Point> currentPoints = new List<Point>();
 
             #region Check cells to the left
@@ -244,16 +240,19 @@ namespace MCTS.Core.Games
         {
             OthelloMove m = (OthelloMove)move;
 
+            //Change the cell being moved in belong to the current player
             boardContents[m.Position.X, m.Position.Y] = CurrentPlayer;
 
+            //Change each capturable cell to belong to the current player
             foreach(Point p in m.CapturableCells)
             {
                 boardContents[p.X, p.Y] = CurrentPlayer;
             }
 
-
+            //Swap out the current player for the next player
             CurrentPlayer = NextPlayer;
-
+            
+            //Repopulate the possible moves list for the current player
             CalculatePossibleMoves();
 
             //If there are no possible moves left, then determine the winner of the game
@@ -261,7 +260,6 @@ namespace MCTS.Core.Games
             {
                 DetermineWinner();
             }
-
 
             return this;
         }
@@ -304,6 +302,7 @@ namespace MCTS.Core.Games
         /// </summary>
         protected override void DetermineWinner()
         {
+            //If there are still possible moves from this point, then the game is not over
             if (possibleMoves.Count != 0)
             {
                 return;
@@ -312,6 +311,7 @@ namespace MCTS.Core.Games
             int player1Pieces = 0;
             int player2Pieces = 0;
 
+            //Count the total number of pieces for both players on the board
             for(int y = 0; y < Height; y++)
             {
                 for(int x = 0; x < Width; x++)
@@ -327,6 +327,7 @@ namespace MCTS.Core.Games
                 }
             }
 
+            //Determine the winner based on the player with the highest amount of pieces
             if(player1Pieces > player2Pieces)
             {
                 winner = 1;
@@ -343,7 +344,7 @@ namespace MCTS.Core.Games
 
         /// <summary>
         /// There is no way to speed up the calculation of a winner based on the last move in Othello <para/>
-        /// This method must still be kept as to not break polymorphism
+        /// This method must still be kept to not break polymorphism
         /// </summary>
         /// <param name="move">The previous move made on this board</param>
         protected override void DetermineWinner(Move move)

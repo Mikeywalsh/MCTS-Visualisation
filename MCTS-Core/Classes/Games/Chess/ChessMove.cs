@@ -70,7 +70,7 @@ namespace MCTS.Core.Games
         /// <summary>
         /// Returns a string representation of this chess move
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A string representation of this chess move</returns>
         public override string ToString()
         {
             return "(" + ToX + "," + ToY + ")";

@@ -247,5 +247,4 @@ public class UIController : MonoBehaviour
             return float.Parse(uiController.TimeToRunInput.text);
         }
     }
-
 }

@@ -334,7 +334,7 @@
             <summary>
             Returns a string representation of this chess move
             </summary>
-            <returns></returns>
+            <returns>A string representation of this chess move</returns>
         </member>
         <member name="T:MCTS.Core.Games.ChessPiece">
             <summary>
@@ -522,7 +522,7 @@
         <member name="M:MCTS.Core.Games.OthelloBoard.DetermineWinner(MCTS.Core.Move)">
             <summary>
             There is no way to speed up the calculation of a winner based on the last move in Othello <para/>
-            This method must still be kept as to not break polymorphism
+            This method must still be kept to not break polymorphism
             </summary>
             <param name="move">The previous move made on this board</param>
         </member>

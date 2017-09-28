@@ -1,4 +1,4 @@
-﻿using System.Threading;
+﻿using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using MCTS.Core;
@@ -12,7 +12,6 @@ public class PlayController : MonoBehaviour {
 
     private C4Board board;
     private TreeSearch<Node> mcts;
-    private Thread aiThread;
 
     private float timeToRunFor;
     private float timeLeft;
@@ -28,6 +27,8 @@ public class PlayController : MonoBehaviour {
         //Initialise the game board and display
         board = new C4Board();
         boardDisplayText.text = board.ToString();
+
+        StartAITurn();
 	}
 	
 	void Update () {
@@ -42,41 +43,26 @@ public class PlayController : MonoBehaviour {
                     mcts.Finish();
                 }
                 aiTurnProgressText.text = mcts.NodesVisited + " nodes       " + timeLeft.ToString("0.00") + "s/" + timeToRunFor + "s";
-                return;
-            }
-
-            //If the search has finished, get the best child choice
-            Node bestChild = mcts.Root.GetBestChild();
-
-            //Determine what move was made on the best child
-            for (int y = 0; y < board.Height; y++)
-            {
-                for(int x = 0; x < board.Width; x++)
-                {
-                    //If 2 cells don't match up, then the move was made in this cell
-                    if(board.GetCell(x,y) != ((C4Board)bestChild.GameBoard).GetCell(x,y))
-                    {
-                        MakeMoveOnBoard(x);
-                        mcts = null;
-                        moveButtons.SetActive(true);
-                    }
-                }
             }
         }
-
 	}
 
     public void StartAITurn()
     {
         //Initialise MCTS on the given game board
-        mcts = new TreeSearch<Node>(board, 500);
+        mcts = new TreeSearch<Node>(board);
 
-        //Run mcts in another thread
-        aiThread = new Thread(new ThreadStart(() => RunMCTS(mcts)));
-        aiThread.IsBackground = true;
-        aiThread.Start();
-        timeToRunFor = 10;
+        //Run mcts
+        if(mcts.Root.GameBoard.CurrentPlayer == 2)
+        {
+            timeToRunFor = 5;
+        }
+        else
+        {
+            timeToRunFor = 3;
+        }
         timeLeft = timeToRunFor;
+        RunMCTS();
     }
 
     /// <summary>
@@ -84,12 +70,32 @@ public class PlayController : MonoBehaviour {
     /// Should be ran on another thread to avoid freezing of the application
     /// </summary>
     /// <param name="m">The <see cref="TreeSearch"/> instance to run</param>
-    static void RunMCTS(TreeSearch<Node> m)
+    async void RunMCTS()
     {
-        while (!m.Finished)
+        await Task.Factory.StartNew(() => { while (!mcts.Finished) { mcts.Step(); } });
+
+        //If the search has finished, get the best child choice
+        Node bestChild = mcts.Root.GetBestChild();
+
+        //Determine what move was made on the best child
+        for (int y = 0; y < board.Height; y++)
         {
-            m.Step();
+            for (int x = 0; x < board.Width; x++)
+            {
+                //If 2 cells don't match up, then the move was made in this cell
+                if (board.GetCell(x, y) != ((C4Board)bestChild.GameBoard).GetCell(x, y))
+                {
+                    MakeMoveOnBoard(x);
+                    mcts = null;
+                    moveButtons.SetActive(true);
+                }
+            }
         }
+
+        if (board.PossibleMoves().Count == 0)
+            return;
+        else
+            StartAITurn();
     }
 
     public void MakeMoveOnBoard(int xPos)
