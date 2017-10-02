@@ -26,9 +26,7 @@ public class PlayController : MonoBehaviour {
 
         //Initialise the game board and display
         board = new C4Board();
-        boardDisplayText.text = board.ToString();
-
-        StartAITurn();
+        boardDisplayText.text = board.ToRichString();
 	}
 	
 	void Update () {
@@ -53,14 +51,7 @@ public class PlayController : MonoBehaviour {
         mcts = new TreeSearch<Node>(board);
 
         //Run mcts
-        if(mcts.Root.GameBoard.CurrentPlayer == 2)
-        {
-            timeToRunFor = 5;
-        }
-        else
-        {
-            timeToRunFor = 3;
-        }
+        timeToRunFor = 3;
         timeLeft = timeToRunFor;
         RunMCTS();
     }
@@ -91,11 +82,6 @@ public class PlayController : MonoBehaviour {
                 }
             }
         }
-
-        if (board.PossibleMoves().Count == 0)
-            return;
-        else
-            StartAITurn();
     }
 
     public void MakeMoveOnBoard(int xPos)
@@ -106,7 +92,7 @@ public class PlayController : MonoBehaviour {
         }
 
         board.MakeMove(new C4Move(xPos));
-        boardDisplayText.text = board.ToString();
+        boardDisplayText.text = board.ToRichString();
 
         if(board.Winner != -1)
         {

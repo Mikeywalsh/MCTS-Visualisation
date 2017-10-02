@@ -145,6 +145,13 @@ namespace MCTS.Core
         public abstract Board Duplicate();
 
         /// <summary>
+        /// Gives a rich text string representation of this board <para/>
+        /// The output string will have color tags that make the board easier to read
+        /// </summary>
+        /// <returns>A rich text string representation of this grid based board</returns>
+        public abstract string ToRichString();
+
+        /// <summary>
         /// Returns amount of players playing on this board <para/>
         /// Can't have static polymorphism and a workaround would be less efficient for execution speed <para/>
         /// Compromise is to have every instance contain the player count

@@ -92,6 +92,13 @@
             </summary>
             <returns>A copy of this board state</returns>
         </member>
+        <member name="M:MCTS.Core.Board.ToRichString">
+            <summary>
+            Gives a rich text string representation of this board <para/>
+            The output string will have color tags that make the board easier to read
+            </summary>
+            <returns>A rich text string representation of this grid based board</returns>
+        </member>
         <member name="M:MCTS.Core.Board.PlayerCount">
             <summary>
             Returns amount of players playing on this board <para/>
@@ -454,6 +461,13 @@
             Gives a string representation of this grid based board
             </summary>
             <returns>A string representation of this grid based board</returns>
+        </member>
+        <member name="M:MCTS.Core.GridBasedBoard.ToRichString">
+            <summary>
+            Gives a rich text string representation of this grid based board <para/>
+            The output string will have color tags that make the board easier to read
+            </summary>
+            <returns>A rich text string representation of this grid based board</returns>
         </member>
         <member name="T:MCTS.Core.Point">
             <summary>

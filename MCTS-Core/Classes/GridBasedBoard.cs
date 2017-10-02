@@ -73,5 +73,21 @@ namespace MCTS.Core
 
             return result;
         }
+
+        /// <summary>
+        /// Gives a rich text string representation of this grid based board <para/>
+        /// The output string will have color tags that make the board easier to read
+        /// </summary>
+        /// <returns>A rich text string representation of this grid based board</returns>
+        public override string ToRichString()
+        {
+            string boardText = ToString();
+
+            boardText = boardText.Replace("0", "<color=#ffffff>0</color>");
+            boardText = boardText.Replace("1", "<color=#ff0000>1</color>");
+            boardText = boardText.Replace("2", "<color=#0000ff>2</color>");
+
+            return boardText;
+        }
     }
 }

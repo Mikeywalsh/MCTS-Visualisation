@@ -162,7 +162,7 @@ public class UIController : MonoBehaviour
                                             "\nAverage Score: " + n.AverageScore +
                                             "\nVisits: " + n.Visits +
                                             "\nContents: " +
-                                            n.GameBoard.ToString();
+                                            n.GameBoard.ToRichString();
 
         //Get the best child node of this node, if it has children nodes that have been simulated
         Node bestChild = n.GetBestChild();
