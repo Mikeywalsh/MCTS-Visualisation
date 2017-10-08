@@ -23,6 +23,11 @@ public class MainController : MonoBehaviour
     private NodeObject rootNodeObject;
 
     /// <summary>
+    /// The type of visualisation being performed
+    /// </summary>
+    private VisualisationType visualisationType;
+
+    /// <summary>
     /// The time to run MCTS for, input by the user
     /// </summary>
     private float timeToRunFor;
@@ -85,6 +90,19 @@ public class MainController : MonoBehaviour
                     throw new System.Exception("Unknown game type index has been input");
             }
 
+            //Assign whatever visualisation type the user has chosen
+            switch(UIController.GetVisualisationChoice)
+            {
+                case 0:
+                    visualisationType = VisualisationType.Standard3D;
+                    break;
+                case 1:
+                    visualisationType = VisualisationType.Disk2D;
+                    break;
+                default:
+                    throw new System.Exception("Unknown visualisation type: encountered");
+            }
+
             //Initialise MCTS on the given game board
             mcts = new TreeSearch<NodeObject>(board);
 
@@ -133,7 +151,7 @@ public class MainController : MonoBehaviour
         if (!startedVisualisation)
         {
             rootNodeObject = (NodeObject)mcts.Root;
-            rootNodeObject.SetPosition();
+            rootNodeObject.SetPosition(visualisationType);
             StartCoroutine(SetNodePosition(rootNodeObject));
             startedVisualisation = true;
         }
@@ -165,7 +183,7 @@ public class MainController : MonoBehaviour
     /// <param name="node">The starting node to set the position of</param>
     IEnumerator SetNodePosition(NodeObject node)
     {
-        node.SetPosition();
+        node.SetPosition(visualisationType);
         nodesGenerated++;
 
         foreach (Node child in node.Children)

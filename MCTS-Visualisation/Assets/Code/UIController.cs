@@ -30,6 +30,11 @@ public class UIController : MonoBehaviour
     public Dropdown GameChoiceDropdown;
 
     /// <summary>
+    /// The dropdown menu that allows the user to select what visualisation type to use
+    /// </summary>
+    public Dropdown VisualistationChoiceDropdown;
+
+    /// <summary>
     /// The button which either starts MCTS or finished it early, depending on when it is pressed
     /// </summary>
     public Button StartStopButton;
@@ -234,6 +239,17 @@ public class UIController : MonoBehaviour
         get
         {
             return uiController.GameChoiceDropdown.value;
+        }
+    }
+
+    /// <summary>
+    /// Gets the current selected visualisation choice and returns it as an integer index value
+    /// </summary>
+    public static int GetVisualisationChoice
+    {
+        get
+        {
+            return uiController.VisualistationChoiceDropdown.value;
         }
     }
 
