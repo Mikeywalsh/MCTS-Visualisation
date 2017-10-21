@@ -514,6 +514,11 @@
             The amount of unique nodes in the tree
             </summary>
         </member>
+        <member name="P:MCTS.Core.TreeSearch`1.AllNodes">
+            <summary>
+            A list of all nodes in the tree in the order that they were added
+            </summary>
+        </member>
         <member name="M:MCTS.Core.TreeSearch`1.#ctor(MCTS.Core.Board)">
             <summary>
             Creates a new Monte Carlo Tree Search with the given game board

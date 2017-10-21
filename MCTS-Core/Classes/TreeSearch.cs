@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MCTS.Core
 {
@@ -26,6 +27,11 @@ namespace MCTS.Core
         public int UniqueNodes { get; private set; }
 
         /// <summary>
+        /// A list of all nodes in the tree in the order that they were added
+        /// </summary>
+        public List<T> AllNodes { get; private set; }
+
+        /// <summary>
         /// Creates a new Monte Carlo Tree Search with the given game board
         /// </summary>
         /// <param name="gameBoard">The game board to perform the MCTS with</param>
@@ -37,6 +43,10 @@ namespace MCTS.Core
 
             //Set the unique node amount to 1, to accomodate the root node
             UniqueNodes = 1;
+
+            //Initialise the list of all nodes and add the root node to it
+            AllNodes = new List<T>();
+            AllNodes.Add(Root);
         }
 
         /// <summary>
@@ -60,6 +70,7 @@ namespace MCTS.Core
             if (nodeBeforeExpansion != currentNode)
             {
                 UniqueNodes++;
+                AllNodes.Add((T)currentNode);
             }
 
             //Simulation
