@@ -14,44 +14,104 @@ public class HashCameraControl : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		
-        if(Input.GetKey(KeyCode.W))
+        if(Forwards())
         {
             transform.Translate(Vector3.forward * 0.1f * Speed);
         }
 
-        if(Input.GetKey(KeyCode.S))
+        if(Backwards())
         {
             transform.Translate(Vector3.forward * -0.1f * Speed);
         }
 
-        if (Input.GetKey(KeyCode.Q))
-        {
-            transform.Rotate(new Vector3(0, -1 * Speed, 0));
-        }
-
-        if (Input.GetKey(KeyCode.E))
-        {
-            transform.Rotate(new Vector3(0, 1 * Speed, 0));
-        }
-
-        if (Input.GetKey(KeyCode.Space))
-        {
-            transform.Translate(Vector3.up * 0.1f * Speed);
-        }
-
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            transform.Translate(Vector3.up * -0.1f * Speed);
-        }
-
-        if (Input.GetKey(KeyCode.A))
+        if (StrafeLeft())
         {
             transform.Translate(Vector3.right * -0.1f * Speed);
         }
 
-        if (Input.GetKey(KeyCode.D))
+        if (StrafeRight())
         {
             transform.Translate(Vector3.right * 0.1f * Speed);
         }
+
+        if (Upwards())
+        {
+            transform.Translate(Vector3.up * 0.1f * Speed);
+        }
+
+        if (Downwards())
+        {
+            transform.Translate(Vector3.up * -0.1f * Speed);
+        }
+
+        if (PivotLeft())
+        {
+            transform.Rotate(new Vector3(0, -1 * Speed, 0));
+        }
+
+        if (PivotRight())
+        {
+            transform.Rotate(new Vector3(0, 1 * Speed, 0));
+        }
+
+        if (PivotUpwards())
+        {
+            transform.Rotate(new Vector3(-1 * Speed, 0, 0));
+        }
+
+        if (PivotDownwards())
+        {
+            transform.Rotate(new Vector3(1 * Speed, 0, 0));
+        }
+    }
+
+    public bool StrafeLeft()
+    {
+        return Input.GetKey(KeyCode.A) || Input.GetAxis("LeftThumbstickHorizontal") < -0.1f;
+    }
+
+    public bool StrafeRight()
+    {
+        return Input.GetKey(KeyCode.D) || Input.GetAxis("LeftThumbstickHorizontal") > 0.1f;
+    }
+
+    public bool Forwards()
+    {
+        return Input.GetKey(KeyCode.W) || Input.GetAxis("LeftThumbstickVertical") > 0.1f;
+    }
+
+    public bool Backwards()
+    {
+        return Input.GetKey(KeyCode.S) || Input.GetAxis("LeftThumbstickVertical") < -0.1f;
+    }
+
+    public bool Upwards()
+    {
+        return Input.GetKey(KeyCode.Space) || Input.GetButton("AButton");
+    }
+
+    public bool Downwards()
+    {
+        return Input.GetKey(KeyCode.LeftShift) || Input.GetButton("XButton");
+    }
+
+    public bool PivotLeft()
+    {
+        return Input.GetKey(KeyCode.Q) || Input.GetAxis("RightThumbstickHorizontal") < -0.1f;
+    }
+
+    public bool PivotRight()
+    {
+        return Input.GetKey(KeyCode.E) || Input.GetAxis("RightThumbstickHorizontal") > 0.1f;
+    }
+
+    public bool PivotUpwards()
+    {
+        return Input.GetKey(KeyCode.Z) || Input.GetAxis("RightThumbstickVertical") < -0.1f;
+    }
+
+    public bool PivotDownwards()
+    {
+        return Input.GetKey(KeyCode.X) || Input.GetAxis("RightThumbstickVertical") > 0.1f;
     }
 }

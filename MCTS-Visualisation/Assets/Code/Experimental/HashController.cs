@@ -20,8 +20,8 @@ public class HashController : MonoBehaviour
 
     public void Update()
     {
-        //Allow the user to perform a step with the return key instead of pressing the step button
-        if(Input.GetKeyDown(KeyCode.Return))
+        //Allow the user to perform a step with the return key or Y button instead of pressing the step button
+        if(Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("YButton"))
         {
             StepButtonPressed();
         }
