@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 using MCTS.Core;
 using MCTS.Core.Games;
 
@@ -10,11 +10,23 @@ public class HashController : MonoBehaviour
 
     public Dictionary<Node, GameObject> nodeObjectMap = new Dictionary<Node, GameObject>();
 
-    public List<LineRenderer> lines = new List<LineRenderer>();
-
     public TreeSearch<Node> mcts;
 
-    public void Start()
+    public GameObject MenuPanel;
+
+    public Text StartingNodeAmountField;
+
+    public GameObject NavigationPanel;
+
+    public void Update()
+    {
+        //Allow the user to perform a step with the return key instead of pressing the step button
+        if(Input.GetKeyDown(KeyCode.Return))
+        {
+            StepButtonPressed();
+        }
+    }
+    public void StartButtonPressed()
     {
         mcts = new TreeSearch<Node>(new TTTBoard());
 
@@ -25,6 +37,13 @@ public class HashController : MonoBehaviour
         //Add the root node to the position and object map
         nodePositionMap.Add(rootNodePosition, rootNode);
         nodeObjectMap.Add(mcts.Root, rootNode);
+
+        for (int i = 0; i < int.Parse(StartingNodeAmountField.text); i++)
+        {
+            MenuPanel.SetActive(false);
+            NavigationPanel.SetActive(true);
+            StepButtonPressed();
+        }
     }
 
     public void StepButtonPressed()
@@ -42,7 +61,9 @@ public class HashController : MonoBehaviour
         if (nodePositionMap.ContainsKey(newNodePosition))
         {
             //Map the newest node to the existing node object
-            nodeObjectMap.Add(newestNode, nodeObjectMap[newestNode]);
+            nodeObjectMap.Add(newestNode, nodePositionMap[newNodePosition]);
+
+            Debug.Log("boop");
         }
         else
         {
