@@ -62,8 +62,6 @@ public class HashController : MonoBehaviour
         {
             //Map the newest node to the existing node object
             nodeObjectMap.Add(newestNode, nodePositionMap[newNodePosition]);
-
-            Debug.Log("boop");
         }
         else
         {
