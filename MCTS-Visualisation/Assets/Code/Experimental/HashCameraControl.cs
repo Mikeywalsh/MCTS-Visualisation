@@ -46,22 +46,22 @@ public class HashCameraControl : MonoBehaviour {
 
         if (PivotLeft())
         {
-            transform.Rotate(new Vector3(0, -1 * Speed, 0));
+            transform.Rotate(new Vector3(0, -Speed, 0));
         }
 
         if (PivotRight())
         {
-            transform.Rotate(new Vector3(0, 1 * Speed, 0));
+            transform.Rotate(new Vector3(0, Speed, 0));
         }
 
         if (PivotUpwards())
         {
-            transform.Rotate(new Vector3(-1 * Speed, 0, 0));
+            transform.Rotate(new Vector3(-Speed, 0, 0));
         }
 
         if (PivotDownwards())
         {
-            transform.Rotate(new Vector3(1 * Speed, 0, 0));
+            transform.Rotate(new Vector3(Speed, 0, 0));
         }
     }
 
