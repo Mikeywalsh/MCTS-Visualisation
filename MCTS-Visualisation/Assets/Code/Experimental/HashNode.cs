@@ -7,8 +7,6 @@ using System.Linq;
 
 public class HashNode : MonoBehaviour
 {
-    private GameObject ParentNode;
-
     private Vector3 startingPosition;
 
     private Vector3 nextTarget;
@@ -16,6 +14,8 @@ public class HashNode : MonoBehaviour
     bool reachedTarget;
 
     private Dictionary<LineRenderer, GameObject> lines = new Dictionary<LineRenderer, GameObject>();
+
+    List<Node> containedNodes = new List<Node>();
 
     public void Start()
     {
@@ -26,17 +26,16 @@ public class HashNode : MonoBehaviour
         nextTarget = startingPosition + new Vector3(Random.Range(-1, 1), Random.Range(-1, 1), Random.Range(-1, 1));
     }
 
-    public void Initialise(GameObject parent)
+    public void AddNode(GameObject lineTarget, Node newNode)
     {
+        containedNodes.Add(newNode);
+
         //If this hashnode already has one line renderer, then it contains a duplicate board state in the tree, mark it accordingly
         if (transform.childCount > 0)
         {
-            //Mark the parent object as a duplicate in the tree
+            //Mark this hashnode as a duplicate in the tree
             GetComponent<Renderer>().material.color = Color.red;
         }
-
-        //Set the parent node reference
-        ParentNode = parent;
 
         GameObject newChildObject = new GameObject();
         newChildObject.transform.parent = transform;
@@ -55,7 +54,7 @@ public class HashNode : MonoBehaviour
         newLine.material = Resources.Load<Material>("LineMat");
 
         //Map the new line renderer to the parent gameobject
-        lines.Add(newLine, parent);
+        lines.Add(newLine, lineTarget);
     }
 
     public void Update()

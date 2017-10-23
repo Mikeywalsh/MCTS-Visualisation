@@ -12,12 +12,6 @@ public class HashController : MonoBehaviour
 
     public TreeSearch<Node> mcts;
 
-    public GameObject MenuPanel;
-
-    public Text StartingNodeAmountField;
-
-    public GameObject NavigationPanel;
-
     public void Update()
     {
         //Allow the user to perform a step with the return key or Y button instead of pressing the step button
@@ -38,10 +32,10 @@ public class HashController : MonoBehaviour
         nodePositionMap.Add(rootNodePosition, rootNode);
         nodeObjectMap.Add(mcts.Root, rootNode);
 
-        for (int i = 0; i < int.Parse(StartingNodeAmountField.text); i++)
+        for (int i = 0; i < HashUIController.GetStartingNodeInput(); i++)
         {
-            MenuPanel.SetActive(false);
-            NavigationPanel.SetActive(true);
+            HashUIController.SetMenuPanelActive(false);
+            HashUIController.SetNavigationPanelActive(true);
             StepButtonPressed();
         }
     }
@@ -76,7 +70,9 @@ public class HashController : MonoBehaviour
         }
 
         //Initialise the newest node with a line renderer
-        nodeObjectMap[newestNode].GetComponent<HashNode>().Initialise(nodeObjectMap[newestNode.Parent]);
+        nodeObjectMap[newestNode].GetComponent<HashNode>().AddNode(nodeObjectMap[newestNode.Parent], newestNode);
+
+        HashUIController.SetTotalNodeText(nodeObjectMap.Count);
     }
 
     public Vector3 BoardToPosition(TTTBoard board)

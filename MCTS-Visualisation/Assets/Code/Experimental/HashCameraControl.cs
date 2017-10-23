@@ -13,7 +13,7 @@ public class HashCameraControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+
         if(Forwards())
         {
             transform.Translate(Vector3.forward * 0.1f * Speed);
@@ -62,6 +62,14 @@ public class HashCameraControl : MonoBehaviour {
         if (PivotDownwards())
         {
             transform.Rotate(new Vector3(Speed, 0, 0));
+        }
+
+        // TEMP
+        RaycastHit hit;
+        Ray ray = new Ray(transform.position, transform.forward);
+        if (Physics.Raycast(ray, out hit, 30))
+        {
+            hit.transform.GetComponent<Renderer>().material.color = Color.yellow;
         }
     }
 
