@@ -22,6 +22,12 @@ public class HashUIController : MonoBehaviour {
 
     public Text NodeInfoText;
 
+    public Button PlayButton;
+
+    public Button PauseButton;
+
+    public Button StepButton;
+
     public void Start()
     {
         controller = this;
@@ -71,5 +77,19 @@ public class HashUIController : MonoBehaviour {
                                         "\nTotal Score: " + n.TotalScore +
                                         "\nAverage Score: " + n.AverageScore +
                                         "\nVisits: " + n.Visits;
+    }
+
+    public static void PlayButtonPressed()
+    {
+        controller.PlayButton.gameObject.SetActive(false);
+        controller.StepButton.gameObject.SetActive(false);
+        controller.PauseButton.gameObject.SetActive(true);
+    }
+
+    public static void PauseButtonPressed()
+    {
+        controller.PlayButton.gameObject.SetActive(true);
+        controller.StepButton.gameObject.SetActive(true);
+        controller.PauseButton.gameObject.SetActive(false);
     }
 }

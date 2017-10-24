@@ -7,7 +7,7 @@ using System.Linq;
 
 public class HashNode : MonoBehaviour
 {
-    private Vector3 startingPosition;
+    private Vector3 originPosition;
 
     private Vector3 nextTarget;
 
@@ -21,13 +21,13 @@ public class HashNode : MonoBehaviour
 
     private Color nodeColor = Color.white;
 
-    public void Start()
+    public void Initialise(Vector3 origin)
     {
-        //Save the starting position for this node
-        startingPosition = transform.position;
+        //Save the origin position for this node
+        originPosition = origin;
 
         //Set an initial target
-        nextTarget = startingPosition + new Vector3(Random.Range(-1, 1), Random.Range(-1, 1), Random.Range(-1, 1));
+        nextTarget = originPosition + new Vector3(Random.Range(-1, 1), Random.Range(-1, 1), Random.Range(-1, 1));
     }
 
     public void AddNode(GameObject lineTarget, Node newNode)
@@ -78,7 +78,7 @@ public class HashNode : MonoBehaviour
         //If the target position has been reached, assign a new target positon
         if ((transform.position - nextTarget).magnitude <= 0.1f)
         {
-            nextTarget = startingPosition + new Vector3(Random.Range(-1, 1), Random.Range(-1, 1), Random.Range(-1, 1));
+            nextTarget = originPosition + new Vector3(Random.Range(-1, 1), Random.Range(-1, 1), Random.Range(-1, 1));
         }
 
         //Move closer to the target position via linear interpolation

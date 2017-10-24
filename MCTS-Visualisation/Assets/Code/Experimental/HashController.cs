@@ -11,13 +11,40 @@ public class HashController : MonoBehaviour
 
     public TreeSearch<Node> mcts;
 
+    private float lastSpawn;
+
+    private const float SPAWN_DELAY = 0.1f;
+
+    bool playing = false;
+
     public void Update()
     {
         //Allow the user to perform a step with the return key or Y button instead of pressing the step button
         if(Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("YButton"))
         {
-            StepButtonPressed();
+            PerformStep(false);
         }
+
+        if(mcts != null && playing)
+        {
+            if(Time.time - lastSpawn > SPAWN_DELAY)
+            {
+                PerformStep(false);
+                lastSpawn = Time.time;
+            }
+        }
+    }
+
+    public void PlayButtonPressed()
+    {
+        playing = true;
+        HashUIController.PlayButtonPressed();
+    }
+
+    public void PauseButtonPressed()
+    {
+        playing = false;
+        HashUIController.PauseButtonPressed();
     }
 
     public void StartButtonPressed()
@@ -35,13 +62,25 @@ public class HashController : MonoBehaviour
 
         for (int i = 0; i < HashUIController.GetStartingNodeInput(); i++)
         {
-            HashUIController.SetMenuPanelActive(false);
-            HashUIController.SetNavigationPanelActive(true);
-            StepButtonPressed();
+            PerformStep(true);
         }
+
+        //Swap out the current menu panels
+        HashUIController.SetMenuPanelActive(false);
+        HashUIController.SetNavigationPanelActive(true);
     }
 
     public void StepButtonPressed()
+    {
+        if(playing)
+        {
+            return;
+        }
+
+        PerformStep(false);
+    }
+
+    public void PerformStep(bool fromMenu)
     {
         //Perform an iteration of MCTS
         mcts.Step();
@@ -61,7 +100,7 @@ public class HashController : MonoBehaviour
         else
         {
             //Instantiate the new node object at the hashed position
-            GameObject newNodeObject = Instantiate(Resources.Load("Ball"), newNodePosition, Quaternion.identity) as GameObject;
+            GameObject newNodeObject = Instantiate(Resources.Load("Ball"), fromMenu? newNodePosition : nodeObjectMap[newestNode.Parent].transform.position, Quaternion.identity) as GameObject;
 
             //Map the newest node to the new node object
             nodeObjectMap.Add(newestNode, newNodeObject);
@@ -70,7 +109,8 @@ public class HashController : MonoBehaviour
             nodePositionMap.Add(newNodePosition, newNodeObject);
         }
 
-        //Initialise the newest node with a line renderer
+        //Initialise the newest hash node and add a mcts Node to ite
+        nodeObjectMap[newestNode].GetComponent<HashNode>().Initialise(newNodePosition);
         nodeObjectMap[newestNode].GetComponent<HashNode>().AddNode(nodeObjectMap[newestNode.Parent], newestNode);
 
         HashUIController.SetTotalNodeText(nodeObjectMap.Count);
