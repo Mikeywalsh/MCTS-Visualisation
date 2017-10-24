@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using MCTS.Core;
 
 public class HashUIController : MonoBehaviour {
 
@@ -12,6 +13,10 @@ public class HashUIController : MonoBehaviour {
     public GameObject NavigationPanel;
 
     public Text TotalNodeText;
+
+    public GameObject NodeInfoPanel;
+
+    public Text NodeInfoText;
 
     public void Start()
     {
@@ -36,5 +41,17 @@ public class HashUIController : MonoBehaviour {
     public static int GetStartingNodeInput()
     {
         return int.Parse(controller.StartingNodeAmountField.text);
+    }
+
+    public static void ShowCurrentNodeInfo(Board board, int nodeCount)
+    {
+        controller.NodeInfoPanel.SetActive(true);
+
+        controller.NodeInfoText.text = board.ToRichString() + "\n\n <color=ffffff>Nodes: " + nodeCount + "</color>";
+    }
+
+    public static void HideNodeInfo()
+    {
+        controller.NodeInfoPanel.SetActive(false);
     }
 }

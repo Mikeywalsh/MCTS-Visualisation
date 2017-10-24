@@ -1,17 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class HashCameraControl : MonoBehaviour {
 
     public float Speed;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
+    private HashNode currentHighlighted;
 	
-	// Update is called once per frame
 	void Update () {
 
         if(Forwards())
@@ -64,12 +58,39 @@ public class HashCameraControl : MonoBehaviour {
             transform.Rotate(new Vector3(Speed, 0, 0));
         }
 
-        // TEMP
+        //See if there are any Hashnodes in front of the camera
         RaycastHit hit;
         Ray ray = new Ray(transform.position, transform.forward);
-        if (Physics.Raycast(ray, out hit, 30))
+
+        //If the camera is looking at a HashNode object, highlight it
+        if (Physics.Raycast(ray, out hit, 30) && hit.transform.GetComponent<HashNode>() != null)
         {
-            hit.transform.GetComponent<Renderer>().material.color = Color.yellow;
+            //Get a reference to the HashNode that was hit
+            HashNode hitNode = hit.transform.GetComponent<HashNode>();
+
+            //If the node being looked at is not the current highlighted node, make it the highlighted node
+            if (currentHighlighted != hitNode)
+            {
+                //Reset the color of the old highlighted node, if there is one
+                if (currentHighlighted != null)
+                {
+                    currentHighlighted.SetColor();
+                }
+
+                //Make the node being looked at the current highlighted node and set its color to yellow
+                currentHighlighted = hitNode;
+                hitNode.GetComponent<Renderer>().material.color = Color.yellow;
+
+                //Display information about the current node
+                HashUIController.ShowCurrentNodeInfo(hitNode.BoardState, hitNode.NodeCount);
+            }
+        }
+        else if(currentHighlighted != null)
+        {
+            //If the camera is not looking at a HashNode object, reset the previously highlighted node and hide the node information panel
+            currentHighlighted.SetColor();
+            currentHighlighted = null;
+            HashUIController.HideNodeInfo();
         }
     }
 

@@ -11,11 +11,15 @@ public class HashNode : MonoBehaviour
 
     private Vector3 nextTarget;
 
-    bool reachedTarget;
+    private bool reachedTarget;
 
     private Dictionary<LineRenderer, GameObject> lines = new Dictionary<LineRenderer, GameObject>();
 
-    List<Node> containedNodes = new List<Node>();
+    private List<Node> containedNodes = new List<Node>();
+
+    public Board BoardState { get; private set; }
+
+    private Color nodeColor = Color.white;
 
     public void Start()
     {
@@ -30,11 +34,23 @@ public class HashNode : MonoBehaviour
     {
         containedNodes.Add(newNode);
 
+        if(BoardState == null)
+        {
+            BoardState = newNode.GameBoard;
+        }
+
+        //If there is no line target, then return immeditately and do not create a LineRenderer
+        if(lineTarget == null)
+        {
+            return;
+        }
+
         //If this hashnode already has one line renderer, then it contains a duplicate board state in the tree, mark it accordingly
         if (transform.childCount > 0)
         {
             //Mark this hashnode as a duplicate in the tree
-            GetComponent<Renderer>().material.color = Color.red;
+            nodeColor = Color.red;
+            SetColor();
         }
 
         GameObject newChildObject = new GameObject();
@@ -72,10 +88,22 @@ public class HashNode : MonoBehaviour
         for (int i = 0; i < lines.Count; i++)
         {
             Vector3[] lineCoords = new Vector3[2];
-            LineRenderer lineObject = lines.Keys.ToArray()[i];
-            lineCoords[0] = lineObject.transform.position;
-            lineCoords[1] = lines[lineObject].transform.position;
+            lineCoords[0] = transform.position;
+            lineCoords[1] = lines[lines.Keys.ToArray()[i]].transform.position;
             lines.Keys.ToArray()[i].SetPositions(lineCoords);
         }
+    }
+
+    public void SetColor()
+    {
+        GetComponent<Renderer>().material.color = nodeColor;
+    }
+
+    /// <summary>
+    /// Gets the amount of nodes that share the board state of this HashNode
+    /// </summary>
+    public int NodeCount
+    {
+        get { return containedNodes.Count; }
     }
 }

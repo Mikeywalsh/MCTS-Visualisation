@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using MCTS.Core;
 using MCTS.Core.Games;
 
@@ -20,6 +19,7 @@ public class HashController : MonoBehaviour
             StepButtonPressed();
         }
     }
+
     public void StartButtonPressed()
     {
         mcts = new TreeSearch<Node>(new TTTBoard());
@@ -27,6 +27,7 @@ public class HashController : MonoBehaviour
         //Calculate the position of the root node and add an object for it to the scene
         Vector3 rootNodePosition = BoardToPosition((TTTBoard)mcts.Root.GameBoard);
         GameObject rootNode = Instantiate(Resources.Load("Ball"), rootNodePosition, Quaternion.identity) as GameObject;
+        rootNode.GetComponent<HashNode>().AddNode(null, mcts.Root);
 
         //Add the root node to the position and object map
         nodePositionMap.Add(rootNodePosition, rootNode);
