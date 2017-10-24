@@ -106,4 +106,14 @@ public class HashNode : MonoBehaviour
     {
         get { return containedNodes.Count; }
     }
+
+    /// <summary>
+    /// Gets the node at the provided index from the <see cref="containedNodes"/> list
+    /// </summary>
+    /// <param name="index">The index to get the node from</param>
+    /// <returns>The node at the provided index from the <see cref="containedNodes"/> list</returns>
+    public Node GetNode(int index)
+    {
+        return containedNodes[index];
+    }
 }

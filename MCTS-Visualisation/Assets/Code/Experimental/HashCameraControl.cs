@@ -5,6 +5,8 @@ public class HashCameraControl : MonoBehaviour {
     public float Speed;
 
     private HashNode currentHighlighted;
+
+    private int currentSelectedNodeIndex;
 	
 	void Update () {
 
@@ -58,6 +60,18 @@ public class HashCameraControl : MonoBehaviour {
             transform.Rotate(new Vector3(Speed, 0, 0));
         }
 
+        if(currentHighlighted != null && NextNode() && currentHighlighted.NodeCount > currentSelectedNodeIndex + 1)
+        {
+            currentSelectedNodeIndex++;
+            HashUIController.DisplayNodeInfo(currentHighlighted.GetNode(currentSelectedNodeIndex), currentSelectedNodeIndex);
+        }
+
+        if(currentHighlighted != null && PreviousNode() && currentSelectedNodeIndex > 0)
+        {
+            currentSelectedNodeIndex--;
+            HashUIController.DisplayNodeInfo(currentHighlighted.GetNode(currentSelectedNodeIndex), currentSelectedNodeIndex);
+        }
+
         //See if there are any Hashnodes in front of the camera
         RaycastHit hit;
         Ray ray = new Ray(transform.position, transform.forward);
@@ -82,7 +96,9 @@ public class HashCameraControl : MonoBehaviour {
                 hitNode.GetComponent<Renderer>().material.color = Color.yellow;
 
                 //Display information about the current node
-                HashUIController.ShowCurrentNodeInfo(hitNode.BoardState, hitNode.NodeCount);
+                HashUIController.DisplayBoardInfo(hitNode.BoardState, hitNode.NodeCount);
+                currentSelectedNodeIndex = 0;
+                HashUIController.DisplayNodeInfo(hitNode.GetNode(currentSelectedNodeIndex), currentSelectedNodeIndex);
             }
         }
         else if(currentHighlighted != null)
@@ -90,7 +106,8 @@ public class HashCameraControl : MonoBehaviour {
             //If the camera is not looking at a HashNode object, reset the previously highlighted node and hide the node information panel
             currentHighlighted.SetColor();
             currentHighlighted = null;
-            HashUIController.HideNodeInfo();
+            HashUIController.HideBoardInfo();
+            currentSelectedNodeIndex = 0;
         }
     }
 
@@ -142,5 +159,15 @@ public class HashCameraControl : MonoBehaviour {
     public bool PivotDownwards()
     {
         return Input.GetKey(KeyCode.X) || Input.GetAxis("RightThumbstickVertical") > 0.1f;
+    }
+
+    public bool NextNode()
+    {
+        return Input.GetKeyDown(KeyCode.RightArrow);
+    }
+
+    public bool PreviousNode()
+    {
+        return Input.GetKeyDown(KeyCode.LeftArrow);
     }
 }

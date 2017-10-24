@@ -14,7 +14,11 @@ public class HashUIController : MonoBehaviour {
 
     public Text TotalNodeText;
 
+    public GameObject BoardInfoPanel;
+
     public GameObject NodeInfoPanel;
+
+    public Text BoardInfoText;
 
     public Text NodeInfoText;
 
@@ -43,15 +47,29 @@ public class HashUIController : MonoBehaviour {
         return int.Parse(controller.StartingNodeAmountField.text);
     }
 
-    public static void ShowCurrentNodeInfo(Board board, int nodeCount)
+    public static void DisplayBoardInfo(Board board, int nodeCount)
     {
         controller.NodeInfoPanel.SetActive(true);
 
-        controller.NodeInfoText.text = board.ToRichString() + "\n\n <color=ffffff>Nodes: " + nodeCount + "</color>";
+        controller.BoardInfoText.text = board.ToRichString() + "\n\n <color=ffffff>Nodes: " + nodeCount + "</color>";
     }
 
-    public static void HideNodeInfo()
+    public static void HideBoardInfo()
     {
         controller.NodeInfoPanel.SetActive(false);
+        controller.BoardInfoPanel.SetActive(false);
+    }
+
+    public static void DisplayNodeInfo(Node n, int index)
+    {
+        //Show information about the current node
+        controller.BoardInfoPanel.SetActive(true);
+
+        controller.NodeInfoText.text =  "Node: " + (index + 1) +
+                                        "\nCurrent Node Depth: " + n.Depth +
+                                        "\nCurrent Player: " + n.GameBoard.CurrentPlayer +
+                                        "\nTotal Score: " + n.TotalScore +
+                                        "\nAverage Score: " + n.AverageScore +
+                                        "\nVisits: " + n.Visits;
     }
 }
