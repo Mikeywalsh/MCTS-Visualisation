@@ -163,11 +163,11 @@ public class HashCameraControl : MonoBehaviour {
 
     public bool NextNode()
     {
-        return Input.GetKeyDown(KeyCode.RightArrow);
+        return Input.GetKeyDown(KeyCode.RightArrow) || Input.GetButtonDown("RightTrigger");
     }
 
     public bool PreviousNode()
     {
-        return Input.GetKeyDown(KeyCode.LeftArrow);
+        return Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetButtonDown("LeftTrigger");
     }
 }

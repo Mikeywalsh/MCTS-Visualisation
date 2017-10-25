@@ -19,19 +19,40 @@ public class HashController : MonoBehaviour
 
     public void Update()
     {
+        if (mcts == null)
+        {
+            return;
+        }
+
         //Allow the user to perform a step with the return key or Y button instead of pressing the step button
-        if(Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("YButton"))
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("YButton"))
         {
             PerformStep(false);
         }
 
-        if(mcts != null && playing)
+        //Allow the user to toggle the play/pause options with the p key or B button instead of pressing the respective buttons
+        if (Input.GetKeyDown(KeyCode.P) || Input.GetButtonDown("BButton"))
         {
-            if(Time.time - lastSpawn > SPAWN_DELAY)
-            {
-                PerformStep(false);
-                lastSpawn = Time.time;
-            }
+            TogglePlayPause();
+        }
+
+
+        if (playing && Time.time - lastSpawn > SPAWN_DELAY)
+        {
+            PerformStep(false);
+            lastSpawn = Time.time;
+        }
+    }
+
+    public void TogglePlayPause()
+    {
+        if (playing)
+        {
+            PauseButtonPressed();
+        }
+        else
+        {
+            PlayButtonPressed();
         }
     }
 
@@ -72,7 +93,7 @@ public class HashController : MonoBehaviour
 
     public void StepButtonPressed()
     {
-        if(playing)
+        if (playing)
         {
             return;
         }
@@ -100,7 +121,7 @@ public class HashController : MonoBehaviour
         else
         {
             //Instantiate the new node object at the hashed position
-            GameObject newNodeObject = Instantiate(Resources.Load("Ball"), fromMenu? newNodePosition : nodeObjectMap[newestNode.Parent].transform.position, Quaternion.identity) as GameObject;
+            GameObject newNodeObject = Instantiate(Resources.Load("Ball"), fromMenu ? newNodePosition : nodeObjectMap[newestNode.Parent].transform.position, Quaternion.identity) as GameObject;
 
             //Map the newest node to the new node object
             nodeObjectMap.Add(newestNode, newNodeObject);
@@ -122,7 +143,7 @@ public class HashController : MonoBehaviour
         float yPos = 0;
         float zPos = 0;
 
-        for(int y = 0; y < 3; y++)
+        for (int y = 0; y < 3; y++)
         {
             xPos += Mathf.Pow(3, y) * board.GetCell(0, y);
             yPos += Mathf.Pow(3, y) * board.GetCell(1, y);
