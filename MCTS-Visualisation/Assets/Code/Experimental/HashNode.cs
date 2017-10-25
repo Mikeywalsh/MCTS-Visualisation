@@ -45,12 +45,22 @@ public class HashNode : MonoBehaviour
             return;
         }
 
+        //If this node contains a terminal node, mark it as such
+        if (ContainsTerminalNode)
+        {
+            nodeColor = Color.green;
+            SetColor();
+        }
+
         //If this hashnode already has one line renderer, then it contains a duplicate board state in the tree, mark it accordingly
         if (transform.childCount > 0)
         {
             //Mark this hashnode as a duplicate in the tree
-            nodeColor = Color.red;
-            SetColor();
+            if (!ContainsTerminalNode)
+            {
+                nodeColor = Color.red;
+                SetColor();
+            }
         }
 
         GameObject newChildObject = new GameObject();
@@ -115,5 +125,21 @@ public class HashNode : MonoBehaviour
     public Node GetNode(int index)
     {
         return containedNodes[index];
+    }
+
+    public bool ContainsTerminalNode
+    {
+        get
+        {
+            foreach(Node n in containedNodes)
+            {
+                if(n.IsLeafNode)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

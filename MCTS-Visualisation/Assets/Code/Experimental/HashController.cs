@@ -115,8 +115,11 @@ public class HashController : MonoBehaviour
         //If the current board state already exists, then don't create a new node, but create a line to the existing node
         if (nodePositionMap.ContainsKey(newNodePosition))
         {
-            //Map the newest node to the existing node object
-            nodeObjectMap.Add(newestNode, nodePositionMap[newNodePosition]);
+            //Map the newest node to the existing node object if it does not already exist in the dicitonary
+            if (!nodeObjectMap.ContainsKey(newestNode))
+            {
+                nodeObjectMap.Add(newestNode, nodePositionMap[newNodePosition]);
+            }
         }
         else
         {
