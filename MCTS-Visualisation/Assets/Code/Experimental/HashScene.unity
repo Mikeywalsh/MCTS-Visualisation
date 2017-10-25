@@ -1368,7 +1368,7 @@ MonoBehaviour:
   MenuPanel: {fileID: 891875865}
   StartingNodeAmountField: {fileID: 2063639756}
   NavigationPanel: {fileID: 1011652550}
-  TotalNodeText: {fileID: 2109448950}
+  TotalStepsText: {fileID: 2109448950}
   BoardInfoPanel: {fileID: 2014456783}
   NodeInfoPanel: {fileID: 610395034}
   BoardInfoText: {fileID: 1850752987}
@@ -1554,7 +1554,7 @@ GameObject:
   - component: {fileID: 1945441340}
   - component: {fileID: 1945441339}
   m_Layer: 5
-  m_Name: Total Node Panel
+  m_Name: Total Steps Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2048,7 +2048,7 @@ GameObject:
   - component: {fileID: 2109448951}
   - component: {fileID: 2109448950}
   m_Layer: 5
-  m_Name: Total Node Text
+  m_Name: Total Steps Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2104,7 +2104,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Total Nodes: 0'
+  m_Text: 'Total Steps: 0'
 --- !u!222 &2109448951
 CanvasRenderer:
   m_ObjectHideFlags: 0

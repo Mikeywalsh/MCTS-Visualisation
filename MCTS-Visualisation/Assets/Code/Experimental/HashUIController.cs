@@ -12,7 +12,7 @@ public class HashUIController : MonoBehaviour {
 
     public GameObject NavigationPanel;
 
-    public Text TotalNodeText;
+    public Text TotalStepsText;
 
     public GameObject BoardInfoPanel;
 
@@ -35,7 +35,7 @@ public class HashUIController : MonoBehaviour {
 
     public static void SetTotalNodeText(int newTotal)
     {
-        controller.TotalNodeText.text = "Total Nodes: " + newTotal;
+        controller.TotalStepsText.text = "Total Steps: " + newTotal;
     }
 
     public static void SetMenuPanelActive(bool active)
