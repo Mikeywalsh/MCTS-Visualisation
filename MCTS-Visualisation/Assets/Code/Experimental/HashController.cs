@@ -153,7 +153,7 @@ public class HashController : MonoBehaviour
             zPos += Mathf.Pow(3, y) * board.GetCell(2, y);
         }
 
-        return new Vector3(xPos, yPos, zPos) * 2;
+        return new Vector3(xPos, yPos, zPos) * 7;
     }
 
 }

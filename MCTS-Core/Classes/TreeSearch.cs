@@ -36,7 +36,7 @@ namespace MCTS.Core
         /// </summary>
         /// <param name="gameBoard">The game board to perform the MCTS with</param>
         public TreeSearch(Board gameBoard)
-        {
+        { 
             //Create the root node of the search tree using the provided node type
             Root = (T)Activator.CreateInstance(typeof(T));
             Root.Initialise(null, gameBoard);

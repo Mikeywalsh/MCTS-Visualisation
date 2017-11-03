@@ -50,7 +50,30 @@ public class HashNode : MonoBehaviour
         originPosition = origin;
 
         //Set an initial target
-        nextTarget = originPosition + new Vector3(Random.Range(-1, 1), Random.Range(-1, 1), Random.Range(-1, 1));
+        nextTarget = originPosition + new Vector3(Random.Range(-3, 3), Random.Range(-3, 3), Random.Range(-3, 3));
+    }
+
+    /// <summary>
+    /// Adjusts the scale of this hash node depending on the sum of the total number of visits for each contained node
+    /// </summary>
+    /// 
+    public void AdjustSize()
+    {
+        float scaleMultiplier = 1 + 6 * (1 - Mathf.Exp(-0.1f * TotalVisits)) / (1 + Mathf.Exp(-0.1f * TotalVisits));
+
+        Debug.Log(scaleMultiplier);
+
+        //Alter the scale of this node depending on the sum of the the total number of viits of all child nodes of this hashnode
+        transform.localScale = Vector3.one * scaleMultiplier;
+
+        foreach(GameObject g in lines.Values.ToArray())
+        {
+            //Get the Hasnode componenent of each gameobject that lines are connected to
+            HashNode h = g.GetComponent<HashNode>();
+
+            //Recursively alter the size of all connected hash nodes in the hierarchy
+            h.AdjustSize();
+        }
     }
 
     /// <summary>
@@ -109,6 +132,9 @@ public class HashNode : MonoBehaviour
 
         //Map the new line renderer to the parent gameobject
         lines.Add(newLine, lineTarget);
+
+        //Adjust the sze of this node depending on the total amount of visits its contained nodes have
+        AdjustSize();
     }
 
     public void Update()
@@ -116,7 +142,7 @@ public class HashNode : MonoBehaviour
         //If the target position has been reached, assign a new target positon
         if ((transform.position - nextTarget).magnitude <= 0.1f)
         {
-            nextTarget = originPosition + new Vector3(Random.Range(-1, 1), Random.Range(-1, 1), Random.Range(-1, 1));
+            nextTarget = originPosition + new Vector3(Random.Range(-3, 3), Random.Range(-3, 3), Random.Range(-3, 3));
         }
 
         //Move closer to the target position via linear interpolation
@@ -163,6 +189,24 @@ public class HashNode : MonoBehaviour
         get
         {
             return BoardState.Winner != -1;
+        }
+    }
+
+    /// <summary>
+    /// Property containing the sum of the total number of visits from each contained node
+    /// </summary>
+    private int TotalVisits
+    {
+        get
+        {
+            int total = 0;
+
+            foreach (Node n in containedNodes)
+            {
+                total += n.Visits;
+            }
+
+            return total;
         }
     }
 }
