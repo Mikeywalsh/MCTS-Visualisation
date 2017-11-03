@@ -7,20 +7,45 @@ using System.Linq;
 
 public class HashNode : MonoBehaviour
 {
+    /// <summary>
+    /// The anchorered origin position of this node in world space
+    /// </summary>
     private Vector3 originPosition;
 
+    /// <summary>
+    /// The next target position of this nodes <see cref="GameObject"/>, which it will slowly move towards
+    /// </summary>
     private Vector3 nextTarget;
 
+    /// <summary>
+    /// A flag indication whether or not the <see cref="nextTarget"/> position has been reached
+    /// </summary>
     private bool reachedTarget;
 
+    /// <summary>
+    /// A mapping of child <see cref="LineRenderer"/>'s and gameobjects that they link to
+    /// </summary>
     private Dictionary<LineRenderer, GameObject> lines = new Dictionary<LineRenderer, GameObject>();
 
+    /// <summary>
+    /// A list of <see cref="Node"/>'s that this <see cref="HashNode"/> contains
+    /// </summary>
     private List<Node> containedNodes = new List<Node>();
 
+    /// <summary>
+    /// The board state that this <see cref="HashNode"/> represents
+    /// </summary>
     public Board BoardState { get; private set; }
 
+    /// <summary>
+    /// The color of this <see cref="HashNode"/>, which will change depending on its properties
+    /// </summary>
     private Color nodeColor = Color.white;
 
+    /// <summary>
+    /// Initialises this <see cref="HashNode"/>, assigning it an origin position and picking its initial target position
+    /// </summary>
+    /// <param name="origin">The origin position which this <see cref="HashNode"/> will be anchored to</param>
     public void Initialise(Vector3 origin)
     {
         //Save the origin position for this node
@@ -30,6 +55,11 @@ public class HashNode : MonoBehaviour
         nextTarget = originPosition + new Vector3(Random.Range(-1, 1), Random.Range(-1, 1), Random.Range(-1, 1));
     }
 
+    /// <summary>
+    /// Adds a new <see cref="Node"/> to this hash node
+    /// </summary>
+    /// <param name="lineTarget"></param>
+    /// <param name="newNode"></param>
     public void AddNode(GameObject lineTarget, Node newNode)
     {
         containedNodes.Add(newNode);
