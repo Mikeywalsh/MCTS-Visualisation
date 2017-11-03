@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 using MCTS.Core;
-using MCTS.Core.Games;
 using System.Linq;
 
 public class HashNode : MonoBehaviour
@@ -157,19 +155,14 @@ public class HashNode : MonoBehaviour
         return containedNodes[index];
     }
 
+    /// <summary>
+    /// A flag indicating if the <see cref="BoardState"/> of this <see cref="HashNode"/> is terminal
+    /// </summary>
     public bool ContainsTerminalNode
     {
         get
         {
-            foreach(Node n in containedNodes)
-            {
-                if(n.IsLeafNode)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return BoardState.Winner != -1;
         }
     }
 }
