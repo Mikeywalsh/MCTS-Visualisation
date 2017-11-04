@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using MCTS.Core;
-using System.Linq;
 
+/// <summary>
+/// An object which contains a board state and any <see cref="Node"/>'s that share it <para/>
+/// Used to visualise links between board states and how they interconnect in MCTS
+/// </summary>
 public class HashNode : MonoBehaviour
 {
     /// <summary>
@@ -104,7 +107,8 @@ public class HashNode : MonoBehaviour
 
         //Alter the scale of this node depending on the sum of the the total number of viits of all child nodes of this hashnode
         transform.localScale = Vector3.one * NodeSize;
-
+        
+        //Update the line thickness of any connections between this HashNode and any connected nodes, as well as their size
         for(int i = 0; i < connections.Count; i++)
         {
             //Recursively alter the size of all connected hash nodes in the hierachy
