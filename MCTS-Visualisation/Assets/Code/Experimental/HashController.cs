@@ -13,9 +13,11 @@ public class HashController : MonoBehaviour
 
     private float lastSpawn;
 
+    bool playing = false;
+
     private const float SPAWN_DELAY = 0.1f;
 
-    bool playing = false;
+    private const float NODE_SPACING = 7f;
 
     public void Update()
     {
@@ -153,7 +155,7 @@ public class HashController : MonoBehaviour
             zPos += Mathf.Pow(3, y) * board.GetCell(2, y);
         }
 
-        return new Vector3(xPos, yPos, zPos) * 7;
+        return new Vector3(xPos, yPos, zPos) * NODE_SPACING;
     }
 
 }

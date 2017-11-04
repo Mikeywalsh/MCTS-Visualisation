@@ -41,6 +41,21 @@ public class HashNode : MonoBehaviour
     private Color nodeColor = Color.white;
 
     /// <summary>
+    /// The minimum size a <see cref="HashNode"/> object can be
+    /// </summary>
+    private const float MINIMUM_SIZE = 1f;
+
+    /// <summary>
+    /// The maximum size a <see cref="HashNode"/> objet can be
+    /// </summary>
+    private const float MAXIMUM_SIZE = 7f;
+
+    /// <summary>
+    /// The rate at which a <see cref="HashNode"/> object scales with its amount of visits
+    /// </summary>
+    private const float SCALE_FACTOR = 0.1f;
+
+    /// <summary>
     /// Initialises this <see cref="HashNode"/>, assigning it an origin position and picking its initial target position
     /// </summary>
     /// <param name="origin">The origin position which this <see cref="HashNode"/> will be anchored to</param>
@@ -59,7 +74,7 @@ public class HashNode : MonoBehaviour
     /// 
     public void AdjustSize()
     {
-        float scaleMultiplier = 1 + 6 * (1 - Mathf.Exp(-0.1f * TotalVisits)) / (1 + Mathf.Exp(-0.1f * TotalVisits));
+        float scaleMultiplier = MINIMUM_SIZE + (MAXIMUM_SIZE - MINIMUM_SIZE) * (1 - Mathf.Exp(-SCALE_FACTOR * TotalVisits)) / (1 + Mathf.Exp(-SCALE_FACTOR * TotalVisits));
 
         Debug.Log(scaleMultiplier);
 
