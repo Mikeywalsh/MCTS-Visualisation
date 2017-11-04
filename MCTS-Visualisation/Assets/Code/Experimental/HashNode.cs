@@ -6,6 +6,17 @@ using System.Linq;
 public class HashNode : MonoBehaviour
 {
     /// <summary>
+    /// The size of this <see cref="HashNode"/> <para/>
+    /// Calculated as a function of the <see cref="TotalVisits"/> of this <see cref="HashNode"/>
+    /// </summary>
+    public float NodeSize { get; private set; }
+
+    /// <summary>
+    /// The line thickness of any <see cref="LineRenderer"/>'s attached to this <see cref=HashNode"/>
+    /// </summary>
+    public float LineThickness { get; private set; }
+
+    /// <summary>
     /// The anchorered origin position of this node in world space
     /// </summary>
     private Vector3 originPosition;
@@ -23,7 +34,7 @@ public class HashNode : MonoBehaviour
     /// <summary>
     /// A mapping of child <see cref="LineRenderer"/>'s and gameobjects that they link to
     /// </summary>
-    private Dictionary<LineRenderer, GameObject> lines = new Dictionary<LineRenderer, GameObject>();
+    private List<LineConnection> connections = new List<LineConnection>();
 
     /// <summary>
     /// A list of <see cref="Node"/>'s that this <see cref="HashNode"/> contains
@@ -49,6 +60,16 @@ public class HashNode : MonoBehaviour
     /// The maximum size a <see cref="HashNode"/> objet can be
     /// </summary>
     private const float MAXIMUM_SIZE = 7f;
+    
+    /// <summary>
+    /// The minimum line thickness that an attached <see cref="LineRenderer"/> can have
+    /// </summary>
+    private const float MINIMUM_LINE_THICKNESS = 0.1f;
+
+    /// <summary>
+    /// The maximum line thickness that an attached <see cref="LineRenderer"/> can have
+    /// </summary>
+    private const float MAXIMUM_LINE_THICKNESS = 0.5f;
 
     /// <summary>
     /// The rate at which a <see cref="HashNode"/> object scales with its amount of visits
@@ -61,6 +82,10 @@ public class HashNode : MonoBehaviour
     /// <param name="origin">The origin position which this <see cref="HashNode"/> will be anchored to</param>
     public void Initialise(Vector3 origin)
     {
+        //Set the initial size of this node
+        NodeSize = MINIMUM_SIZE;
+        transform.localScale = Vector3.one * NodeSize;
+
         //Save the origin position for this node
         originPosition = origin;
 
@@ -74,20 +99,20 @@ public class HashNode : MonoBehaviour
     /// 
     public void AdjustSize()
     {
-        float scaleMultiplier = MINIMUM_SIZE + (MAXIMUM_SIZE - MINIMUM_SIZE) * (1 - Mathf.Exp(-SCALE_FACTOR * TotalVisits)) / (1 + Mathf.Exp(-SCALE_FACTOR * TotalVisits));
-
-        Debug.Log(scaleMultiplier);
+        NodeSize = MINIMUM_SIZE + (MAXIMUM_SIZE - MINIMUM_SIZE) * (1 - Mathf.Exp(-SCALE_FACTOR * TotalVisits)) / (1 + Mathf.Exp(-SCALE_FACTOR * TotalVisits));
+        LineThickness = MINIMUM_LINE_THICKNESS + (MAXIMUM_LINE_THICKNESS - MINIMUM_LINE_THICKNESS) * (1 - Mathf.Exp(-SCALE_FACTOR * TotalVisits)) / (1 + Mathf.Exp(-SCALE_FACTOR * TotalVisits));
 
         //Alter the scale of this node depending on the sum of the the total number of viits of all child nodes of this hashnode
-        transform.localScale = Vector3.one * scaleMultiplier;
+        transform.localScale = Vector3.one * NodeSize;
 
-        foreach(GameObject g in lines.Values.ToArray())
+        for(int i = 0; i < connections.Count; i++)
         {
-            //Get the Hasnode componenent of each gameobject that lines are connected to
-            HashNode h = g.GetComponent<HashNode>();
+            //Recursively alter the size of all connected hash nodes in the hierachy
+            connections[i].ConnectedNode.AdjustSize();
 
-            //Recursively alter the size of all connected hash nodes in the hierarchy
-            h.AdjustSize();
+            //Alter the thickness of the lines connecting this HashNode to the connceted HashNode
+            connections[i].Line.startWidth = LineThickness;
+            connections[i].Line.endWidth = connections[i].ConnectedNode.LineThickness;
         }
     }
 
@@ -138,15 +163,15 @@ public class HashNode : MonoBehaviour
         LineRenderer newLine = newChildObject.AddComponent<LineRenderer>();
 
         //Initialise the line renderer starting values
-        newLine.startWidth = 0.1f;
-        newLine.endWidth = 0.1f;
+        newLine.startWidth = MINIMUM_LINE_THICKNESS;
+        newLine.endWidth = MINIMUM_LINE_THICKNESS;
         Color32 lineColor = new Color32((byte)Random.Range(0, 255), (byte)Random.Range(0, 255), (byte)Random.Range(0, 255), 255);
         newLine.startColor = lineColor;
         newLine.endColor = lineColor;
         newLine.material = Resources.Load<Material>("LineMat");
 
         //Map the new line renderer to the parent gameobject
-        lines.Add(newLine, lineTarget);
+        connections.Add(new LineConnection(lineTarget.GetComponent<HashNode>(), newLine));
 
         //Adjust the sze of this node depending on the total amount of visits its contained nodes have
         AdjustSize();
@@ -164,12 +189,12 @@ public class HashNode : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, nextTarget, 0.01f);
 
         //Obtain the positions to draw the line between
-        for (int i = 0; i < lines.Count; i++)
+        for (int i = 0; i < connections.Count; i++)
         {
             Vector3[] lineCoords = new Vector3[2];
             lineCoords[0] = transform.position;
-            lineCoords[1] = lines[lines.Keys.ToArray()[i]].transform.position;
-            lines.Keys.ToArray()[i].SetPositions(lineCoords);
+            lineCoords[1] = connections[i].ConnectedNode.transform.position;
+            connections[i].Line.SetPositions(lineCoords);
         }
     }
 
