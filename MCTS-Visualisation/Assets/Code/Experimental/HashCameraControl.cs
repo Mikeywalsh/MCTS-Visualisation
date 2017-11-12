@@ -93,7 +93,9 @@ public class HashCameraControl : MonoBehaviour {
 
                 //Make the node being looked at the current highlighted node and set its color to yellow
                 currentHighlighted = hitNode;
-                hitNode.GetComponent<Renderer>().material.color = Color.yellow;
+                Color highlightedColor = Color.yellow;
+                highlightedColor.a = currentHighlighted.Visibility;
+                hitNode.GetComponent<Renderer>().material.color = highlightedColor;
 
                 //Display information about the current node
                 HashUIController.DisplayBoardInfo(hitNode.BoardState, hitNode.NodeCount);

@@ -55,6 +55,11 @@ public class HashNode : MonoBehaviour
     private Color nodeColor = Color.white;
 
     /// <summary>
+    /// The visibility of this HashNode, which is a value between 0 and 1
+    /// </summary>
+    public float Visibility { get; private set; }
+
+    /// <summary>
     /// The minimum size a <see cref="HashNode"/> object can be
     /// </summary>
     private const float MINIMUM_SIZE = 1f;
@@ -94,14 +99,17 @@ public class HashNode : MonoBehaviour
 
         //Set an initial target
         nextTarget = originPosition + new Vector3(Random.Range(-3, 3), Random.Range(-3, 3), Random.Range(-3, 3));
+
+        //Initialise the visibility of this node to be opaque
+        SetVisibility(1);
     }
 
     /// <summary>
     /// Adjusts the scale of this hash node depending on the sum of the total number of visits for each contained node
     /// </summary>
-    /// 
     public void AdjustSize()
     {
+        //Update thie node size and line thickness as a function of the total number of visits
         NodeSize = MINIMUM_SIZE + (MAXIMUM_SIZE - MINIMUM_SIZE) * (1 - Mathf.Exp(-SCALE_FACTOR * TotalVisits)) / (1 + Mathf.Exp(-SCALE_FACTOR * TotalVisits));
         LineThickness = MINIMUM_LINE_THICKNESS + (MAXIMUM_LINE_THICKNESS - MINIMUM_LINE_THICKNESS) * (1 - Mathf.Exp(-SCALE_FACTOR * TotalVisits)) / (1 + Mathf.Exp(-SCALE_FACTOR * TotalVisits));
 
@@ -118,6 +126,28 @@ public class HashNode : MonoBehaviour
             connections[i].Line.startWidth = LineThickness;
             connections[i].Line.endWidth = connections[i].ConnectedNode.LineThickness;
         }
+
+        //Make this node opaque, as it has recently been used
+        SetVisibility(1);
+    }
+
+    /// <summary>
+    /// Sets the transparancy of this HashNode to the provided value
+    /// </summary>
+    /// <param name="visibility">A value between 0 and 1 which indicates the new transparancy of this HashNode</param>
+    public void SetVisibility(float visibility)
+    {
+        //Clamp the provided visibility value
+        Visibility = Mathf.Clamp(visibility, 0.2f, 1);
+
+        //Obtain the current color of this node
+        Color currentColor = GetComponent<Renderer>().material.color;
+
+        //Change the alpha value of the current color
+        currentColor.a = Visibility;
+
+        //Assign the updated color to the material of this hashnode
+        GetComponent<Renderer>().material.color = currentColor;
     }
 
     /// <summary>
@@ -212,7 +242,9 @@ public class HashNode : MonoBehaviour
     /// </summary>
     public void SetColor()
     {
-        GetComponent<Renderer>().material.color = nodeColor;
+        Color newColor = nodeColor;
+        newColor.a = Visibility;
+        GetComponent<Renderer>().material.color = newColor;
     }
 
     /// <summary>

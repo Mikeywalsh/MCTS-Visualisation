@@ -20,6 +20,11 @@ public class HashController : MonoBehaviour
     public Dictionary<Node, GameObject> nodeObjectMap = new Dictionary<Node, GameObject>();
 
     /// <summary>
+    /// A list of all hash nodes in the current scene
+    /// </summary>
+    public List<HashNode> AllNodes = new List<HashNode>();
+
+    /// <summary>
     /// The MCTS used to provide node data
     /// </summary>
     public TreeSearch<Node> mcts;
@@ -180,6 +185,12 @@ public class HashController : MonoBehaviour
         //Hash the board contents of the newest node to obtain a positon
         Vector3 newNodePosition = BoardToPosition((TTTBoard)newestNode.GameBoard);
 
+        //Decrease the visibility of every node in the scene
+        foreach(HashNode n in AllNodes)
+        {
+            n.SetVisibility(n.Visibility - 0.01f);
+        }
+
         //If the current board state already exists, then don't create a new node, but create a line to the existing node
         if (nodePositionMap.ContainsKey(newNodePosition))
         {
@@ -199,6 +210,8 @@ public class HashController : MonoBehaviour
 
             //Map the hashed position of the newest node to the new node object
             nodePositionMap.Add(newNodePosition, newNodeObject);
+
+            AllNodes.Add(newNodeObject.GetComponent<HashNode>());
         }
 
         //Initialise the newest hash node and add a mcts Node to ite
