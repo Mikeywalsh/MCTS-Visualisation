@@ -181,6 +181,10 @@ public class HashNode : MonoBehaviour
         AdjustSize();
     }
 
+    /// <summary>
+    /// Move this HashNode towards its target each frame, assigning a new target position if it has been reached <para/>
+    /// Also updates any child <see cref="LineRenderer"/> positions
+    /// </summary>
     public void Update()
     {
         //If the target position has been reached, assign a new target positon
@@ -202,6 +206,10 @@ public class HashNode : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Resets the color of this node <para/>
+    /// Used to reset a node after it has been highlighted
+    /// </summary>
     public void SetColor()
     {
         GetComponent<Renderer>().material.color = nodeColor;

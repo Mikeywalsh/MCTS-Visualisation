@@ -47,6 +47,14 @@ public class HashController : MonoBehaviour
     private const float NODE_SPACING = 7f;
 
     /// <summary>
+    /// Enable the running of the application in the background when initially ran
+    /// </summary>
+    public void Start()
+    {
+        Application.runInBackground = true;
+    }
+
+    /// <summary>
     /// Called every frame <para/>
     /// Used to control the creation of new nodes when <see cref="playing"/> is true <para/>
     /// Also used to listen for user input
