@@ -44,7 +44,7 @@ public class HashController : MonoBehaviour
     /// <summary>
     /// The delay in seconds between nodes being created when <see cref="playing"/> is active
     /// </summary>
-    private const float SPAWN_DELAY = 0.1f;
+    private const float SPAWN_DELAY = 0.025f;
 
     /// <summary>
     /// The amount of spacing between each node
