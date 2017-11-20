@@ -9,12 +9,12 @@ namespace MCTS.Visualisation.Tree
     /// <summary>
     /// A singleton used to control the UI
     /// </summary>
-    public class UIController : MonoBehaviour
+    public class TreeUIController : MonoBehaviour
     {
         /// <summary>
         /// The singleton reference for the UI controller being used
         /// </summary>
-        private static UIController uiController;
+        private static TreeUIController uiController;
 
         /// <summary>
         /// Parent object for all elements of the navigation UI
@@ -86,7 +86,7 @@ namespace MCTS.Visualisation.Tree
 
         /// <summary>
         /// Ran when the program starts <para/>
-        /// There should only ever be one object with a UIController, so this should only be run once
+        /// There should only ever be one object with a TreeUIController, so this should only be run once
         /// </summary>
         public void Start()
         {

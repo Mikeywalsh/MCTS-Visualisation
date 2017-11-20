@@ -11,7 +11,7 @@ namespace MCTS.Visualisation.Tree
     /// Handles the running of the MCTS and the positioning of each <see cref="NodeObject"/> <para/>
     /// Also handles the changeover between the menu UI and navigation UI
     /// </summary>
-    public class MainController : MonoBehaviour
+    public class TreeController : MonoBehaviour
     {
         /// <summary>
         /// The MCTS instance used to create the game tree <para/>
@@ -77,7 +77,7 @@ namespace MCTS.Visualisation.Tree
                 Board board;
 
                 //Assign whatever game board the user has chosen to the board instance
-                switch (UIController.GetGameChoice)
+                switch (TreeUIController.GetGameChoice)
                 {
                     case 0:
                         board = new TTTBoard();
@@ -93,7 +93,7 @@ namespace MCTS.Visualisation.Tree
                 }
 
                 //Assign whatever visualisation type the user has chosen
-                switch (UIController.GetVisualisationChoice)
+                switch (TreeUIController.GetVisualisationChoice)
                 {
                     case 0:
                         visualisationType = VisualisationType.Standard3D;
@@ -109,12 +109,12 @@ namespace MCTS.Visualisation.Tree
                 mcts = new TreeSearch<NodeObject>(board);
 
                 //Obtain the time to run mcts for from the input user amount
-                timeToRunFor = UIController.GetTimeToRunInput;
+                timeToRunFor = TreeUIController.GetTimeToRunInput;
                 timeLeft = timeToRunFor;
 
                 //Run mcts asyncronously
                 RunMCTS(mcts);
-                UIController.StartButtonPressed();
+                TreeUIController.StartButtonPressed();
             }
             else
             {
@@ -142,7 +142,7 @@ namespace MCTS.Visualisation.Tree
                 {
                     mcts.Finish();
                 }
-                UIController.UpdateProgressBar((1 - (timeLeft / timeToRunFor)) / 2, "Running MCTS   " + mcts.UniqueNodes + " nodes     " + timeLeft.ToString("0.0") + "s/" + timeToRunFor.ToString("0.0") + "s");
+                TreeUIController.UpdateProgressBar((1 - (timeLeft / timeToRunFor)) / 2, "Running MCTS   " + mcts.UniqueNodes + " nodes     " + timeLeft.ToString("0.0") + "s/" + timeToRunFor.ToString("0.0") + "s");
             }
 
             //Return if the MCTS has not finished being created
@@ -163,15 +163,15 @@ namespace MCTS.Visualisation.Tree
             {
                 if (nodesGenerated < mcts.UniqueNodes)
                 {
-                    UIController.UpdateProgressBar(0.5f + ((float)nodesGenerated / mcts.UniqueNodes / 2), "Creating node objects: " + nodesGenerated + "/" + mcts.UniqueNodes);
+                    TreeUIController.UpdateProgressBar(0.5f + ((float)nodesGenerated / mcts.UniqueNodes / 2), "Creating node objects: " + nodesGenerated + "/" + mcts.UniqueNodes);
                 }
                 else if (nodesGenerated == mcts.UniqueNodes)
                 {
                     //If every node has had a gameobject created for it, then switch to the navigation UI and start to render the game tree
-                    UIController.SwitchToNavigationUI();
+                    TreeUIController.SwitchToNavigationUI();
                     Camera.main.GetComponent<LineDraw>().linesVisible = true;
-                    Camera.main.GetComponent<CameraControl>().CurrentNode = rootNodeObject;
-                    UIController.DisplayNodeInfo(mcts.Root);
+                    Camera.main.GetComponent<TreeCameraControl>().CurrentNode = rootNodeObject;
+                    TreeUIController.DisplayNodeInfo(mcts.Root);
                     allNodesGenerated = true;
                     LineDraw.SelectNode(rootNodeObject);
                 }
@@ -203,7 +203,7 @@ namespace MCTS.Visualisation.Tree
         private static async void RunMCTS(TreeSearch<NodeObject> mcts)
         {
             await Task.Factory.StartNew(() => { while (!mcts.Finished) { mcts.Step(); } }, TaskCreationOptions.LongRunning);
-            UIController.StopButtonPressed();
+            TreeUIController.StopButtonPressed();
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace MCTS.Visualisation.Hashing
 {
-    public class CameraControl : MonoBehaviour
+    public class HashCameraControl : MonoBehaviour
     {
         public float Speed;
 
@@ -66,13 +66,13 @@ namespace MCTS.Visualisation.Hashing
             if (currentHighlighted != null && NextNode() && currentHighlighted.NodeCount > currentSelectedNodeIndex + 1)
             {
                 currentSelectedNodeIndex++;
-                UIController.DisplayNodeInfo(currentHighlighted.GetNode(currentSelectedNodeIndex), currentSelectedNodeIndex);
+                HashUIController.DisplayNodeInfo(currentHighlighted.GetNode(currentSelectedNodeIndex), currentSelectedNodeIndex);
             }
 
             if (currentHighlighted != null && PreviousNode() && currentSelectedNodeIndex > 0)
             {
                 currentSelectedNodeIndex--;
-                UIController.DisplayNodeInfo(currentHighlighted.GetNode(currentSelectedNodeIndex), currentSelectedNodeIndex);
+                HashUIController.DisplayNodeInfo(currentHighlighted.GetNode(currentSelectedNodeIndex), currentSelectedNodeIndex);
             }
 
             //See if there are any Hashnodes in front of the camera
@@ -101,9 +101,9 @@ namespace MCTS.Visualisation.Hashing
                     hitNode.GetComponent<Renderer>().material.color = highlightedColor;
 
                     //Display information about the current node
-                    UIController.DisplayBoardInfo(hitNode.BoardState, hitNode.NodeCount);
+                    HashUIController.DisplayBoardInfo(hitNode.BoardState, hitNode.NodeCount);
                     currentSelectedNodeIndex = 0;
-                    UIController.DisplayNodeInfo(hitNode.GetNode(currentSelectedNodeIndex), currentSelectedNodeIndex);
+                    HashUIController.DisplayNodeInfo(hitNode.GetNode(currentSelectedNodeIndex), currentSelectedNodeIndex);
                 }
             }
             else if (currentHighlighted != null)
@@ -111,7 +111,7 @@ namespace MCTS.Visualisation.Hashing
                 //If the camera is not looking at a HashNode object, reset the previously highlighted node and hide the node information panel
                 currentHighlighted.SetColor();
                 currentHighlighted = null;
-                UIController.HideBoardInfo();
+                HashUIController.HideBoardInfo();
                 currentSelectedNodeIndex = 0;
             }
         }

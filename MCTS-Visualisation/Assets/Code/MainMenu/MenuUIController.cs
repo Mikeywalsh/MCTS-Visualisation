@@ -9,7 +9,7 @@ namespace MCTS.Visualisation.Menu
     public class UIController : MonoBehaviour
     {
         /// <summary>
-        /// A singleton reference to the UIController
+        /// A singleton reference to the TreeUIController
         /// </summary>
         private UIController controller;
 

@@ -9,7 +9,7 @@ namespace MCTS.Visualisation.Hashing
     /// Main controller for the hashing visualisation <para/>
     /// In this visualisation, each board state is given its own position in world space and <see cref="LineRenderer"/> objects are used to create links between the nodes
     /// </summary>
-    public class MainController : MonoBehaviour
+    public class HashController : MonoBehaviour
     {
         /// <summary>
         /// A dictionary that maps unique positions in world space to their corresponding node gameobjects
@@ -116,7 +116,7 @@ namespace MCTS.Visualisation.Hashing
         public void PlayButtonPressed()
         {
             playing = true;
-            UIController.PlayButtonPressed();
+            HashUIController.PlayButtonPressed();
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace MCTS.Visualisation.Hashing
         public void PauseButtonPressed()
         {
             playing = false;
-            UIController.PauseButtonPressed();
+            HashUIController.PauseButtonPressed();
         }
 
         /// <summary>
@@ -147,14 +147,14 @@ namespace MCTS.Visualisation.Hashing
             nodePositionMap.Add(rootNodePosition, rootNode);
             nodeObjectMap.Add(mcts.Root, rootNode);
 
-            for (int i = 0; i < UIController.GetStartingNodeInput(); i++)
+            for (int i = 0; i < HashUIController.GetStartingNodeInput(); i++)
             {
                 PerformStep(true);
             }
 
             //Swap out the current menu panels
-            UIController.SetMenuPanelActive(false);
-            UIController.SetNavigationPanelActive(true);
+            HashUIController.SetMenuPanelActive(false);
+            HashUIController.SetNavigationPanelActive(true);
         }
 
         /// <summary>
@@ -220,7 +220,7 @@ namespace MCTS.Visualisation.Hashing
             nodeObjectMap[newestNode].GetComponent<HashNode>().Initialise(newNodePosition);
             nodeObjectMap[newestNode].GetComponent<HashNode>().AddNode(nodeObjectMap[newestNode.Parent], newestNode);
 
-            UIController.SetTotalNodeText(nodeObjectMap.Count);
+            HashUIController.SetTotalNodeText(nodeObjectMap.Count);
         }
 
         /// <summary>

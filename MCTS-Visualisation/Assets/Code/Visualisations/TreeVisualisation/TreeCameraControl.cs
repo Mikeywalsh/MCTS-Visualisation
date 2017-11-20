@@ -5,7 +5,7 @@ namespace MCTS.Visualisation.Tree
     /// <summary>
     /// A class responsible for controlling the camera, including how it moves, and what node it is focused on currently
     /// </summary>
-    public class CameraControl : MonoBehaviour
+    public class TreeCameraControl : MonoBehaviour
     {
         /// <summary>
         /// The currently selected node <para/>
@@ -66,7 +66,7 @@ namespace MCTS.Visualisation.Tree
             {
                 CurrentNode = (NodeObject)CurrentNode.Children[childIndex];
                 LineDraw.SelectNode(CurrentNode);
-                UIController.DisplayNodeInfo(CurrentNode);
+                TreeUIController.DisplayNodeInfo(CurrentNode);
             }
         }
 
@@ -79,7 +79,7 @@ namespace MCTS.Visualisation.Tree
             {
                 CurrentNode = (NodeObject)CurrentNode.Parent;
                 LineDraw.SelectNode(CurrentNode);
-                UIController.DisplayNodeInfo(CurrentNode);
+                TreeUIController.DisplayNodeInfo(CurrentNode);
             }
         }
 

@@ -4,9 +4,9 @@ using MCTS.Core;
 
 namespace MCTS.Visualisation.Hashing
 {
-    public class UIController : MonoBehaviour
+    public class HashUIController : MonoBehaviour
     {
-        private static UIController controller;
+        private static HashUIController controller;
 
         public GameObject MenuPanel;
 
