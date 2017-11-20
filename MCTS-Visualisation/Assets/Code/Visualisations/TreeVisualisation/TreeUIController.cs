@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using MCTS.Core;
 
@@ -40,6 +41,11 @@ namespace MCTS.Visualisation.Tree
         /// The button which either starts MCTS or finished it early, depending on when it is pressed
         /// </summary>
         public Button StartStopButton;
+
+        /// <summary>
+        /// The button which allows the user to return to the main menu
+        /// </summary>
+        public Button BackToMenuButton;
 
         /// <summary>
         /// The progress bar which displays how much progress has been made to running MCTS and visualising it
@@ -120,6 +126,7 @@ namespace MCTS.Visualisation.Tree
             //Disable every form of input on the main menu
             uiController.GameChoiceDropdown.interactable = false;
             uiController.TimeToRunInput.interactable = false;
+            uiController.BackToMenuButton.gameObject.SetActive(false);
 
             //Enable the progress bar
             uiController.VisualisationProgressBar.gameObject.SetActive(true);
@@ -264,6 +271,24 @@ namespace MCTS.Visualisation.Tree
             {
                 return float.Parse(uiController.TimeToRunInput.text);
             }
+        }
+
+        /// <summary>
+        /// Called when the back to menu button is pressed <para/>
+        /// Changes the current scene to be the main menu
+        /// </summary>
+        public void BackToMenuButtonPressed()
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
+
+        /// <summary>
+        /// Called when the reset button is pressed <para/>
+        /// Reloads the current scene
+        /// </summary>
+        public void ResetButtonPressed()
+        {
+            SceneManager.LoadScene("TreeVisualisation");
         }
     }
 }

@@ -5,9 +5,15 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Main.unity
+  - enabled: 1
+    path: Assets/MainMenu.unity
+    guid: 456db4b2217ef304ca9ed03138004ebb
+  - enabled: 1
+    path: Assets/TreeVisualisation.unity
     guid: 348f1ef758545844eb1d838f7c39eb16
   - enabled: 1
-    path: Assets/Code/Experimental/HashScene.unity
+    path: Assets/HashingVisualisation.unity
     guid: 759bf5e027455cd4ebd463f0d1a6c7fb
+  - enabled: 1
+    path: Assets/Code/PlayGames/Connect4/PlayConnect4.unity
+    guid: 8d3b428a54bd4c9448bd6e26d03d1b91

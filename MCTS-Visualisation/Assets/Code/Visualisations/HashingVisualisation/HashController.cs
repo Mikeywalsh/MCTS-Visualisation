@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using MCTS.Core;
 using MCTS.Core.Games;
 
@@ -140,7 +141,7 @@ namespace MCTS.Visualisation.Hashing
 
             //Calculate the position of the root node and add an object for it to the scene
             Vector3 rootNodePosition = BoardToPosition((TTTBoard)mcts.Root.GameBoard);
-            GameObject rootNode = Instantiate(Resources.Load("Ball"), rootNodePosition, Quaternion.identity) as GameObject;
+            GameObject rootNode = Instantiate(Resources.Load("HashNode"), rootNodePosition, Quaternion.identity) as GameObject;
             rootNode.GetComponent<HashNode>().AddNode(null, mcts.Root);
 
             //Add the root node to the position and object map
@@ -205,7 +206,7 @@ namespace MCTS.Visualisation.Hashing
             else
             {
                 //Instantiate the new node object at the hashed position
-                GameObject newNodeObject = Instantiate(Resources.Load("Ball"), fromMenu ? newNodePosition : nodeObjectMap[newestNode.Parent].transform.position, Quaternion.identity) as GameObject;
+                GameObject newNodeObject = Instantiate(Resources.Load("HashNode"), fromMenu ? newNodePosition : nodeObjectMap[newestNode.Parent].transform.position, Quaternion.identity) as GameObject;
 
                 //Map the newest node to the new node object
                 nodeObjectMap.Add(newestNode, newNodeObject);
@@ -243,6 +244,5 @@ namespace MCTS.Visualisation.Hashing
 
             return new Vector3(xPos, yPos, zPos) * NODE_SPACING;
         }
-
     }
 }
