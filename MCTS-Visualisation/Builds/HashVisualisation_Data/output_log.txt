@@ -1,0 +1,29 @@
+Initialize engine version: 2017.1.0f3 (472613c02cf7)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: Intel(R) HD Graphics 520 (ID=0x1916)
+    Vendor:   Intel
+    VRAM:     2144 MB
+    Driver:   21.20.16.4534
+Begin MonoManager ReloadAssembly
+Loading C:\Users\micha\Source\Repos\MCTS-Visualisation\MCTS-Visualisation\Builds\HashVisualisation_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\micha\Source\Repos\MCTS-Visualisation\MCTS-Visualisation\Builds\HashVisualisation_Data\Managed\System.Core.dll (this message is harmless)
+Loading C:\Users\micha\Source\Repos\MCTS-Visualisation\MCTS-Visualisation\Builds\HashVisualisation_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Loading C:\Users\micha\Source\Repos\MCTS-Visualisation\MCTS-Visualisation\Builds\HashVisualisation_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Loading C:\Users\micha\Source\Repos\MCTS-Visualisation\MCTS-Visualisation\Builds\HashVisualisation_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Loading C:\Users\micha\Source\Repos\MCTS-Visualisation\MCTS-Visualisation\Builds\HashVisualisation_Data\Managed\UnityEngine.Timeline.dll into Unity Child Domain
+Loading C:\Users\micha\Source\Repos\MCTS-Visualisation\MCTS-Visualisation\Builds\HashVisualisation_Data\Managed\MCTS-Core.dll into Unity Child Domain
+Platform assembly: C:\Users\micha\Source\Repos\MCTS-Visualisation\MCTS-Visualisation\Builds\HashVisualisation_Data\Managed\System.dll (this message is harmless)
+- Completed reload, in  0.062 seconds
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 2.222932 ms
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: 2c78 -> priority: 1 
+  Thread -> id: 2ad8 -> priority: 1 
+Joystick disconnected ("Xbox Bluetooth Gamepad").
+ 
+(Filename:  Line: 1258)
+
