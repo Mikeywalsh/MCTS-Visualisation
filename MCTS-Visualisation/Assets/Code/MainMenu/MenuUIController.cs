@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace MCTS.Visualisation.Menu
 {
@@ -13,7 +12,7 @@ namespace MCTS.Visualisation.Menu
         /// </summary>
         public void TreeVisualisationButtonPressed()
         {
-            SceneManager.LoadScene("TreeVisualisation");
+            SceneController.LoadTreeVisualisation();
         }
 
         /// <summary>
@@ -21,7 +20,7 @@ namespace MCTS.Visualisation.Menu
         /// </summary>
         public void HashingVisualisationButtonPressed()
         {
-            SceneManager.LoadScene("HashingVisualisation");
+            SceneController.LoadHashingVisualisation();
         }
 
         /// <summary>
@@ -29,7 +28,7 @@ namespace MCTS.Visualisation.Menu
         /// </summary>
         public void PlayConnectFourButtonPressed()
         {
-            SceneManager.LoadScene("PlayConnect4");
+            SceneController.LoadPlayConnectFour();
         }
     }
 }

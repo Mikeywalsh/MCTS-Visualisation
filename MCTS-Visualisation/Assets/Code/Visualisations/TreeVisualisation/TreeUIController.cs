@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using MCTS.Core;
 
@@ -279,7 +278,7 @@ namespace MCTS.Visualisation.Tree
         /// </summary>
         public void BackToMenuButtonPressed()
         {
-            SceneManager.LoadScene("MainMenu");
+            SceneController.LoadMainMenu();
         }
 
         /// <summary>
@@ -288,7 +287,7 @@ namespace MCTS.Visualisation.Tree
         /// </summary>
         public void ResetButtonPressed()
         {
-            SceneManager.LoadScene("TreeVisualisation");
+            SceneController.ResetCurrentScene();
         }
     }
 }

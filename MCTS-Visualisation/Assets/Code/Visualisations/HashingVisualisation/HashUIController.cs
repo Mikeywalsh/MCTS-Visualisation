@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using MCTS.Core;
 
 namespace MCTS.Visualisation.Hashing
@@ -185,7 +184,7 @@ namespace MCTS.Visualisation.Hashing
         /// </summary>
         public void BackToMenuButtonPressed()
         {
-            SceneManager.LoadScene("MainMenu");
+            SceneController.LoadMainMenu();
         }
 
         /// <summary>
@@ -194,7 +193,7 @@ namespace MCTS.Visualisation.Hashing
         /// </summary>
         public void ResetButtonPressed()
         {
-            SceneManager.LoadScene("HashingVisualisation");
+            SceneController.ResetCurrentScene();
         }
     }
 }
