@@ -149,13 +149,5 @@ namespace MCTS.Core
         {
             Finished = true;
         }
-
-        /// <summary>
-        /// The total number of nodes that have been visited so far
-        /// </summary>
-        public int NodesVisited
-        {
-            get { return Root.Visits; }
-        }
     }
 }

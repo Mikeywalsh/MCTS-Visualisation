@@ -551,11 +551,6 @@
             Can be called to gracefully halt execution of the algorithm
             </summary>
         </member>
-        <member name="P:MCTS.Core.TreeSearch`1.NodesVisited">
-            <summary>
-            The total number of nodes that have been visited so far
-            </summary>
-        </member>
         <member name="T:MCTS.Core.Move">
             <summary>
             An abstract class that any moves of <see cref="T:MCTS.Core.Board"/> types must implement

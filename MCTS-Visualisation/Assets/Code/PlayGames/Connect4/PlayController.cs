@@ -44,7 +44,7 @@ namespace MCTS.Visualisation
                     {
                         mcts.Finish();
                     }
-                    aiTurnProgressText.text = mcts.NodesVisited + " nodes       " + timeLeft.ToString("0.00") + "s/" + timeToRunFor + "s";
+                    aiTurnProgressText.text = mcts.UniqueNodes + " nodes       " + timeLeft.ToString("0.00") + "s/" + timeToRunFor + "s";
                 }
             }
         }
