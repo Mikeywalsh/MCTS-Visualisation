@@ -62,7 +62,12 @@ namespace MCTS.Core
             {
                 for (int x = 0; x < Width; x++)
                 {
-                    result += boardContents[x, y] + " ";
+                    result += boardContents[x, y];
+
+                    if(x != Width - 1)
+                    {
+                        result += " ";
+                    }
                 }
 
                 if (y != 0)

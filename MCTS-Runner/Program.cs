@@ -39,7 +39,7 @@ namespace MCTS.Runner
                 Console.WriteLine("---------------------------------------");
                 Console.WriteLine("-       Monte Carlo Tree Search       -");
                 Console.WriteLine("-    Game: " + GetGameName(startingBoard) + "     Threads:" + "1" + "    -");
-                Console.WriteLine("-    Total nodes: " + mcts.NodesVisited + " nodes");
+                Console.WriteLine("-    Total nodes: " + mcts.UniqueNodes + " nodes");
                 Console.WriteLine("--------------------------------------");
 
                 //If the entire game tree has been created, stop refreshing the display and allow the user to exit
