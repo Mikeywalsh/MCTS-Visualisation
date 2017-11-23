@@ -100,6 +100,7 @@ namespace MCTS.Visualisation
         {
             mcts.Finish();
             stopTimer.Stop();
+            stopTimer.Dispose();
             stopTimer = null;
         }
 
