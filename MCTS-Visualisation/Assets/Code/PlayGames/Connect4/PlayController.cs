@@ -1,8 +1,10 @@
 ﻿using System.Threading.Tasks;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using MCTS.Core;
 using MCTS.Core.Games;
+using MCTS.Visualisation.Tree;
 
 namespace MCTS.Visualisation
 {
@@ -13,7 +15,7 @@ namespace MCTS.Visualisation
     public class PlayController : MonoBehaviour
     {
         private C4Board board;
-        private TreeSearch<Node> mcts;
+        private TreeSearch<NodeObject> mcts;
 
         private float timeToRunFor;
         private float timeLeft;
@@ -23,10 +25,14 @@ namespace MCTS.Visualisation
         public Text winnerText;
         public Text aiTurnProgressText;
 
+
+        int currentIndex = 1;
+
         void Start()
         {
             Application.runInBackground = true;
 
+            LineDraw.Lines = new List<ColoredLine>();
             //Initialise the game board and display
             board = new C4Board();
             boardDisplayText.text = board.ToRichString();
@@ -45,6 +51,19 @@ namespace MCTS.Visualisation
                         mcts.Finish();
                     }
                     aiTurnProgressText.text = mcts.UniqueNodes + " nodes       " + timeLeft.ToString("0.00") + "s/" + timeToRunFor + "s";
+
+                    for(int targetIndex = mcts.AllNodes.Count; currentIndex < targetIndex; currentIndex++)
+                    {
+                        NodeObject currentNode = mcts.AllNodes[currentIndex];
+
+                        if ((NodeObject)currentNode.Parent == null)
+                        {
+                            return;
+                        }
+
+                        currentNode.SetPosition(VisualisationType.Standard3D);
+                        LineDraw.Lines.Add(new ColoredLine(currentNode.Position, ((NodeObject)currentNode.Parent).Position, LineDraw.lineColors[currentNode.Depth % LineDraw.lineColors.Length]));
+                    }
                 }
             }
         }
@@ -52,7 +71,7 @@ namespace MCTS.Visualisation
         public void StartAITurn()
         {
             //Initialise MCTS on the given game board
-            mcts = new TreeSearch<Node>(board);
+            mcts = new TreeSearch<NodeObject>(board);
 
             //Run mcts
             timeToRunFor = 3;

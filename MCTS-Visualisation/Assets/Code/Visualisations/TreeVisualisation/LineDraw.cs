@@ -30,7 +30,7 @@ namespace MCTS.Visualisation.Tree
         private Material lineMat;
 
         /// <summary>
-        /// A list of colors that is used for different line depths
+        /// A list of colors that are used for different line depths
         /// </summary>
         public static Color[] lineColors = new Color[] { Color.red, Color.green, Color.blue, Color.magenta, Color.yellow, Color.white, Color.cyan };
 
