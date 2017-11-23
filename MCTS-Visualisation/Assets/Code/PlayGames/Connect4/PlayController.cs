@@ -37,7 +37,7 @@ namespace MCTS.Visualisation
         private DateTime startTime;
         private Timer stopTimer;
 
-        private bool client = true;
+        private bool client = false;
 
         private bool waiting = false;
 
@@ -46,6 +46,7 @@ namespace MCTS.Visualisation
             if(client)
             {
                 StartClient();
+
             }
             else
             {
@@ -127,27 +128,34 @@ namespace MCTS.Visualisation
 
         async void StartClient()
         {
+            Debug.Log("Starting Client...");
+
             TcpClient client = new TcpClient();
 
-            client.Connect("10,240,107,129", 8500);
+            Debug.Log("Client Initialised...");
+            await Task.Factory.StartNew(() => { client.Connect("10.240.107.219", 8500); });
 
-            C4Board board = new C4Board();
-            board.MakeMove(new C4Move(2));
-            board.MakeMove(new C4Move(1));
-            board.MakeMove(new C4Move(3));
-            board.MakeMove(new C4Move(5));
-            board.MakeMove(new C4Move(0));
-            board.MakeMove(new C4Move(2));
-            board.MakeMove(new C4Move(2));
+            Debug.Log("Connection Established...");
+
+            C4Board newBoard = new C4Board();
+            newBoard.MakeMove(new C4Move(2));
+            newBoard.MakeMove(new C4Move(1));
+            newBoard.MakeMove(new C4Move(3));
+            newBoard.MakeMove(new C4Move(5));
+            newBoard.MakeMove(new C4Move(0));
+            newBoard.MakeMove(new C4Move(2));
+            newBoard.MakeMove(new C4Move(2));
 
             Stream stream = client.GetStream();
 
-            byte[] serializedBoard = SerializeBoard(board);
+            byte[] serializedBoard = SerializeBoard(newBoard);
 
             stream.Write(serializedBoard, 0, serializedBoard.Length);
 
             byte[] reply = new byte[100];
-            int replyLength = stream.Read(reply, 0, 100);
+            int replyLength = 0;
+
+            await Task.Factory.StartNew(() => { replyLength = stream.Read(reply, 0, 100); });
 
             string replyMessage = "";
 
