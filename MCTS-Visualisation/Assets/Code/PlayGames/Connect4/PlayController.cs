@@ -7,6 +7,8 @@ using MCTS.Core.Games;
 using MCTS.Visualisation.Tree;
 using System.Timers;
 using System;
+using System.Net;
+using System.Net.Sockets;
 
 namespace MCTS.Visualisation
 {
@@ -32,6 +34,10 @@ namespace MCTS.Visualisation
         private DateTime startTime;
         private Timer stopTimer;
 
+        private bool client = false;
+
+        private bool waiting = false;
+
         void Start()
         {
             LineDraw.Lines = new List<ColoredLine>();
@@ -40,6 +46,44 @@ namespace MCTS.Visualisation
             //Initialise the game board and display
             board = new C4Board();
             boardDisplayText.text = board.ToRichString();
+        }
+
+        async void StartServer()
+        {
+            //Obtain the IP address of this machine
+            IPAddress[] allLocalIPs = Dns.GetHostAddresses(Dns.GetHostName());
+            IPAddress localIP = IPAddress.Parse("127.0.0.1");
+
+            foreach(IPAddress address in allLocalIPs)
+            {
+                if(address.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    localIP = address;
+                }
+            }
+
+            if(localIP.ToString() == "127.0.0.1")
+            {
+                throw new Exception("Could not find an IPv4 address for this machine. Are you connected to a network?");
+            }
+
+            //Initialise a listener
+            TcpListener listener = new TcpListener(localIP, 8500);
+
+            //Start listening
+            listener.Start();
+
+            Debug.Log("Started running server...");
+            Debug.Log("Local end point is: " + listener.LocalEndpoint);
+            Debug.Log("Waiting for a connection...");
+
+            //Create a socket reference
+            Socket sock;
+
+            //Start a task which listens for a new connection
+            await Task.Factory.StartNew(() => { sock = listener.AcceptSocket(); });
+
+            //byte[] b = 
         }
 
         void Update()
