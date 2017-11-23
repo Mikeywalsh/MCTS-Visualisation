@@ -8,7 +8,6 @@ namespace MCTS.Visualisation.Tree
     /// </summary>
     public struct ColoredLine
     {
-
         /// <summary>
         /// The starting point of this line
         /// </summary>

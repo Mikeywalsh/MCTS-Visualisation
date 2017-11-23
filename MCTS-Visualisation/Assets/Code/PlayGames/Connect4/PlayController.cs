@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using MCTS.Core;
 using MCTS.Core.Games;
 using MCTS.Visualisation.Tree;
+using System.Timers;
+using System;
 
 namespace MCTS.Visualisation
 {
@@ -19,20 +21,22 @@ namespace MCTS.Visualisation
 
         private float timeToRunFor;
         private float timeLeft;
+        private bool gameOver;
 
         public GameObject moveButtons;
         public Text boardDisplayText;
         public Text winnerText;
         public Text aiTurnProgressText;
 
-
-        int currentIndex = 1;
+        private int currentIndex = 1;
+        private DateTime startTime;
+        private Timer stopTimer;
 
         void Start()
         {
+            LineDraw.Lines = new List<ColoredLine>();
             Application.runInBackground = true;
 
-            LineDraw.Lines = new List<ColoredLine>();
             //Initialise the game board and display
             board = new C4Board();
             boardDisplayText.text = board.ToRichString();
@@ -45,14 +49,12 @@ namespace MCTS.Visualisation
                 //While the MCTS is still running, display progress information about the time remaining and the amounts of nodes created to the user
                 if (!mcts.Finished)
                 {
-                    timeLeft -= Time.deltaTime;
-                    if (timeLeft <= 0)
+                    if (stopTimer != null)
                     {
-                        mcts.Finish();
+                        aiTurnProgressText.text = mcts.UniqueNodes + " nodes       " + TimeLeft.Seconds.ToString() + "." + TimeLeft.Milliseconds.ToString("000") + "s/" + timeToRunFor + "s";
                     }
-                    aiTurnProgressText.text = mcts.UniqueNodes + " nodes       " + timeLeft.ToString("0.00") + "s/" + timeToRunFor + "s";
 
-                    for(int targetIndex = mcts.AllNodes.Count; currentIndex < targetIndex; currentIndex++)
+                    for(int targetIndex = mcts.AllNodes.Count; currentIndex < targetIndex & mcts.AllNodes.Count > 1; currentIndex++)
                     {
                         NodeObject currentNode = mcts.AllNodes[currentIndex];
 
@@ -67,6 +69,23 @@ namespace MCTS.Visualisation
                 }
             }
         }
+        
+        /// <summary>
+        /// Gets the amount of time left for the current timer <para/>
+        /// If the current timer is null, return 0
+        /// </summary>
+        private TimeSpan TimeLeft
+        {
+            get
+            {
+                if(stopTimer == null)
+                {
+                    return new TimeSpan(0);
+                }
+
+                return (DateTime.Now - startTime);
+            }
+        }
 
         public void StartAITurn()
         {
@@ -74,9 +93,14 @@ namespace MCTS.Visualisation
             mcts = new TreeSearch<NodeObject>(board);
 
             //Run mcts
-            timeToRunFor = 3;
-            timeLeft = timeToRunFor;
             RunMCTS();
+        }
+
+        private void EndAITurn(object sender, ElapsedEventArgs e)
+        {
+            mcts.Finish();
+            stopTimer.Stop();
+            stopTimer = null;
         }
 
         /// <summary>
@@ -86,6 +110,14 @@ namespace MCTS.Visualisation
         /// <param name="m">The <see cref="TreeSearch"/> instance to run</param>
         async void RunMCTS()
         {
+            LineDraw.Lines = new List<ColoredLine>();
+            currentIndex = 1;
+            timeToRunFor = 3;
+            startTime = DateTime.Now;
+            stopTimer = new Timer(timeToRunFor * 1000);
+            stopTimer.Elapsed += EndAITurn;
+            stopTimer.Start();
+
             await Task.Factory.StartNew(() => { while (!mcts.Finished) { mcts.Step(); } });
 
             //If the search has finished, get the best child choice
@@ -101,7 +133,10 @@ namespace MCTS.Visualisation
                     {
                         MakeMoveOnBoard(x);
                         mcts = null;
-                        moveButtons.SetActive(true);
+                        if (!gameOver)
+                        {
+                            moveButtons.SetActive(true);
+                        }
                     }
                 }
             }
@@ -127,7 +162,7 @@ namespace MCTS.Visualisation
                 {
                     winnerText.text = "WINNER IS PLAYER " + board.Winner;
                 }
-                moveButtons.SetActive(false);
+                gameOver = true;
                 return;
             }
 
