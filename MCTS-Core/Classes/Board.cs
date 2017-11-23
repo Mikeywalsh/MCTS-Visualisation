@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MCTS.Core
 {
@@ -6,6 +7,7 @@ namespace MCTS.Core
     /// Represents an abstract board state <para/>
     /// Can be used for implementations of many different games
     /// </summary>
+    [Serializable]
     public abstract class Board
     {
         /// <summary>

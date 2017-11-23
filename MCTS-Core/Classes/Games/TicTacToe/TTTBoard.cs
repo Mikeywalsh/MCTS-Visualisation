@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MCTS.Core.Games
 {
     /// <summary>
     /// A Tic-Tac-Toe game board, which allows a game of Tic-Tac-Toe to be played out on it
     /// </summary>
+    [Serializable]
     public class TTTBoard : GridBasedBoard
     {
         /// <summary>

@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MCTS.Core.Games
 {
     /// <summary>
     /// An Othello game board, which allows a game of Othello to be played out on it
     /// </summary>
+    [Serializable]
     public class OthelloBoard : GridBasedBoard
     {
         /// <summary>

@@ -9,6 +9,9 @@ using System.Timers;
 using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+using System.Text;
 
 namespace MCTS.Visualisation
 {
@@ -34,12 +37,21 @@ namespace MCTS.Visualisation
         private DateTime startTime;
         private Timer stopTimer;
 
-        private bool client = false;
+        private bool client = true;
 
         private bool waiting = false;
 
         void Start()
         {
+            if(client)
+            {
+                StartClient();
+            }
+            else
+            {
+                StartServer();
+            }
+            
             LineDraw.Lines = new List<ColoredLine>();
             Application.runInBackground = true;
 
@@ -78,12 +90,94 @@ namespace MCTS.Visualisation
             Debug.Log("Waiting for a connection...");
 
             //Create a socket reference
-            Socket sock;
+            Socket sock = null;
 
             //Start a task which listens for a new connection
             await Task.Factory.StartNew(() => { sock = listener.AcceptSocket(); });
 
-            //byte[] b = 
+            if(sock == null)
+            {
+                throw new Exception("Socket was not established correctly!");
+            }
+
+            //Initialise a buffer and recieved byte count
+            byte[] buffer = new byte[1000];
+            int recievedByteCount = 0;
+            
+            //Wait until data is recieved from the client
+            await Task.Factory.StartNew(() => { sock.Receive(buffer); });
+
+            //Create a byte array that will hold the serialized board
+            byte[] serializedBoard = new byte[recievedByteCount];
+
+            //Copy the contents of the buffer to the serialized board byte array
+            for(int i = 0; i < recievedByteCount; i++)
+            {
+                serializedBoard[i] = buffer[i];
+            }
+
+            //Deserialize the board to obtain a board object
+            C4Board newBoard = Deserialize(serializedBoard);
+
+            //Send a PLACEHOLDER confirmation message
+            sock.Send(new ASCIIEncoding().GetBytes("Board state recieved: " + newBoard.ToString()));
+            sock.Close();
+            listener.Stop();
+        }
+
+        async void StartClient()
+        {
+            TcpClient client = new TcpClient();
+
+            client.Connect("10,240,107,129", 8500);
+
+            C4Board board = new C4Board();
+            board.MakeMove(new C4Move(2));
+            board.MakeMove(new C4Move(1));
+            board.MakeMove(new C4Move(3));
+            board.MakeMove(new C4Move(5));
+            board.MakeMove(new C4Move(0));
+            board.MakeMove(new C4Move(2));
+            board.MakeMove(new C4Move(2));
+
+            Stream stream = client.GetStream();
+
+            byte[] serializedBoard = SerializeBoard(board);
+
+            stream.Write(serializedBoard, 0, serializedBoard.Length);
+
+            byte[] reply = new byte[100];
+            int replyLength = stream.Read(reply, 0, 100);
+
+            string replyMessage = "";
+
+            for(int i = 0; i < replyLength; i++)
+            {
+                replyMessage += Convert.ToChar(reply[i]);
+            }
+
+            Debug.Log(replyMessage);
+
+            client.Close();
+
+
+        }
+
+        public static byte[] SerializeBoard(C4Board board)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                new BinaryFormatter().Serialize(memoryStream, board);
+                return memoryStream.ToArray();
+            }
+        }
+
+        public static C4Board Deserialize(byte[] serializedBoard)
+        {
+            using (var memoryStream = new MemoryStream(serializedBoard))
+            {
+                return (C4Board)(new BinaryFormatter().Deserialize(memoryStream));
+            }
         }
 
         void Update()
