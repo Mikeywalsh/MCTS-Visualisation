@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using MCTS.Core;
+using System.Collections;
 
 namespace MCTS.Visualisation.Hashing
 {
@@ -57,6 +58,11 @@ namespace MCTS.Visualisation.Hashing
         private Color nodeColor = Color.white;
 
         /// <summary>
+        /// An array of musical notes in the order that they should be accessed in
+        /// </summary>
+        public static MusicNote[] Notes = new MusicNote[] { MusicNote.C, MusicNote.D, MusicNote.E, MusicNote.F, MusicNote.G, MusicNote.A, MusicNote.B };
+
+        /// <summary>
         /// The visibility of this HashNode, which is a value between 0 and 1
         /// </summary>
         public float Visibility { get; private set; }
@@ -87,6 +93,16 @@ namespace MCTS.Visualisation.Hashing
         private const float SCALE_FACTOR = 0.1f;
 
         /// <summary>
+        /// The amount to transpose the pitch by to scale up or down by an octave
+        /// </summary>
+        private const float OCTAVE_TRANSPOSE = 12;
+
+        /// <summary>
+        /// The attached <see cref="AudioSource"/> object on this HashNode's Gameobject
+        /// </summary>
+        private AudioSource source;
+
+        /// <summary>
         /// Initialises this <see cref="HashNode"/>, assigning it an origin position and picking its initial target position
         /// </summary>
         /// <param name="origin">The origin position which this <see cref="HashNode"/> will be anchored to</param>
@@ -104,6 +120,20 @@ namespace MCTS.Visualisation.Hashing
 
             //Initialise the visibility of this node to be opaque
             SetVisibility(1);
+
+            //Set the AudioSource reference to the attached AudioSource script
+            source = GetComponent<AudioSource>();
+        }
+
+        /// <summary>
+        /// Plays the given musical note at the given octave
+        /// </summary>
+        /// <param name="note">The note to play</param>
+        /// <param name="octave">The octave the note is in</param>
+        public void PlayNote(MusicNote note, int octave)
+        {
+            source.pitch = Mathf.Pow(2, ((int)note + (octave * OCTAVE_TRANSPOSE)) / 12.0f);
+            source.Play();
         }
 
         /// <summary>
@@ -152,6 +182,12 @@ namespace MCTS.Visualisation.Hashing
             GetComponent<Renderer>().material.color = currentColor;
         }
 
+        private IEnumerator AudioFinished(float time)
+        {
+            yield return new WaitForSeconds(time);
+            Destroy(source);
+        }
+
         /// <summary>
         /// Adds a new <see cref="Node"/> to this hash node
         /// </summary>
@@ -159,11 +195,25 @@ namespace MCTS.Visualisation.Hashing
         /// <param name="newNode"></param>
         public void AddNode(GameObject lineTarget, Node newNode)
         {
+            //Add the new node to the list of contained nodes
             containedNodes.Add(newNode);
 
             if (BoardState == null)
             {
                 BoardState = newNode.GameBoard;
+
+                if (BoardState.LastMoveMade != null && BoardState.GetType() == typeof(Core.Games.C4Board))
+                {
+                    //Obtain the last move made
+                    Core.Games.C4Move lastMove = (Core.Games.C4Move)BoardState.LastMoveMade;
+
+                    //Play a note corresponding to the column that the last move was made in
+                    PlayNote(Notes[lastMove.X], -1 + (int)(newNode.Depth / 3));
+
+                    //Start a timer that will destroy the audio source on this GameObject when the sound has finished playing
+                    StartCoroutine(AudioFinished(source.clip.length));
+
+                }
             }
 
             //If there is no line target, then return immeditately and do not create a LineRenderer

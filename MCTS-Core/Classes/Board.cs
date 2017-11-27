@@ -14,6 +14,12 @@ namespace MCTS.Core
         public int CurrentPlayer { get; protected set; }
 
         /// <summary>
+        /// The last move made on this game board <para/>
+        /// Null if the board is new
+        /// </summary>
+        public Move LastMoveMade { get; private set; }
+
+        /// <summary>
         /// The winner value of the board state <para/>
         /// -1 if no winner yet <para/>
         /// 0 if game is a tie <para/>
@@ -130,7 +136,14 @@ namespace MCTS.Core
         /// </summary>
         /// <param name="move">The move to make</param>
         /// <returns>A board instance which has had the passed in move made</returns>
-        public abstract Board MakeMove(Move move);
+        public virtual Board MakeMove(Move move)
+        {
+            //Assign the move just made to the last move made
+            LastMoveMade = move;
+
+            //Return a reference to this board, used for method chaining
+            return this;
+        }
 
         /// <summary>
         /// Gets a list of possible moves that can follow from this board state

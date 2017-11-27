@@ -15,6 +15,12 @@
             The playerID of the current player
             </summary>
         </member>
+        <member name="P:MCTS.Core.Board.LastMoveMade">
+            <summary>
+            The last move made on this game board <para/>
+            Null if the board is new
+            </summary>
+        </member>
         <member name="F:MCTS.Core.Board.winner">
             <summary>
             The winner value of the board state <para/>

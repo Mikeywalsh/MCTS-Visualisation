@@ -72,13 +72,14 @@ namespace MCTS.Core.Games
 
                 //Swap out the current player
                 CurrentPlayer = NextPlayer;
+
+                //Call the MakeMove method on the Board base class, to save the last move made on this board
+                return base.MakeMove(move);
             }
             else
             {
                 throw new InvalidMoveException("Move has already been made at: " + m.ToString());
             }
-
-            return this;
         }
 
         /// <summary>
