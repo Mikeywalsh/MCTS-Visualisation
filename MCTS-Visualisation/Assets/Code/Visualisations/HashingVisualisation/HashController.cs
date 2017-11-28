@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using MCTS.Core;
 using MCTS.Core.Games;
 
@@ -32,6 +31,10 @@ namespace MCTS.Visualisation.Hashing
         /// </summary>
         public TreeSearch<Node> mcts;
 
+        /// <summary>
+        /// An array of evenly distributed points on the surface of a sphere, used for position calculation of <see cref="HashNode"/>'s <para/>
+        /// This array is only calculated once, the first time it is needed
+        /// </summary>
         private static Vector3[] spherePositions;
 
         /// <summary>
