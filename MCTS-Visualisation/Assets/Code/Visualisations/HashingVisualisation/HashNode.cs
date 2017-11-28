@@ -2,6 +2,7 @@
 using UnityEngine;
 using MCTS.Core;
 using System.Collections;
+using MCTS.Core.Games;
 
 namespace MCTS.Visualisation.Hashing
 {
@@ -56,11 +57,6 @@ namespace MCTS.Visualisation.Hashing
         /// The color of this <see cref="HashNode"/>, which will change depending on its properties
         /// </summary>
         private Color nodeColor = Color.white;
-
-        /// <summary>
-        /// An array of musical notes in the order that they should be accessed in
-        /// </summary>
-        public static MusicNote[] Notes = new MusicNote[] { MusicNote.C, MusicNote.D, MusicNote.E, MusicNote.F, MusicNote.G, MusicNote.A, MusicNote.B };
 
         /// <summary>
         /// The visibility of this HashNode, which is a value between 0 and 1
@@ -182,6 +178,10 @@ namespace MCTS.Visualisation.Hashing
             GetComponent<Renderer>().material.color = currentColor;
         }
 
+        /// <summary>
+        /// <see cref="IEnumerator"/> that is called when audio starts playing, which waits for the audio to finish playing before destroying the audio source on this object
+        /// </summary>
+        /// <param name="time">The time the audio clip will be playing for</param>
         private IEnumerator AudioFinished(float time)
         {
             yield return new WaitForSeconds(time);
@@ -189,11 +189,59 @@ namespace MCTS.Visualisation.Hashing
         }
 
         /// <summary>
+        /// Gets a musical note to play given a move made on a <see cref="Board"/>
+        /// </summary>
+        /// <param name="moveMade">The move to create a musical note from</param>
+        /// <returns>A musical note, which changes depending on the move made</returns>
+        private static MusicNote GetNoteToPlay(Move moveMade)
+        {
+            if (moveMade.GetType() == typeof(TTTMove))
+            {
+                //TEMP
+                return MusicNote.C;
+            }
+            else if (moveMade.GetType() == typeof(C4Move))
+            {
+                switch(((C4Move)moveMade).X)
+                {
+                    case 0:
+                        return MusicNote.C;
+                    case 1:
+                        return MusicNote.D;
+                    case 2:
+                        return MusicNote.E;
+                    case 3:
+                        return MusicNote.F;
+                    case 4:
+                        return MusicNote.G;
+                    case 5:
+                        return MusicNote.A;
+                    case 6:
+                        return MusicNote.B;
+                    default:
+                        //Shouldn't happen, return C and log occurence anyway
+                        Debug.Log("C4Board musical note generation fell outside of switch case.");
+                        return MusicNote.C;
+                }
+            }
+            else if (moveMade.GetType() == typeof(OthelloMove))
+            {
+                //TEMP
+                return MusicNote.C;
+            }
+            else
+            {
+                throw new System.Exception("Invalid move type used: " + moveMade.GetType().ToString());
+            }
+        }
+
+        /// <summary>
         /// Adds a new <see cref="Node"/> to this hash node
         /// </summary>
-        /// <param name="lineTarget"></param>
-        /// <param name="newNode"></param>
-        public void AddNode(GameObject lineTarget, Node newNode)
+        /// <param name="lineTarget">The target object of the lineRenderer being created</param>
+        /// <param name="newNode">A reference to the new node being added</param>
+        /// <param name="playAudio">Flag indicating whether audio should be played for this node or not</param>
+        public void AddNode(GameObject lineTarget, Node newNode, bool playAudio)
         {
             //Add the new node to the list of contained nodes
             containedNodes.Add(newNode);
@@ -202,17 +250,21 @@ namespace MCTS.Visualisation.Hashing
             {
                 BoardState = newNode.GameBoard;
 
-                if (BoardState.LastMoveMade != null && BoardState.GetType() == typeof(Core.Games.C4Board))
+                if (playAudio && BoardState.LastMoveMade != null)
                 {
-                    //Obtain the last move made
-                    Core.Games.C4Move lastMove = (Core.Games.C4Move)BoardState.LastMoveMade;
+                    //Get a note to play using the current board state
+                    MusicNote toPlay = GetNoteToPlay(BoardState.LastMoveMade);
 
                     //Play a note corresponding to the column that the last move was made in
-                    PlayNote(Notes[lastMove.X], -1 + (int)(newNode.Depth / 3));
+                    PlayNote(toPlay, -1 + (int)(newNode.Depth / 3));
 
                     //Start a timer that will destroy the audio source on this GameObject when the sound has finished playing
                     StartCoroutine(AudioFinished(source.clip.length));
-
+                }
+                else
+                {
+                    //Destroy the audio source on this HashNode object if no sound is being played
+                    Destroy(GetComponent<AudioSource>());
                 }
             }
 

@@ -17,9 +17,14 @@ namespace MCTS.Visualisation.Hashing
         public GameObject MenuPanel;
 
         /// <summary>
+        /// The dropdown menu that allows the user to select which game to run MCTS on
+        /// </summary>
+        public Dropdown GameChoiceDropdown;
+
+        /// <summary>
         /// Input field specifying the starting amount amount of nodes to create
         /// </summary>
-        public Text StartingNodeAmountField;
+        public InputField StartingNodeAmountField;
 
         /// <summary>
         /// The panel in which all navigation UI elements are held
@@ -50,6 +55,11 @@ namespace MCTS.Visualisation.Hashing
         /// The text field which shows the metadata about the current node
         /// </summary>
         public Text NodeInfoText;
+
+        /// <summary>
+        /// The start button, which is used to start the hash visualisation
+        /// </summary>
+        public Button StartButton;
 
         /// <summary>
         /// The play button, which is used to start the playing animation
@@ -115,6 +125,32 @@ namespace MCTS.Visualisation.Hashing
         public static int GetStartingNodeInput()
         {
             return int.Parse(controller.StartingNodeAmountField.text);
+        }
+
+        /// <summary>
+        /// Gets the current selected game choice and returns it as an integer index value
+        /// </summary>
+        public static int GetGameChoice
+        {
+            get
+            {
+                return controller.GameChoiceDropdown.value;
+            }
+        }
+
+        /// <summary>
+        /// Validates the starting node input when it is changed, so that the start button cannot be pressed until it is valid
+        /// </summary>
+        public void ValidateInput()
+        {
+            if(StartingNodeAmountField.text.Length == 0)
+            {
+                StartButton.interactable = false;
+            }
+            else
+            {
+                StartButton.interactable = true;
+            }
         }
 
         /// <summary>
@@ -193,6 +229,7 @@ namespace MCTS.Visualisation.Hashing
         /// </summary>
         public void ResetButtonPressed()
         {
+            HashController.ResetSpherePositions();
             SceneController.ResetCurrentScene();
         }
     }

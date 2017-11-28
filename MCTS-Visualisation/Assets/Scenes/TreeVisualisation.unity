@@ -477,7 +477,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 104324686}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 473, y: 255, z: 0}
+  m_LocalPosition: {x: 441.5, y: 246, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 917959828}
@@ -515,7 +515,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 109603241}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -415.3, y: -237.9, z: 0}
+  m_LocalPosition: {x: -383.8, y: -228.9, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 907746913}
@@ -2014,7 +2014,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 441369922}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -415.05, y: -237.4, z: 0}
+  m_LocalPosition: {x: -383.55, y: -228.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1505454747}
@@ -2854,7 +2854,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 704399934}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 407, y: -42.750015, z: 0}
+  m_LocalPosition: {x: 375.5, y: -33.750015, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 690720872}
@@ -4407,7 +4407,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1524565493}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -329.5, y: 71, z: 0}
+  m_LocalPosition: {x: -298, y: 62, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 917959828}
@@ -5611,7 +5611,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Monte Carlo Tree Search
 
-    Visualisation'
+    Tree Visualisation'
 --- !u!222 &1889972082
 CanvasRenderer:
   m_ObjectHideFlags: 0

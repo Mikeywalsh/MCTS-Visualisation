@@ -142,17 +142,37 @@ namespace MCTS.Visualisation.Hashing
         /// </summary>
         public void StartButtonPressed()
         {
-            mcts = new TreeSearch<Node>(new C4Board()); 
+            //Create an empty board instance, which will have whatever game the user chooses assigned to it
+            Board board;
+
+            //Assign whatever game board the user has chosen to the board instance
+            switch (HashUIController.GetGameChoice)
+            {
+                case 0:
+                    board = new TTTBoard();
+                    break;
+                case 1:
+                    board = new C4Board();
+                    break;
+                case 2:
+                    board = new OthelloBoard();
+                    break;
+                default:
+                    throw new System.Exception("Unknown game type index has been input");
+            }
+
+            mcts = new TreeSearch<Node>(board); 
 
             //Calculate the position of the root node and add an object for it to the scene
             Vector3 rootNodePosition = BoardToPosition(mcts.Root.GameBoard);
             GameObject rootNode = Instantiate(Resources.Load("HashNode"), rootNodePosition, Quaternion.identity) as GameObject;
-            rootNode.GetComponent<HashNode>().AddNode(null, mcts.Root);
+            rootNode.GetComponent<HashNode>().AddNode(null, mcts.Root, false);
 
             //Add the root node to the position and object map
             nodePositionMap.Add(rootNodePosition, rootNode);
             nodeObjectMap.Add(mcts.Root, rootNode);
 
+            //Create the amount of starting nodes specified by the user
             for (int i = 0; i < HashUIController.GetStartingNodeInput(); i++)
             {
                 PerformStep(true);
@@ -224,7 +244,7 @@ namespace MCTS.Visualisation.Hashing
 
             //Initialise the newest hash node and add a mcts Node to ite
             nodeObjectMap[newestNode].GetComponent<HashNode>().Initialise(newNodePosition);
-            nodeObjectMap[newestNode].GetComponent<HashNode>().AddNode(nodeObjectMap[newestNode.Parent], newestNode);
+            nodeObjectMap[newestNode].GetComponent<HashNode>().AddNode(nodeObjectMap[newestNode.Parent], newestNode, !fromMenu);
 
             HashUIController.SetTotalNodeText(nodeObjectMap.Count);
         }
@@ -269,6 +289,15 @@ namespace MCTS.Visualisation.Hashing
             }
 
             return finalPos * NODE_SPACING;
+        }
+
+        /// <summary>
+        /// Resets the array containing equally spaced positions on a sphere <para/>
+        /// Called when the scene is reset
+        /// </summary>
+        public static void ResetSpherePositions()
+        {
+            spherePositions = null;
         }
     }
 }
