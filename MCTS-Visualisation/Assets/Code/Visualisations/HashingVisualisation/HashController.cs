@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using MCTS.Core;
 using MCTS.Core.Games;
 
@@ -33,6 +32,12 @@ namespace MCTS.Visualisation.Hashing
         public TreeSearch<Node> mcts;
 
         /// <summary>
+        /// An array of evenly distributed points on the surface of a sphere, used for position calculation of <see cref="HashNode"/>'s <para/>
+        /// This array is only calculated once, the first time it is needed
+        /// </summary>
+        private static Vector3[] spherePositions;
+
+        /// <summary>
         /// The timestamp that the last step was performed <para/>
         /// Used to determine when to do the next step
         /// </summary>
@@ -42,17 +47,17 @@ namespace MCTS.Visualisation.Hashing
         /// Flag which controls whether the playing animation is active <para/>
         /// When the playing animation is active, nodes are created periodically
         /// </summary>
-        bool playing = false;
+        private bool playing = false;
 
         /// <summary>
         /// The delay in seconds between nodes being created when <see cref="playing"/> is active
         /// </summary>
-        private const float SPAWN_DELAY = 0.025f;
+        private const float SPAWN_DELAY = 0.25f;
 
         /// <summary>
         /// The amount of spacing between each node
         /// </summary>
-        private const float NODE_SPACING = 7f;
+        private const float NODE_SPACING = 35f;
 
         /// <summary>
         /// Enable the running of the application in the background when initially ran
@@ -137,17 +142,37 @@ namespace MCTS.Visualisation.Hashing
         /// </summary>
         public void StartButtonPressed()
         {
-            mcts = new TreeSearch<Node>(new TTTBoard());
+            //Create an empty board instance, which will have whatever game the user chooses assigned to it
+            Board board;
+
+            //Assign whatever game board the user has chosen to the board instance
+            switch (HashUIController.GetGameChoice)
+            {
+                case 0:
+                    board = new TTTBoard();
+                    break;
+                case 1:
+                    board = new C4Board();
+                    break;
+                case 2:
+                    board = new OthelloBoard();
+                    break;
+                default:
+                    throw new System.Exception("Unknown game type index has been input");
+            }
+
+            mcts = new TreeSearch<Node>(board); 
 
             //Calculate the position of the root node and add an object for it to the scene
-            Vector3 rootNodePosition = BoardToPosition((TTTBoard)mcts.Root.GameBoard);
+            Vector3 rootNodePosition = BoardToPosition(mcts.Root.GameBoard);
             GameObject rootNode = Instantiate(Resources.Load("HashNode"), rootNodePosition, Quaternion.identity) as GameObject;
-            rootNode.GetComponent<HashNode>().AddNode(null, mcts.Root);
+            rootNode.GetComponent<HashNode>().AddNode(null, mcts.Root, false);
 
             //Add the root node to the position and object map
             nodePositionMap.Add(rootNodePosition, rootNode);
             nodeObjectMap.Add(mcts.Root, rootNode);
 
+            //Create the amount of starting nodes specified by the user
             for (int i = 0; i < HashUIController.GetStartingNodeInput(); i++)
             {
                 PerformStep(true);
@@ -186,7 +211,7 @@ namespace MCTS.Visualisation.Hashing
             Node newestNode = mcts.AllNodes[mcts.AllNodes.Count - 1];
 
             //Hash the board contents of the newest node to obtain a positon
-            Vector3 newNodePosition = BoardToPosition((TTTBoard)newestNode.GameBoard);
+            Vector3 newNodePosition = BoardToPosition(newestNode.GameBoard);
 
             //Decrease the visibility of every node in the scene
             foreach (HashNode n in AllNodes)
@@ -219,7 +244,7 @@ namespace MCTS.Visualisation.Hashing
 
             //Initialise the newest hash node and add a mcts Node to ite
             nodeObjectMap[newestNode].GetComponent<HashNode>().Initialise(newNodePosition);
-            nodeObjectMap[newestNode].GetComponent<HashNode>().AddNode(nodeObjectMap[newestNode.Parent], newestNode);
+            nodeObjectMap[newestNode].GetComponent<HashNode>().AddNode(nodeObjectMap[newestNode.Parent], newestNode, !fromMenu);
 
             HashUIController.SetTotalNodeText(nodeObjectMap.Count);
         }
@@ -229,20 +254,50 @@ namespace MCTS.Visualisation.Hashing
         /// </summary>
         /// <param name="board">The board to hash</param>
         /// <returns>A <see cref="Vector3"/>, unique to the board state of hte board being hashed </returns>
-        public Vector3 BoardToPosition(TTTBoard board)
+        public Vector3 BoardToPosition(Board board)
         {
-            float xPos = 0;
-            float yPos = 0;
-            float zPos = 0;
+            GridBasedBoard gridBoard = (GridBasedBoard)board;
+            Vector3 finalPos = Vector3.zero;
 
-            for (int y = 0; y < 3; y++)
+            if (spherePositions == null)
             {
-                xPos += Mathf.Pow(3, y) * board.GetCell(0, y);
-                yPos += Mathf.Pow(3, y) * board.GetCell(1, y);
-                zPos += Mathf.Pow(3, y) * board.GetCell(2, y);
+                spherePositions = new Vector3[gridBoard.Width * gridBoard.Height];
+
+                #region Fibbonacci Sphere algorithm
+                for (int i = 0; i < spherePositions.Length; i++)
+                {
+                    int samples = spherePositions.Length;
+                    float offset = 2f / samples;
+                    float increment = Mathf.PI * (3 - Mathf.Sqrt(5));
+
+                    float y = ((i * offset) - 1) + (offset / 2);
+                    float r = Mathf.Sqrt(1 - Mathf.Pow(y, 2));
+                    float phi = ((i + 1) % samples) * increment;
+                    float x = Mathf.Cos(phi) * r;
+                    float z = Mathf.Sin(phi) * r;
+                    spherePositions[i] = new Vector3(x, y, z);
+                }
+                #endregion
             }
 
-            return new Vector3(xPos, yPos, zPos) * NODE_SPACING;
+            for(int y = 0; y < gridBoard.Height; y++) 
+            {
+                for(int x = 0; x < gridBoard.Width; x++)
+                {
+                    finalPos += spherePositions[(x * gridBoard.Height) + y].normalized * gridBoard.GetCell(x, y);
+                }
+            }
+
+            return finalPos * NODE_SPACING;
+        }
+
+        /// <summary>
+        /// Resets the array containing equally spaced positions on a sphere <para/>
+        /// Called when the scene is reset
+        /// </summary>
+        public static void ResetSpherePositions()
+        {
+            spherePositions = null;
         }
     }
 }

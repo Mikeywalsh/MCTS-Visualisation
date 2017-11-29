@@ -200,7 +200,7 @@ namespace MCTS.Visualisation
                         aiTurnProgressText.text = mcts.UniqueNodes + " nodes       " + TimeLeft.Seconds.ToString() + "." + TimeLeft.Milliseconds.ToString("000") + "s/" + timeToRunFor + "s";
                     }
 
-                    for(int targetIndex = mcts.AllNodes.Count; currentIndex < targetIndex & mcts.AllNodes.Count > 1; currentIndex++)
+                    for (int targetIndex = mcts.AllNodes.Count; currentIndex < targetIndex & mcts.AllNodes.Count > 1; currentIndex++)
                     {
                         NodeObject currentNode = mcts.AllNodes[currentIndex];
 
@@ -215,7 +215,7 @@ namespace MCTS.Visualisation
                 }
             }
         }
-        
+
         /// <summary>
         /// Gets the amount of time left for the current timer <para/>
         /// If the current timer is null, return 0
@@ -224,7 +224,7 @@ namespace MCTS.Visualisation
         {
             get
             {
-                if(stopTimer == null)
+                if (stopTimer == null)
                 {
                     return new TimeSpan(0);
                 }
@@ -246,6 +246,7 @@ namespace MCTS.Visualisation
         {
             mcts.Finish();
             stopTimer.Stop();
+            stopTimer.Dispose();
             stopTimer = null;
         }
 
@@ -269,22 +270,12 @@ namespace MCTS.Visualisation
             //If the search has finished, get the best child choice
             Node bestChild = mcts.Root.GetBestChild();
 
-            //Determine what move was made on the best child
-            for (int y = 0; y < board.Height; y++)
+            //Get the move made on the best child and apply it to the main game board
+            MakeMoveOnBoard(((C4Move)bestChild.GameBoard.LastMoveMade).X);
+            mcts = null;
+            if (!gameOver)
             {
-                for (int x = 0; x < board.Width; x++)
-                {
-                    //If 2 cells don't match up, then the move was made in this cell
-                    if (board.GetCell(x, y) != ((C4Board)bestChild.GameBoard).GetCell(x, y))
-                    {
-                        MakeMoveOnBoard(x);
-                        mcts = null;
-                        if (!gameOver)
-                        {
-                            moveButtons.SetActive(true);
-                        }
-                    }
-                }
+                moveButtons.SetActive(true);
             }
         }
 

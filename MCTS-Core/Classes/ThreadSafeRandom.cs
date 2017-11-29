@@ -13,6 +13,9 @@ namespace MCTS.Core
         /// </summary>
         static int seed = Environment.TickCount;
 
+        /// <summary>
+        /// A ThreadLocal Random instance which can be used to generate random numbers in a thread-safe way
+        /// </summary>
         static readonly ThreadLocal<Random> random = new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref seed)));
 
         /// <summary>

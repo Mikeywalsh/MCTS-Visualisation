@@ -80,7 +80,8 @@ namespace MCTS.Core.Games
                     //Swap out the current player
                     CurrentPlayer = NextPlayer;
 
-                    return this;
+                    //Call the MakeMove method on the Board base class, to save the last move made on this board
+                    return base.MakeMove(move);
                 }
             }
 

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using MCTS.Core;
+using System.Collections;
+using MCTS.Core.Games;
 
 namespace MCTS.Visualisation.Hashing
 {
@@ -87,6 +89,16 @@ namespace MCTS.Visualisation.Hashing
         private const float SCALE_FACTOR = 0.1f;
 
         /// <summary>
+        /// The amount to transpose the pitch by to scale up or down by an octave
+        /// </summary>
+        private const float OCTAVE_TRANSPOSE = 12;
+
+        /// <summary>
+        /// The attached <see cref="AudioSource"/> object on this HashNode's Gameobject
+        /// </summary>
+        private AudioSource source;
+
+        /// <summary>
         /// Initialises this <see cref="HashNode"/>, assigning it an origin position and picking its initial target position
         /// </summary>
         /// <param name="origin">The origin position which this <see cref="HashNode"/> will be anchored to</param>
@@ -104,6 +116,20 @@ namespace MCTS.Visualisation.Hashing
 
             //Initialise the visibility of this node to be opaque
             SetVisibility(1);
+
+            //Set the AudioSource reference to the attached AudioSource script
+            source = GetComponent<AudioSource>();
+        }
+
+        /// <summary>
+        /// Plays the given musical note at the given octave
+        /// </summary>
+        /// <param name="note">The note to play</param>
+        /// <param name="octave">The octave the note is in</param>
+        public void PlayNote(MusicNote note, int octave)
+        {
+            source.pitch = Mathf.Pow(2, ((int)note + (octave * OCTAVE_TRANSPOSE)) / 12.0f);
+            source.Play();
         }
 
         /// <summary>
@@ -153,17 +179,93 @@ namespace MCTS.Visualisation.Hashing
         }
 
         /// <summary>
+        /// <see cref="IEnumerator"/> that is called when audio starts playing, which waits for the audio to finish playing before destroying the audio source on this object
+        /// </summary>
+        /// <param name="time">The time the audio clip will be playing for</param>
+        private IEnumerator AudioFinished(float time)
+        {
+            yield return new WaitForSeconds(time);
+            Destroy(source);
+        }
+
+        /// <summary>
+        /// Gets a musical note to play given a move made on a <see cref="Board"/>
+        /// </summary>
+        /// <param name="moveMade">The move to create a musical note from</param>
+        /// <returns>A musical note, which changes depending on the move made</returns>
+        private static MusicNote GetNoteToPlay(Move moveMade)
+        {
+            if (moveMade.GetType() == typeof(TTTMove))
+            {
+                //TEMP
+                return MusicNote.C;
+            }
+            else if (moveMade.GetType() == typeof(C4Move))
+            {
+                switch(((C4Move)moveMade).X)
+                {
+                    case 0:
+                        return MusicNote.C;
+                    case 1:
+                        return MusicNote.D;
+                    case 2:
+                        return MusicNote.E;
+                    case 3:
+                        return MusicNote.F;
+                    case 4:
+                        return MusicNote.G;
+                    case 5:
+                        return MusicNote.A;
+                    case 6:
+                        return MusicNote.B;
+                    default:
+                        //Shouldn't happen, return C and log occurence anyway
+                        Debug.Log("C4Board musical note generation fell outside of switch case.");
+                        return MusicNote.C;
+                }
+            }
+            else if (moveMade.GetType() == typeof(OthelloMove))
+            {
+                //TEMP
+                return MusicNote.C;
+            }
+            else
+            {
+                throw new System.Exception("Invalid move type used: " + moveMade.GetType().ToString());
+            }
+        }
+
+        /// <summary>
         /// Adds a new <see cref="Node"/> to this hash node
         /// </summary>
-        /// <param name="lineTarget"></param>
-        /// <param name="newNode"></param>
-        public void AddNode(GameObject lineTarget, Node newNode)
+        /// <param name="lineTarget">The target object of the lineRenderer being created</param>
+        /// <param name="newNode">A reference to the new node being added</param>
+        /// <param name="playAudio">Flag indicating whether audio should be played for this node or not</param>
+        public void AddNode(GameObject lineTarget, Node newNode, bool playAudio)
         {
+            //Add the new node to the list of contained nodes
             containedNodes.Add(newNode);
 
             if (BoardState == null)
             {
                 BoardState = newNode.GameBoard;
+
+                if (playAudio && BoardState.LastMoveMade != null)
+                {
+                    //Get a note to play using the current board state
+                    MusicNote toPlay = GetNoteToPlay(BoardState.LastMoveMade);
+
+                    //Play a note corresponding to the column that the last move was made in
+                    PlayNote(toPlay, -1 + (int)(newNode.Depth / 3));
+
+                    //Start a timer that will destroy the audio source on this GameObject when the sound has finished playing
+                    StartCoroutine(AudioFinished(source.clip.length));
+                }
+                else
+                {
+                    //Destroy the audio source on this HashNode object if no sound is being played
+                    Destroy(GetComponent<AudioSource>());
+                }
             }
 
             //If there is no line target, then return immeditately and do not create a LineRenderer

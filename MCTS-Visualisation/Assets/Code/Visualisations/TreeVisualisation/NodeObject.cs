@@ -8,7 +8,6 @@ namespace MCTS.Visualisation.Tree
     /// </summary>
     public class NodeObject : Node
     {
-
         /// <summary>
         /// The position of this Node in the world
         /// </summary>

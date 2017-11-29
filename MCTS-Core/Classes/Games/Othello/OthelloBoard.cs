@@ -263,7 +263,8 @@ namespace MCTS.Core.Games
                 DetermineWinner();
             }
 
-            return this;
+            //Call the MakeMove method on the Board base class, to save the last move made on this board
+            return base.MakeMove(move);
         }
 
         /// <summary>

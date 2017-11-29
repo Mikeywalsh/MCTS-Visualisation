@@ -15,6 +15,12 @@
             The playerID of the current player
             </summary>
         </member>
+        <member name="P:MCTS.Core.Board.LastMoveMade">
+            <summary>
+            The last move made on this game board <para/>
+            Null if the board is new
+            </summary>
+        </member>
         <member name="F:MCTS.Core.Board.winner">
             <summary>
             The winner value of the board state <para/>
@@ -330,6 +336,16 @@
             Represented as a 4 digit integer
             </summary>
             <returns>A unique integer for this instance</returns>
+        </member>
+        <member name="P:MCTS.Core.Games.OthelloMove.X">
+            <summary>
+            X position of this move
+            </summary>
+        </member>
+        <member name="P:MCTS.Core.Games.OthelloMove.Y">
+            <summary>
+            Y position of this move
+            </summary>
         </member>
         <member name="T:MCTS.Core.Games.TTTBoard">
             <summary>
@@ -670,6 +686,11 @@
             The random seed, determined from the environment tickcount
             </summary>
         </member>
+        <member name="F:MCTS.Core.ThreadSafeRandom.random">
+            <summary>
+            A ThreadLocal Random instance which can be used to generate random numbers in a thread-safe way
+            </summary>
+        </member>
         <member name="M:MCTS.Core.ThreadSafeRandom.Rand">
             <summary>
             Gets a new random integer value
@@ -707,6 +728,23 @@
             </summary>
             <param name="message">The message to include in the exception</param>
         </member>
+        <member name="T:MCTS.Core.InvalidNodeException">
+            <summary>
+            An exception which should be thrown when an invalid node is being used <para/>
+            For example, trying to add children to a leaf node
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.InvalidNodeException.#ctor">
+            <summary>
+            Creates an invalid node exception
+            </summary>
+        </member>
+        <member name="M:MCTS.Core.InvalidNodeException.#ctor(System.String)">
+            <summary>
+            Creates an invalid node exception with a message
+            </summary>
+            <param name="message">The message to include in the exception</param>
+        </member>
         <member name="T:MCTS.Core.ListExtension">
             <summary>
             Adds utility methods to <see cref="T:System.Collections.Generic.List`1"/>
@@ -720,23 +758,6 @@
             <typeparam name="T"> The type that the source list contains</typeparam>
             <param name="source">The source list to choose the element from</param>
             <returns>The randomly chosen list element</returns>
-        </member>
-        <member name="T:InvalidNodeException">
-            <summary>
-            An exception which should be thrown when an invalid node is being used <para/>
-            For example, trying to add children to a leaf node
-            </summary>
-        </member>
-        <member name="M:InvalidNodeException.#ctor">
-            <summary>
-            Creates an invalid node exception
-            </summary>
-        </member>
-        <member name="M:InvalidNodeException.#ctor(System.String)">
-            <summary>
-            Creates an invalid node exception with a message
-            </summary>
-            <param name="message">The message to include in the exception</param>
         </member>
     </members>
 </doc>

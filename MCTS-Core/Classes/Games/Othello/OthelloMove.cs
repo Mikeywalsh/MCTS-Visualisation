@@ -44,7 +44,7 @@ namespace MCTS.Core.Games
         /// <returns>A string representation of this Othello move</returns>
         public override string ToString()
         {
-            return "(" + Position.X + "," + Position.Y + ")";
+            return "(" + X + "," + Y + ")";
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace MCTS.Core.Games
             if (obj is OthelloMove)
             {
                 OthelloMove other = (OthelloMove)obj;
-                if (other.Position.X == Position.X && other.Position.Y == Position.Y)
+                if (other.X == X && other.Y == Y)
                     return true;
             }
 
@@ -72,7 +72,23 @@ namespace MCTS.Core.Games
         /// <returns>A unique integer for this instance</returns>
         public override int GetHashCode()
         {
-            return int.Parse(Position.X.ToString() + Position.Y.ToString());
+            return int.Parse(X.ToString() + Y.ToString());
+        }
+
+        /// <summary>
+        /// X position of this move
+        /// </summary>
+        public int X
+        {
+            get { return Position.X; }
+        }
+
+        /// <summary>
+        /// Y position of this move
+        /// </summary>
+        public int Y
+        {
+            get { return Position.Y; }
         }
     }
 }
