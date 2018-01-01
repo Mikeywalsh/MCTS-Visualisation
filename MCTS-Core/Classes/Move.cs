@@ -1,8 +1,11 @@
-﻿namespace MCTS.Core
+﻿using System;
+
+namespace MCTS.Core
 {
     /// <summary>
     /// An abstract class that any moves of <see cref="Board"/> types must implement
     /// </summary>
+    [Serializable]
     public abstract class Move
     {
         /// <summary>

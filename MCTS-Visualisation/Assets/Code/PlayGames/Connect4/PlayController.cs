@@ -7,13 +7,8 @@ using MCTS.Core.Games;
 using MCTS.Visualisation.Tree;
 using System.Timers;
 using System;
-using System.Net;
-using System.Net.Sockets;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
-using System.Text;
 
-namespace MCTS.Visualisation
+namespace MCTS.Visualisation.Play
 {
     /// <summary>
     /// Used to play a game of connect 4 against an opponent using MCTS
@@ -41,18 +36,13 @@ namespace MCTS.Visualisation
 
         private bool waiting = false;
 
+        private GameServer server;
+
         void Start()
         {
-            if(client)
-            {
-                StartClient();
+            server = new GameServer(8500);
+            server.StartListening();
 
-            }
-            else
-            {
-                StartServer();
-            }
-            
             LineDraw.Lines = new List<ColoredLine>();
             Application.runInBackground = true;
 
@@ -61,135 +51,13 @@ namespace MCTS.Visualisation
             boardDisplayText.text = board.ToRichString();
         }
 
-        async void StartServer()
-        {
-            //Obtain the IP address of this machine
-            IPAddress[] allLocalIPs = Dns.GetHostAddresses(Dns.GetHostName());
-            IPAddress localIP = IPAddress.Parse("127.0.0.1");
-
-            foreach(IPAddress address in allLocalIPs)
-            {
-                if(address.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    localIP = address;
-                }
-            }
-
-            if(localIP.ToString() == "127.0.0.1")
-            {
-                throw new Exception("Could not find an IPv4 address for this machine. Are you connected to a network?");
-            }
-
-            //Initialise a listener
-            TcpListener listener = new TcpListener(localIP, 8500);
-
-            //Start listening
-            listener.Start();
-
-            Debug.Log("Started running server...");
-            Debug.Log("Local end point is: " + listener.LocalEndpoint);
-            Debug.Log("Waiting for a connection...");
-
-            //Create a socket reference
-            Socket sock = null;
-
-            //Start a task which listens for a new connection
-            await Task.Factory.StartNew(() => { sock = listener.AcceptSocket(); });
-
-            if(sock == null)
-            {
-                throw new Exception("Socket was not established correctly!");
-            }
-
-            //Initialise a buffer and recieved byte count
-            byte[] buffer = new byte[1000];
-            int recievedByteCount = 0;
-            
-            //Wait until data is recieved from the client
-            await Task.Factory.StartNew(() => { sock.Receive(buffer); });
-
-            //Create a byte array that will hold the serialized board
-            byte[] serializedBoard = new byte[recievedByteCount];
-
-            //Copy the contents of the buffer to the serialized board byte array
-            for(int i = 0; i < recievedByteCount; i++)
-            {
-                serializedBoard[i] = buffer[i];
-            }
-
-            //Deserialize the board to obtain a board object
-            C4Board newBoard = Deserialize(serializedBoard);
-
-            //Send a PLACEHOLDER confirmation message
-            sock.Send(new ASCIIEncoding().GetBytes("Board state recieved: " + newBoard.ToString()));
-            sock.Close();
-            listener.Stop();
-        }
-
-        async void StartClient()
-        {
-            Debug.Log("Starting Client...");
-
-            TcpClient client = new TcpClient();
-
-            Debug.Log("Client Initialised...");
-            await Task.Factory.StartNew(() => { client.Connect("10.240.107.219", 8500); });
-
-            Debug.Log("Connection Established...");
-
-            C4Board newBoard = new C4Board();
-            newBoard.MakeMove(new C4Move(2));
-            newBoard.MakeMove(new C4Move(1));
-            newBoard.MakeMove(new C4Move(3));
-            newBoard.MakeMove(new C4Move(5));
-            newBoard.MakeMove(new C4Move(0));
-            newBoard.MakeMove(new C4Move(2));
-            newBoard.MakeMove(new C4Move(2));
-
-            Stream stream = client.GetStream();
-
-            byte[] serializedBoard = SerializeBoard(newBoard);
-
-            stream.Write(serializedBoard, 0, serializedBoard.Length);
-
-            byte[] reply = new byte[100];
-            int replyLength = 0;
-
-            await Task.Factory.StartNew(() => { replyLength = stream.Read(reply, 0, 100); });
-
-            string replyMessage = "";
-
-            for(int i = 0; i < replyLength; i++)
-            {
-                replyMessage += Convert.ToChar(reply[i]);
-            }
-
-            Debug.Log(replyMessage);
-
-            client.Close();
-
-
-        }
-
-        public static byte[] SerializeBoard(C4Board board)
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                new BinaryFormatter().Serialize(memoryStream, board);
-                return memoryStream.ToArray();
-            }
-        }
-
-        public static C4Board Deserialize(byte[] serializedBoard)
-        {
-            using (var memoryStream = new MemoryStream(serializedBoard))
-            {
-                return (C4Board)(new BinaryFormatter().Deserialize(memoryStream));
-            }
-        }
-
         void Update()
         {
+            if (server.Connected && server.GameStarted && mcts == null && server.LastClientMove != null)
+            {
+                MakeMoveOnBoard(server.LastClientMove.X);
+            }
+
             if (mcts != null)
             {
                 //While the MCTS is still running, display progress information about the time remaining and the amounts of nodes created to the user
@@ -271,7 +139,7 @@ namespace MCTS.Visualisation
             Node bestChild = mcts.Root.GetBestChild();
 
             //Get the move made on the best child and apply it to the main game board
-            MakeMoveOnBoard(((C4Move)bestChild.GameBoard.LastMoveMade).X);
+            MakeMove((C4Move)bestChild.GameBoard.LastMoveMade);
             mcts = null;
             if (!gameOver)
             {
@@ -279,14 +147,27 @@ namespace MCTS.Visualisation
             }
         }
 
+        /// <summary>
+        /// Called when a user is playing the game using the provided on-screen buttons
+        /// </summary>
+        /// <param name="xPos"> The x position to make the move in</param>
         public void MakeMoveOnBoard(int xPos)
+        {
+            MakeMove(new C4Move(xPos));
+        }
+
+        /// <summary>
+        /// Makes a move on the current board
+        /// </summary>
+        /// <param name="move">The move to make</param>
+        private void MakeMove(C4Move move)
         {
             if (board.CurrentPlayer == 2)
             {
                 aiTurnProgressText.text = "";
             }
 
-            board.MakeMove(new C4Move(xPos));
+            board.MakeMove(move);
             boardDisplayText.text = board.ToRichString();
 
             if (board.Winner != -1)

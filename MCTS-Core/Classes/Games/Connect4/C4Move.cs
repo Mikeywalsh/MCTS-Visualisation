@@ -1,8 +1,11 @@
-﻿namespace MCTS.Core.Games
+﻿using System;
+
+namespace MCTS.Core.Games
 {
     /// <summary>
     /// A move that can be made in Connect 4
     /// </summary>
+    [Serializable]
     public class C4Move : Move
     {
         /// <summary>
