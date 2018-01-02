@@ -53,9 +53,9 @@ namespace MCTS.Visualisation.Play
 
         void Update()
         {
-            if (server.Connected && server.GameStarted && mcts == null && server.LastClientMove != null)
+            if (server.Connected && mcts == null && server.ClientBoard != null)
             {
-                MakeMoveOnBoard(server.LastClientMove.X);
+                MakeMove((C4Move)server.ClientBoard.LastMoveMade);
             }
 
             if (mcts != null)

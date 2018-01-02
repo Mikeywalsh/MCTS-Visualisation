@@ -12,11 +12,10 @@ namespace MCTS.Visualisation.Play
     {
         private TcpListener listener;
         private Socket sock;
-        private C4Board gameBoard;
         private byte[] buffer;
 
-        public C4Move LastClientMove { get; private set; }
-        public C4Move MoveToMake { get; set; }
+        public Board ClientBoard { get; private set; }
+        public Board ServerBoard { get; set; }
 
         /// <summary>
         /// Creates a GameServer instance and a <see cref="TcpListener"/> on the local IPv4 address of this machine and the provided port
@@ -92,32 +91,24 @@ namespace MCTS.Visualisation.Play
 
             Debug.Log("Connected to client with endpoint: " + sock.RemoteEndPoint);
 
-            StartGame();
+            //Enter the update loop
+            UpdateLoop();
         }
 
         /// <summary>
-        /// Starts a game instance on the server, assuming a client is connected <para/>
         /// A main loop is entered which allows a client to play a full game against an opponent on the server machine
         /// </summary>
-        async private void StartGame()
+        async private void UpdateLoop()
         {
             if(!Connected)
             {
                 throw new Exception("Not connected to a client. Call StartListening first...");
             }
 
-            //Create a new connect 4 game board
-            gameBoard = new C4Board();
-
-            Debug.Log("Started a game of connect 4!");
-
-            //Send the initial board state to the client
-            SendGameBoardToClient();
-
             try
             {
-                //While the game is non-terminal, execute a main loop which sends the game state to the client and waits for a move to be returned
-                while (gameBoard.Winner == -1)
+                //Execute a main loop which waits for a client board to be received before sending a server response, until one of the boards is terminal
+                while (true)
                 {
                     Debug.Log("Waiting for move selection from client...");
 
@@ -125,29 +116,45 @@ namespace MCTS.Visualisation.Play
                     await Task.Run(() => sock.Receive(buffer));
 
                     //Deserialize the move to obtain a move object
-                    C4Move toMake = (C4Move)Serializer.Deserialize(buffer);
+                    ClientBoard = (C4Board)Serializer.Deserialize(buffer);
 
-                    //Clone the move to provide the server with a disposable version
-                    LastClientMove = new C4Move(toMake.X);
+                    //Output a string representation of the received board
+                    Debug.Log("Client board recieved:\n" + ClientBoard.ToString());
 
-                    //Output a string representation of the received move
-                    Debug.Log("Move recieved:\n" + LastClientMove.ToString());
-
-                    //Apply the move to the board
-                    gameBoard.MakeMove(toMake);
-
-                    //If this move ended the game, break out of the game loop
-                    if (gameBoard.Winner != -1)
+                    //If the client board is terminal, end the connection
+                    if (ClientBoard.Winner != -1)
+                    {
+                        Debug.Log("Game over! " + (ClientBoard.Winner == 0 ? "Draw!" : "Winner was player " + ClientBoard.Winner));
                         break;
+                    }
 
-                    //TEMP - MAKE A MOVE FOR THE OPPONENT
-                    gameBoard.MakeMove(gameBoard.PossibleMoves().PickRandom());
+                    //Wait for the server machine to create a resultant board
+                    while(ServerBoard == null)
+                    {
+                        await Task.Delay(500);
+                    }
 
-                    //Serialize the current board state and send it to the client
-                    await Task.Run(() => SendGameBoardToClient());
+                    //Clear the client board
+                    ClientBoard = null;
+
+                    //Serialize the server board state and send it to the client
+                    byte[] serializedBoard = Serializer.Serialize(ServerBoard);
+                    Debug.Log("Board serialized...\nLength:" + serializedBoard.Length.ToString());
+
+                    //Send the serialized initial board state to the client
+                    await Task.Run(() => sock.Send(serializedBoard));
+                    Debug.Log("Board state sent...");
+
+                    //If the server board is terminal, end the connection
+                    if (ServerBoard.Winner != -1)
+                    {
+                        Debug.Log("Game over! " + (ServerBoard.Winner == 0? "Draw!" : "Winner was player " + ServerBoard.Winner));
+                        break;
+                    }
+
+                    //Clear the server board
+                    ServerBoard = null;
                 }
-
-                Debug.Log("Game over! Winner was player " + gameBoard.Winner);
             }
             catch (SocketException)
             {
@@ -156,24 +163,6 @@ namespace MCTS.Visualisation.Play
 
             //Close the socket
             DisconnectClient();
-            //StopListening();
-        }
-
-        private void SendGameBoardToClient()
-        {
-            if (sock == null)
-            {
-                //The client socket reference is null, something has went wrong
-                throw new SocketException();
-            }
-
-            //Serialize the board
-            byte[] serializedBoard = Serializer.Serialize(gameBoard);
-            Debug.Log("Board serialized...\nLength:" + serializedBoard.Length.ToString());
-
-            //Send the serialized initial board state to the client
-            sock.Send(serializedBoard);
-            Debug.Log("Board state sent...");
         }
 
         public void Dispose()
@@ -206,11 +195,6 @@ namespace MCTS.Visualisation.Play
         public bool Connected
         {
             get { return sock == null? false : sock.Connected; }
-        }
-
-        public bool GameStarted
-        {
-            get { return gameBoard != null; }
         }
     }
 }
