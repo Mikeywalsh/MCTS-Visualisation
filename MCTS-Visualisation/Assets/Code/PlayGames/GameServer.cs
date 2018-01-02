@@ -101,6 +101,11 @@ namespace MCTS.Visualisation.Play
         /// </summary>
         async private void StartGame()
         {
+            if(!Connected)
+            {
+                throw new Exception("Not connected to a client. Call StartListening first...");
+            }
+
             //Create a new connect 4 game board
             gameBoard = new C4Board();
 
