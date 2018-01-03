@@ -40,6 +40,11 @@ namespace MCTS.Visualisation.Play
         private byte[] buffer;
 
         /// <summary>
+        /// A callback which will be called when the server has failed to listen on a specific port
+        /// </summary>
+        private Action failedListenCallback;
+
+        /// <summary>
         /// A callback which will be called when a client has connected to this server
         /// </summary>
         private Action connectedCallback;
@@ -70,15 +75,17 @@ namespace MCTS.Visualisation.Play
         /// </summary>
         /// <param name =board">The board reference that the server will use</param>
         /// <param name="port">The port which the <see cref="TcpListener"/> will run on</param>
+        /// <param name="fCallback">The callback method to call when the server has failed to listen on a specific port</param>
         /// <param name="cCallback">The callback method to call when a client has connected</param>
         /// <param name="mCallback">The callback method to call when a move is made</param>
         /// <param name="dCallback">The callback method to call when a client has disconnection</param>
-        public GameServer(Board board, short port, Action cCallback, Action<Move> mCallback, Action dCallback)
+        public GameServer(Board board, short port, Action fCallback, Action cCallback, Action<Move> mCallback, Action dCallback)
         {
             //Set the server board reference
             GameBoard = board;
 
             //Set the callbacks
+            failedListenCallback = fCallback;
             connectedCallback = cCallback;
             moveCallback = mCallback;
             disconnectCallback = dCallback;
@@ -134,6 +141,7 @@ namespace MCTS.Visualisation.Play
             {
                 Debug.Log("Listener already open, closing server...");
                 listener = null;
+                failedListenCallback();
                 return;
             }
 
@@ -141,8 +149,20 @@ namespace MCTS.Visualisation.Play
             listener.Start();
             Debug.Log("Waiting for a connection...");
 
-            //Start a task which listens for a new connection
-            sock = await Task.Run(() => listener.AcceptSocket());
+            //Listen until a connection has been made
+            while (sock == null)
+            {
+                try
+                {
+                    //Start a task which listens for a new connection
+                    sock = await Task.Run(() => listener.AcceptSocket());
+                }
+                catch (Exception)
+                {
+                    //Scene has been exited early, leave method
+                    return;
+                }
+            }            
 
             //Only one connection is allowed at a time, stop the listener
             listener.Stop();
@@ -167,7 +187,7 @@ namespace MCTS.Visualisation.Play
         /// </summary>
         async private void UpdateLoop()
         {
-            if(!Connected)
+            if (!Connected)
             {
                 throw new Exception("Not connected to a client. Call StartListening first...");
             }
@@ -198,7 +218,7 @@ namespace MCTS.Visualisation.Play
                     }
 
                     //Wait for the user to select a move
-                    while(ServerMove == null)
+                    while (ServerMove == null)
                     {
                         await Task.Delay(500);
                     }
@@ -241,7 +261,7 @@ namespace MCTS.Visualisation.Play
         /// </summary>
         public void DisconnectClient()
         {
-            if (sock.Connected)
+            if (sock != null && sock.Connected)
             {
                 sock.Close();
             }
@@ -263,7 +283,7 @@ namespace MCTS.Visualisation.Play
         /// </summary>
         public bool Connected
         {
-            get { return sock == null? false : sock.Connected; }
+            get { return sock == null ? false : sock.Connected; }
         }
     }
 }

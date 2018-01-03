@@ -87,7 +87,7 @@ namespace MCTS.Visualisation.Play
             LineDraw.Lines = new List<ColoredLine>();
 
             //Initialise the game server
-            server = new GameServer(board, 8500, Connected, MakeMoveOnBoard, ResetButtonPressed);
+            server = new GameServer(board, 8500, ResetButtonPressed, Connected, MakeMoveOnBoard, ResetButtonPressed);
             server.StartListening();
 
             //Set the play mode
@@ -221,8 +221,7 @@ namespace MCTS.Visualisation.Play
         }
 
         /// <summary>
-        /// Runs MCTS until completion
-        /// Should be ran on another thread to avoid freezing of the application
+        /// Runs MCTS until completion asynchronously
         /// </summary>
         /// <param name="m">The <see cref="TreeSearch"/> instance to run</param>
         async void RunMCTS()
@@ -249,7 +248,10 @@ namespace MCTS.Visualisation.Play
                 server.ServerMove = bestChild.GameBoard.LastMoveMade;
             }            
 
+            //Set the TreeSearch reference to null to allow it to be garbage collected
             mcts = null;
+
+            //If the game has not finished and is being played in local mode, then activate the move buttons
             if (!gameOver && playMode == PlayMode.LOCAL)
             {
                 moveButtons.SetActive(true);
@@ -270,6 +272,7 @@ namespace MCTS.Visualisation.Play
             if (playMode == PlayMode.CLIENT && client.Connected)
             {
                 client.ClientMove = toMake;
+                aiTurnProgressText.text = "Server is thinking...";
             }
         }
 
@@ -301,11 +304,20 @@ namespace MCTS.Visualisation.Play
                 return;
             }
 
+            if(board.CurrentPlayer == 1 && playMode == PlayMode.CLIENT)
+            {
+                moveButtons.SetActive(true);
+            }
             if (board.CurrentPlayer == 2)
             {
                 moveButtons.SetActive(false);
-                StartAITurn();
-            }
+
+                //If the current playmode is client, don't start an AI turn, wait for server response instead
+                if (playMode != PlayMode.CLIENT)
+                {
+                    StartAITurn();
+                }
+            }            
         }
 
         /// <summary>
@@ -314,6 +326,16 @@ namespace MCTS.Visualisation.Play
         /// </summary>
         public void BackToMenuButtonPressed()
         {
+            if(server != null)
+            {
+                server.Dispose();
+            }
+
+            if(client != null)
+            {
+                client.Dispose();
+            }
+
             SceneController.LoadMainMenu();
         }
 
