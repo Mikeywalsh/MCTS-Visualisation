@@ -133,8 +133,13 @@ namespace MCTS.Visualisation.Play
         {
             //Re-enable the connect button to allow the user to try to connect again
             Debug.Log("Could not connect to server, please try again...");
-            ConnectButton.gameObject.SetActive(true);
-            ConnectingText.gameObject.SetActive(false);
+
+            //Only do this if the user hasn't left the scene
+            if (ConnectButton != null && ConnectingText != null)
+            {
+                ConnectButton.gameObject.SetActive(true);
+                ConnectingText.gameObject.SetActive(false);
+            }
         }
 
         private void Connected()
