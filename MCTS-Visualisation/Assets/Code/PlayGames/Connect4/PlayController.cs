@@ -42,13 +42,12 @@ namespace MCTS.Visualisation.Play
         public InputField InputPort;
 
         public Button ConnectButton;
+
         private int currentIndex = 1;
         private DateTime startTime;
         private Timer stopTimer;
 
         private PlayMode playMode;
-
-        private bool waiting = false;
 
         private GameServer server;
         private GameClient client;
