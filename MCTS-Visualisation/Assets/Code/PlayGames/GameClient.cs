@@ -181,7 +181,7 @@ namespace MCTS.Visualisation.Play
             }
             catch (SocketException)
             {
-                Debug.Log("Connection was closed by the client, exiting server...");
+                Debug.Log("Connection was closed by the server, exiting client...");
             }
 
             //Close the socket
