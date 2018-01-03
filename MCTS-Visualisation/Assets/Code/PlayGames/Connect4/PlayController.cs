@@ -40,24 +40,19 @@ namespace MCTS.Visualisation.Play
 
         void Start()
         {
-            server = new GameServer(8500);
-            server.StartListening();
-
             LineDraw.Lines = new List<ColoredLine>();
             Application.runInBackground = true;
 
             //Initialise the game board and display
             board = new C4Board();
             boardDisplayText.text = board.ToRichString();
+
+            server = new GameServer(board, 8500, MakeMoveOnBoard, ResetButtonPressed);
+            server.StartListening();
         }
 
         void Update()
         {
-            if (server.Connected && mcts == null && server.ClientBoard != null)
-            {
-                MakeMove((C4Move)server.ClientBoard.LastMoveMade);
-            }
-
             if (mcts != null)
             {
                 //While the MCTS is still running, display progress information about the time remaining and the amounts of nodes created to the user
@@ -139,7 +134,13 @@ namespace MCTS.Visualisation.Play
             Node bestChild = mcts.Root.GetBestChild();
 
             //Get the move made on the best child and apply it to the main game board
-            MakeMove((C4Move)bestChild.GameBoard.LastMoveMade);
+            MakeMoveOnBoard((C4Move)bestChild.GameBoard.LastMoveMade);
+
+            if(server.Connected)
+            {
+                server.ServerMove = bestChild.GameBoard.LastMoveMade;
+            }
+
             mcts = null;
             if (!gameOver)
             {
@@ -153,14 +154,14 @@ namespace MCTS.Visualisation.Play
         /// <param name="xPos"> The x position to make the move in</param>
         public void MakeMoveOnBoard(int xPos)
         {
-            MakeMove(new C4Move(xPos));
+            MakeMoveOnBoard(new C4Move(xPos));
         }
 
         /// <summary>
         /// Makes a move on the current board
         /// </summary>
         /// <param name="move">The move to make</param>
-        private void MakeMove(C4Move move)
+        private void MakeMoveOnBoard(Move move)
         {
             if (board.CurrentPlayer == 2)
             {

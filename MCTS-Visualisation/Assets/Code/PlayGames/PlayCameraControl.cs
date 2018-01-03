@@ -10,5 +10,4 @@ namespace MCTS.Visualisation.Play
             transform.RotateAround(Vector3.zero, Vector3.up, 1);
         }
     }
-
 }

@@ -8,21 +8,64 @@ using UnityEngine;
 
 namespace MCTS.Visualisation.Play
 {
+    /// <summary>
+    /// A game server, which allows a client to connect and a game to be played between client and server
+    /// </summary>
     class GameServer : IDisposable
     {
+        /// <summary>
+        /// The <see cref="TcpListener"/> used to listen for incoming client connections <para/>
+        /// This listener will stop listening after one connection, as only one client may be connected at a time
+        /// </summary>
         private TcpListener listener;
+
+        /// <summary>
+        /// The socket used to communicate with the client
+        /// </summary>
         private Socket sock;
+
+        /// <summary>
+        /// A data buffer used for communications with the client
+        /// </summary>
         private byte[] buffer;
 
-        public Board ClientBoard { get; private set; }
-        public Board ServerBoard { get; set; }
+        /// <summary>
+        /// A callback which will be called whenever a move is recieved from the client
+        /// </summary>
+        private Action<Move> moveCallback;
+
+        /// <summary>
+        /// A callback which will be called if the connection between the server and client is ended
+        /// </summary>
+        private Action disconnectCallback;
+
+        /// <summary>
+        /// The <see cref="Board"/> reference used by this GameServer to play the game out on
+        /// </summary>
+        public Board GameBoard { get; private set; }
+
+        /// <summary>
+        /// A move which can be set directly <para/>
+        /// When this move is set, it is serialized and sent to the client, and then set to be null
+        /// </summary>
+        public Move ServerMove { get; set; }
 
         /// <summary>
         /// Creates a GameServer instance and a <see cref="TcpListener"/> on the local IPv4 address of this machine and the provided port
         /// </summary>
+        /// <param name =board">The board reference that the server will use</param>
         /// <param name="port">The port which the <see cref="TcpListener"/> will run on</param>
-        public GameServer(short port)
+        /// <param name="mCallback">The callback method to call when a move is made</param>
+        /// <param name="dCallback">The callback method to call when a client has disconnection</param>
+        public GameServer(Board board, short port, Action<Move> mCallback, Action dCallback)
         {
+            //Set the server board reference
+            GameBoard = board;
+
+            //Set the callbacks
+            moveCallback = mCallback;
+            disconnectCallback = dCallback;
+
             //Obtain the IP address of this machine
             IPAddress[] allLocalIPs = Dns.GetHostAddresses(Dns.GetHostName());
             IPAddress localIP = IPAddress.Parse("127.0.0.1");
@@ -116,44 +159,43 @@ namespace MCTS.Visualisation.Play
                     await Task.Run(() => sock.Receive(buffer));
 
                     //Deserialize the move to obtain a move object
-                    ClientBoard = (C4Board)Serializer.Deserialize(buffer);
+                    Move clientMove = (C4Move)Serializer.Deserialize(buffer);
 
-                    //Output a string representation of the received board
-                    Debug.Log("Client board recieved:\n" + ClientBoard.ToString());
+                    //Output a string representation of the received move
+                    Debug.Log("Client move recieved:\n" + clientMove.ToString());
 
-                    //If the client board is terminal, end the connection
-                    if (ClientBoard.Winner != -1)
+                    //Make the client move on the game board, if it is terminal then break out of the main loop
+                    moveCallback(clientMove);
+
+                    if (GameBoard.Winner != -1)
                     {
-                        Debug.Log("Game over! " + (ClientBoard.Winner == 0 ? "Draw!" : "Winner was player " + ClientBoard.Winner));
+                        Debug.Log("Game over! " + (GameBoard.Winner == 0 ? "Draw!" : "Winner was player " + GameBoard.Winner));
                         break;
                     }
 
                     //Wait for the server machine to create a resultant board
-                    while(ServerBoard == null)
+                    while(ServerMove == null)
                     {
                         await Task.Delay(500);
                     }
 
-                    //Clear the client board
-                    ClientBoard = null;
+                    //Serialize the server move and send it to the client
+                    byte[] serializedMove = Serializer.Serialize(ServerMove);
+                    Debug.Log("Move serialized...\nLength:" + serializedMove.Length.ToString());
 
-                    //Serialize the server board state and send it to the client
-                    byte[] serializedBoard = Serializer.Serialize(ServerBoard);
-                    Debug.Log("Board serialized...\nLength:" + serializedBoard.Length.ToString());
+                    //Send the serialized server moveto the client
+                    await Task.Run(() => sock.Send(serializedMove));
+                    Debug.Log("Move sent...");
 
-                    //Send the serialized initial board state to the client
-                    await Task.Run(() => sock.Send(serializedBoard));
-                    Debug.Log("Board state sent...");
+                    //Clear the server move
+                    ServerMove = null;
 
-                    //If the server board is terminal, end the connection
-                    if (ServerBoard.Winner != -1)
+                    //If the board is terminal, then break out of the main loop
+                    if (GameBoard.Winner != -1)
                     {
-                        Debug.Log("Game over! " + (ServerBoard.Winner == 0? "Draw!" : "Winner was player " + ServerBoard.Winner));
+                        Debug.Log("Game over! " + (GameBoard.Winner == 0? "Draw!" : "Winner was player " + GameBoard.Winner));
                         break;
                     }
-
-                    //Clear the server board
-                    ServerBoard = null;
                 }
             }
             catch (SocketException)
@@ -163,14 +205,22 @@ namespace MCTS.Visualisation.Play
 
             //Close the socket
             DisconnectClient();
+            disconnectCallback();
         }
 
+        /// <summary>
+        /// Called when this object is disposed <para/>
+        /// Releases unmanaged resources used by GameServer from memory
+        /// </summary>
         public void Dispose()
         {
             StopListening();
             DisconnectClient();
         }
 
+        /// <summary>
+        /// Closes the socket used to communicate with a client if there is one
+        /// </summary>
         public void DisconnectClient()
         {
             if (sock.Connected)
@@ -179,6 +229,9 @@ namespace MCTS.Visualisation.Play
             }
         }
 
+        /// <summary>
+        /// If the listener has been started, stop it
+        /// </summary>
         public void StopListening()
         {
             if (listener != null)
@@ -187,11 +240,9 @@ namespace MCTS.Visualisation.Play
             }
         }
 
-        public bool Listening
-        {
-            get { return listener != null; }
-        }
-
+        /// <summary>
+        /// A boolean flag indicating whether a client is currently connected to the server
+        /// </summary>
         public bool Connected
         {
             get { return sock == null? false : sock.Connected; }
