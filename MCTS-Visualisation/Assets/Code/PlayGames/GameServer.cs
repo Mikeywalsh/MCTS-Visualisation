@@ -14,6 +14,16 @@ namespace MCTS.Visualisation.Play
     class GameServer : IDisposable
     {
         /// <summary>
+        /// The address this server is being hosted on
+        /// </summary>
+        public IPAddress ServerAddress { get; private set; }
+
+        /// <summary>
+        /// The port this server is being hosted on
+        /// </summary>
+        public short ServerPort { get; private set; }
+
+        /// <summary>
         /// The <see cref="TcpListener"/> used to listen for incoming client connections <para/>
         /// This listener will stop listening after one connection, as only one client may be connected at a time
         /// </summary>
@@ -30,7 +40,12 @@ namespace MCTS.Visualisation.Play
         private byte[] buffer;
 
         /// <summary>
-        /// A callback which will be called whenever a move is recieved from the client
+        /// A callback which will be called when a client has connected to this server
+        /// </summary>
+        private Action connectedCallback;
+
+        /// <summary>
+        /// A callback which will be called whenever a move is received from the client
         /// </summary>
         private Action<Move> moveCallback;
 
@@ -55,14 +70,16 @@ namespace MCTS.Visualisation.Play
         /// </summary>
         /// <param name =board">The board reference that the server will use</param>
         /// <param name="port">The port which the <see cref="TcpListener"/> will run on</param>
+        /// <param name="cCallback">The callback method to call when a client has connected</param>
         /// <param name="mCallback">The callback method to call when a move is made</param>
         /// <param name="dCallback">The callback method to call when a client has disconnection</param>
-        public GameServer(Board board, short port, Action<Move> mCallback, Action dCallback)
+        public GameServer(Board board, short port, Action cCallback, Action<Move> mCallback, Action dCallback)
         {
             //Set the server board reference
             GameBoard = board;
 
             //Set the callbacks
+            connectedCallback = cCallback;
             moveCallback = mCallback;
             disconnectCallback = dCallback;
 
@@ -86,10 +103,14 @@ namespace MCTS.Visualisation.Play
                 throw new Exception("Could not find an IPv4 address for this machine. Are you connected to a network?");
             }
 
+            //Set the server IP and port
+            ServerAddress = localIP;
+            ServerPort = port;
+
             //Create a listener on the IPv4 address and specified port
             listener = new TcpListener(localIP, port);
 
-            //Initialise the buffer used to recieve information from the client
+            //Initialise the buffer used to communicate with the client
             buffer = new byte[1024];
 
             //Inform the user that the server has been started
@@ -132,6 +153,9 @@ namespace MCTS.Visualisation.Play
                 throw new Exception("Socket was not established correctly!");
             }
 
+            //Call the connected callback method
+            connectedCallback();
+
             Debug.Log("Connected to client with endpoint: " + sock.RemoteEndPoint);
 
             //Enter the update loop
@@ -150,15 +174,15 @@ namespace MCTS.Visualisation.Play
 
             try
             {
-                //Execute a main loop which waits for a client board to be received before sending a server response, until one of the boards is terminal
-                while (true)
+                //Execute a main loop which waits for a client move to be received before sending a server response, until the game board is terminal
+                while (GameBoard.Winner == -1)
                 {
                     Debug.Log("Waiting for move selection from client...");
 
                     //Wait until data is recieved from the client
                     await Task.Run(() => sock.Receive(buffer));
 
-                    //Deserialize the move to obtain a move object
+                    //Deserialize the data to obtain a move object
                     Move clientMove = (C4Move)Serializer.Deserialize(buffer);
 
                     //Output a string representation of the received move
@@ -167,13 +191,13 @@ namespace MCTS.Visualisation.Play
                     //Make the client move on the game board, if it is terminal then break out of the main loop
                     moveCallback(clientMove);
 
+                    //If the game board is now terminal, break out of the update loop
                     if (GameBoard.Winner != -1)
                     {
-                        Debug.Log("Game over! " + (GameBoard.Winner == 0 ? "Draw!" : "Winner was player " + GameBoard.Winner));
                         break;
                     }
 
-                    //Wait for the server machine to create a resultant board
+                    //Wait for the user to select a move
                     while(ServerMove == null)
                     {
                         await Task.Delay(500);
@@ -183,20 +207,14 @@ namespace MCTS.Visualisation.Play
                     byte[] serializedMove = Serializer.Serialize(ServerMove);
                     Debug.Log("Move serialized...\nLength:" + serializedMove.Length.ToString());
 
-                    //Send the serialized server moveto the client
+                    //Send the serialized server move to the client
                     await Task.Run(() => sock.Send(serializedMove));
                     Debug.Log("Move sent...");
 
                     //Clear the server move
                     ServerMove = null;
-
-                    //If the board is terminal, then break out of the main loop
-                    if (GameBoard.Winner != -1)
-                    {
-                        Debug.Log("Game over! " + (GameBoard.Winner == 0? "Draw!" : "Winner was player " + GameBoard.Winner));
-                        break;
-                    }
                 }
+                Debug.Log("Game over! " + (GameBoard.Winner == 0 ? "Draw!" : "Winner was player " + GameBoard.Winner));
             }
             catch (SocketException)
             {

@@ -7,6 +7,7 @@ using MCTS.Core.Games;
 using MCTS.Visualisation.Tree;
 using System.Timers;
 using System;
+using System.Net;
 
 namespace MCTS.Visualisation.Play
 {
@@ -23,32 +24,129 @@ namespace MCTS.Visualisation.Play
         private float timeLeft;
         private bool gameOver;
 
+        public GameObject BoardDisplay;
         public GameObject moveButtons;
+        public GameObject ResetButton;
+
+        public GameObject MenuPanel;
+        public GameObject ServerWaitingPanel;
+        public GameObject ClientWaitingPanel;
+
+        public Text ConnectingText;
+        public Text ServerWaitingText;
         public Text boardDisplayText;
         public Text winnerText;
         public Text aiTurnProgressText;
 
+        public InputField InputIPAddress;
+        public InputField InputPort;
+
+        public Button ConnectButton;
         private int currentIndex = 1;
         private DateTime startTime;
         private Timer stopTimer;
 
-        private bool client = false;
+        private PlayMode playMode;
 
         private bool waiting = false;
 
         private GameServer server;
+        private GameClient client;
 
         void Start()
         {
+            //Initialise LineDraw and enable background running
             LineDraw.Lines = new List<ColoredLine>();
             Application.runInBackground = true;
 
             //Initialise the game board and display
             board = new C4Board();
             boardDisplayText.text = board.ToRichString();
+        }
 
-            server = new GameServer(board, 8500, MakeMoveOnBoard, ResetButtonPressed);
+        public void StartLocal()
+        {
+            //Initialise LineDraw
+            LineDraw.Lines = new List<ColoredLine>();
+
+            //Initialise the correct UI elements
+            ResetButton.SetActive(true);
+            moveButtons.SetActive(true);
+            BoardDisplay.SetActive(true);
+
+            //Set the play mode
+            playMode = PlayMode.LOCAL;
+
+            //Hide the menu panel
+            MenuPanel.SetActive(false);
+        }
+
+        public void StartServer()
+        {
+            //Initialise LineDraw
+            LineDraw.Lines = new List<ColoredLine>();
+
+            //Initialise the game server
+            server = new GameServer(board, 8500, Connected, MakeMoveOnBoard, ResetButtonPressed);
             server.StartListening();
+
+            //Set the play mode
+            playMode = PlayMode.SERVER;
+
+            //Hide the menu panel and show the server waiting panel
+            MenuPanel.SetActive(false);
+            ServerWaitingPanel.SetActive(true);
+            ServerWaitingText.text = string.Format("Waiting for client connection...\nIP: {0}\nPort: {1}", server.ServerAddress, server.ServerPort);
+        }
+
+        public void StartClient()
+        {
+            //Initialise the game client
+            client = new GameClient(board, Connected, ClientConnectionFailed, MakeMoveOnBoard, ResetButtonPressed);
+
+            //Set the play mode
+            playMode = PlayMode.CLIENT;
+
+            //Hide the menu panel and show the client waiting panel
+            MenuPanel.SetActive(false);
+            ClientWaitingPanel.SetActive(true);
+        }
+
+        public void AttemptClientConnection()
+        {
+            //Check the validity of the input IP and port
+            IPAddress serverIP;
+            short serverPort;
+
+            if (IPAddress.TryParse(InputIPAddress.text, out serverIP) && short.TryParse(InputPort.text, out serverPort))
+            {
+                //Disable the connect button so that the user has to wait while a connection is attempted
+                ConnectButton.gameObject.SetActive(false);
+                ConnectingText.gameObject.SetActive(true);
+
+                //Attempt a connection with the input IP and port
+                client.AttemptConnect(IPAddress.Parse(InputIPAddress.text), short.Parse(InputPort.text));
+            }
+        }
+
+        private void ClientConnectionFailed()
+        {
+            //Re-enable the connect button to allow the user to try to connect again
+            Debug.Log("Could not connect to server, please try again...");
+            ConnectButton.gameObject.SetActive(true);
+            ConnectingText.gameObject.SetActive(false);
+        }
+
+        private void Connected()
+        {
+            ServerWaitingPanel.SetActive(false);
+            ClientWaitingPanel.SetActive(false);
+            BoardDisplay.SetActive(true);
+
+            if(playMode == PlayMode.CLIENT)
+            {
+                moveButtons.SetActive(true);
+            }
         }
 
         void Update()
@@ -58,11 +156,13 @@ namespace MCTS.Visualisation.Play
                 //While the MCTS is still running, display progress information about the time remaining and the amounts of nodes created to the user
                 if (!mcts.Finished)
                 {
+                    //Display the amount of nodes created so far if the timer is still running
                     if (stopTimer != null)
                     {
                         aiTurnProgressText.text = mcts.UniqueNodes + " nodes       " + TimeLeft.Seconds.ToString() + "." + TimeLeft.Milliseconds.ToString("000") + "s/" + timeToRunFor + "s";
                     }
 
+                    //Add new nodes to the LineDraw Lines array, so that they can be represented graphically
                     for (int targetIndex = mcts.AllNodes.Count; currentIndex < targetIndex & mcts.AllNodes.Count > 1; currentIndex++)
                     {
                         NodeObject currentNode = mcts.AllNodes[currentIndex];
@@ -96,6 +196,9 @@ namespace MCTS.Visualisation.Play
             }
         }
 
+        /// <summary>
+        /// Starts the AI turn, creating an mcts instance and running it
+        /// </summary>
         public void StartAITurn()
         {
             //Initialise MCTS on the given game board
@@ -105,6 +208,10 @@ namespace MCTS.Visualisation.Play
             RunMCTS();
         }
 
+        /// <summary>
+        /// Called when the <see cref="stopTimer"/> timer for the AI has ran out <para/>
+        /// End the turn and stop and dispose of the timer
+        /// </summary>
         private void EndAITurn(object sender, ElapsedEventArgs e)
         {
             mcts.Finish();
@@ -136,13 +243,14 @@ namespace MCTS.Visualisation.Play
             //Get the move made on the best child and apply it to the main game board
             MakeMoveOnBoard((C4Move)bestChild.GameBoard.LastMoveMade);
 
-            if(server.Connected)
+            //If in server mode, pass the move to the server so that it can be serialized and sent to the client
+            if(playMode == PlayMode.SERVER && server.Connected)
             {
                 server.ServerMove = bestChild.GameBoard.LastMoveMade;
-            }
+            }            
 
             mcts = null;
-            if (!gameOver)
+            if (!gameOver && playMode == PlayMode.LOCAL)
             {
                 moveButtons.SetActive(true);
             }
@@ -151,10 +259,18 @@ namespace MCTS.Visualisation.Play
         /// <summary>
         /// Called when a user is playing the game using the provided on-screen buttons
         /// </summary>
-        /// <param name="xPos"> The x position to make the move in</param>
+        /// <param name="xPos">The x position to make the move in</param>
         public void MakeMoveOnBoard(int xPos)
         {
-            MakeMoveOnBoard(new C4Move(xPos));
+            Move toMake = new C4Move(xPos);
+
+            MakeMoveOnBoard(toMake);
+
+            //If in client mode, pass the move to the client so that it can be serialized and sent to the server
+            if (playMode == PlayMode.CLIENT && client.Connected)
+            {
+                client.ClientMove = toMake;
+            }
         }
 
         /// <summary>
@@ -209,5 +325,12 @@ namespace MCTS.Visualisation.Play
         {
             SceneController.ResetCurrentScene();
         }
+    }
+
+    enum PlayMode
+    {
+        LOCAL = 0,
+        SERVER,
+        CLIENT
     }
 }
