@@ -101,7 +101,7 @@ namespace MCTS.Visualisation.Play
                 await Task.Run(() => client.Connect(serverIP, serverPort));
                 Debug.Log("Connection Established...");
             }
-            catch(SocketException)
+            catch (SocketException)
             {
                 failedConnectionCallback();
                 return;
@@ -122,7 +122,7 @@ namespace MCTS.Visualisation.Play
         /// </summary>
         async private void UpdateLoop()
         {
-            if(!client.Connected)
+            if (!client.Connected)
             {
                 throw new Exception("Not connected to a client. Call StartListening first...");
             }
@@ -133,7 +133,7 @@ namespace MCTS.Visualisation.Play
                 while (GameBoard.Winner == -1)
                 {
                     //Wait for the user to select a move
-                    while(ClientMove == null)
+                    while (ClientMove == null)
                     {
                         await Task.Delay(500);
                     }
@@ -158,7 +158,7 @@ namespace MCTS.Visualisation.Play
                     //If the board is terminal, then break out of the main loop
                     if (GameBoard.Winner != -1)
                     {
-                        Debug.Log("Game over! " + (GameBoard.Winner == 0? "Draw!" : "Winner was player " + GameBoard.Winner));
+                        Debug.Log("Game over! " + (GameBoard.Winner == 0 ? "Draw!" : "Winner was player " + GameBoard.Winner));
                         break;
                     }
 
@@ -174,7 +174,7 @@ namespace MCTS.Visualisation.Play
                     Debug.Log("Server move received:\n" + serverMove.ToString());
 
                     //Make the server move on the game board, if it is terminal then break out of the main loop
-                    moveCallback(serverMove);                   
+                    moveCallback(serverMove);
 
                 }
                 Debug.Log("Game over! " + (GameBoard.Winner == 0 ? "Draw!" : "Winner was player " + GameBoard.Winner));
@@ -197,7 +197,12 @@ namespace MCTS.Visualisation.Play
         {
             Disconnect();
             client.Dispose();
-            stream.Dispose();
+
+            if (stream != null)
+            {
+                stream.Dispose();
+
+            }
         }
 
         /// <summary>
