@@ -1,7 +1,5 @@
-﻿using MCTS.Core.Games;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace MCTS.Core
 {
