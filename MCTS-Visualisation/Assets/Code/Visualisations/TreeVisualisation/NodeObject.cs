@@ -19,9 +19,14 @@ namespace MCTS.Visualisation.Tree
         public int ChildPositionsSet { get; private set; }
 
         /// <summary>
-        /// The angle allowance this node has, used when visualising as a 2D disk
+        /// The angle allowance this node has, used when visualising as a 2D Disk
         /// </summary>
         public float ArcAngle { get; private set; }
+
+        /// <summary>
+        /// The radius this nodes children are bounded by, used when visualising as a 3D Cone Tree
+        /// </summary>
+        public float Radius { get; private set; }
 
         /// <summary>
         /// Gives this <see cref=" NodeObject"/> a position in world space depending on its position in the game tree
@@ -107,6 +112,35 @@ namespace MCTS.Visualisation.Tree
                     Position = Position.RotateAround(parentObject.Position, Vector3.up, -(parentObject.ArcAngle / 2) + (parentObject.ChildPositionsSet * (parentObject.ArcAngle / parentObject.Children.Count)));
                 }
                 ArcAngle = parentObject.ArcAngle / parentObject.Children.Count;
+                #endregion
+            }
+            else if(visualisationType == VisualisationType.Cone)
+            {
+                #region Cone node placement
+                //Root node, automatically starts at origin, does not require additional initialisation
+                if (Depth == 0)
+                {
+                    Radius = 1000;
+                    return;
+                }
+
+                Position = parentObject.Position;
+
+                if (parentObject.Children.Count > 1)
+                {
+                    Position += new Vector3(parentObject.Radius, 0, 0);
+                    Position = Position.RotateAround(parentObject.Position, Vector3.up, parentObject.ChildPositionsSet * (360 / parentObject.Children.Count));
+
+                    Vector3 a = parentObject.Position + new Vector3(parentObject.Radius, 0, 0);
+                    Vector3 b = a.RotateAround(parentObject.Position, Vector3.up, 360 / parentObject.Children.Count);
+                    Radius = (a - b).magnitude / 2;
+                }
+                else
+                {
+                    Radius = parentObject.Radius;
+                }
+
+                Position += new Vector3(0, -150, 0);
                 #endregion
             }
             else

@@ -101,6 +101,9 @@ namespace MCTS.Visualisation.Tree
                     case 1:
                         visualisationType = VisualisationType.Disk2D;
                         break;
+                    case 2:
+                        visualisationType = VisualisationType.Cone;
+                        break;
                     default:
                         throw new System.Exception("Unknown visualisation type: encountered");
                 }
