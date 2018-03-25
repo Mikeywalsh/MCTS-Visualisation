@@ -77,21 +77,21 @@ namespace MCTS.Visualisation.Hashing
             if (currentHighlighted != null && NextNode() && currentHighlighted.NodeCount > currentSelectedNodeIndex + 1)
             {
                 currentSelectedNodeIndex++;
-                HashUIController.DisplayNodeInfo(currentHighlighted.GetNode(currentSelectedNodeIndex), currentSelectedNodeIndex);
+                HashUIController.DisplayNodeInfo(currentHighlighted.GetNode(currentSelectedNodeIndex), currentSelectedNodeIndex, currentHighlighted.NodeCount);
             }
 
             if (currentHighlighted != null && PreviousNode() && currentSelectedNodeIndex > 0)
             {
                 currentSelectedNodeIndex--;
-                HashUIController.DisplayNodeInfo(currentHighlighted.GetNode(currentSelectedNodeIndex), currentSelectedNodeIndex);
+                HashUIController.DisplayNodeInfo(currentHighlighted.GetNode(currentSelectedNodeIndex), currentSelectedNodeIndex, currentHighlighted.NodeCount);
             }
 
             //See if there are any Hashnodes in front of the camera
             RaycastHit hit;
-            Ray ray = new Ray(transform.position, transform.forward);
+            Ray ray = GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
 
-            //If the camera is looking at a HashNode object, highlight it
-            if (Physics.Raycast(ray, out hit, 30) && hit.transform.GetComponent<HashNode>() != null)
+            //If the mouse is hovered over a HashNode object, highlight it
+            if (Physics.Raycast(ray, out hit) && hit.transform.GetComponent<HashNode>() != null)
             {
                 //Get a reference to the HashNode that was hit
                 HashNode hitNode = hit.transform.GetComponent<HashNode>();
@@ -112,9 +112,9 @@ namespace MCTS.Visualisation.Hashing
                     hitNode.GetComponent<Renderer>().material.color = highlightedColor;
 
                     //Display information about the current node
-                    HashUIController.DisplayBoardInfo(hitNode.BoardState, hitNode.NodeCount);
+                    HashUIController.DisplayBoardInfo(hitNode.BoardState);
                     currentSelectedNodeIndex = 0;
-                    HashUIController.DisplayNodeInfo(hitNode.GetNode(currentSelectedNodeIndex), currentSelectedNodeIndex);
+                    HashUIController.DisplayNodeInfo(hitNode.GetNode(currentSelectedNodeIndex), currentSelectedNodeIndex, hitNode.NodeCount);
                 }
             }
             else if (currentHighlighted != null)

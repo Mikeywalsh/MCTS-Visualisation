@@ -6,30 +6,48 @@ using MCTS.Core.Games;
 namespace MCTS.Visualisation.Hashing
 {
     /// <summary>
-    /// Main controller for the hashing visualisation <para/>
+    /// Main controller singleton for the hashing visualisation <para/>
     /// In this visualisation, each board state is given its own position in world space and <see cref="LineRenderer"/> objects are used to create links between the nodes
     /// </summary>
     public class HashController : MonoBehaviour
     {
         /// <summary>
+        /// Flag indicating how the board is displayed to the user <para/>
+        /// True if displaying a board model <para/>
+        /// False if displaying a rich text board display
+        /// </summary>
+        public bool displayBoardModel;
+
+        /// <summary>
+        /// The board model display being used for this visualisation <para/>
+        /// Null if the <see cref="displayBoardModel"/> flag is set to false
+        /// </summary>
+        public BoardModelController boardModelController;
+
+        /// <summary>
+        /// Singleton reference to the active HashController
+        /// </summary>
+        public static HashController Controller;
+
+        /// <summary>
         /// A dictionary that maps unique positions in world space to their corresponding node gameobjects
         /// </summary>
-        public Dictionary<Vector3, GameObject> nodePositionMap = new Dictionary<Vector3, GameObject>();
+        private Dictionary<Vector3, GameObject> nodePositionMap = new Dictionary<Vector3, GameObject>();
 
         /// <summary>
         /// A dictionary that maps unique nodes to their corresponding node gameobjects
         /// </summary>
-        public Dictionary<Node, GameObject> nodeObjectMap = new Dictionary<Node, GameObject>();
+        private Dictionary<Node, GameObject> nodeObjectMap = new Dictionary<Node, GameObject>();
 
         /// <summary>
         /// A list of all hash nodes in the current scene
         /// </summary>
-        public List<HashNode> AllNodes = new List<HashNode>();
+        private List<HashNode> AllNodes = new List<HashNode>();
 
         /// <summary>
         /// The MCTS used to provide node data
         /// </summary>
-        public TreeSearch<Node> mcts;
+        private TreeSearch<Node> mcts;
 
         /// <summary>
         /// An array of evenly distributed points on the surface of a sphere, used for position calculation of <see cref="HashNode"/>'s <para/>
@@ -65,6 +83,9 @@ namespace MCTS.Visualisation.Hashing
         public void Start()
         {
             Application.runInBackground = true;
+
+            //Set the singleton reference
+            Controller = this;
         }
 
         /// <summary>
@@ -150,12 +171,21 @@ namespace MCTS.Visualisation.Hashing
             {
                 case 0:
                     board = new TTTBoard();
+                    displayBoardModel = false;
                     break;
                 case 1:
                     board = new C4Board();
+                    displayBoardModel = true;
+
+                    //Create a C4 Board GameObject and obtain a reference to its BoardModelController Component
+                    GameObject boardModel = Instantiate(Resources.Load("C4 Board", typeof(GameObject))) as GameObject;
+                    boardModelController = boardModel.GetComponent<C4BoardModelController>();
+                    boardModelController.Initialise();
+                    boardModelController.SetBoard(new C4Board());
                     break;
                 case 2:
                     board = new OthelloBoard();
+                    displayBoardModel = false;
                     break;
                 default:
                     throw new System.Exception("Unknown game type index has been input");
@@ -242,7 +272,7 @@ namespace MCTS.Visualisation.Hashing
                 AllNodes.Add(newNodeObject.GetComponent<HashNode>());
             }
 
-            //Initialise the newest hash node and add a mcts Node to ite
+            //Initialise the newest hash node and add a mcts Node to it
             nodeObjectMap[newestNode].GetComponent<HashNode>().Initialise(newNodePosition);
             nodeObjectMap[newestNode].GetComponent<HashNode>().AddNode(nodeObjectMap[newestNode.Parent], newestNode, !fromMenu);
 

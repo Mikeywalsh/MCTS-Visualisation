@@ -300,6 +300,9 @@ namespace MCTS.Visualisation.Hashing
             //Add a line renderer to the new child object and obtain a reference to it
             LineRenderer newLine = newChildObject.AddComponent<LineRenderer>();
 
+            //Set layer to ignore raycast, which has a value of 2
+            newLine.gameObject.layer = 2;
+
             //Initialise the line renderer starting values
             newLine.startWidth = MINIMUM_LINE_THICKNESS;
             newLine.endWidth = MINIMUM_LINE_THICKNESS;

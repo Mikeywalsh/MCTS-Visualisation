@@ -37,9 +37,16 @@ namespace MCTS.Visualisation.Hashing
         public Text TotalStepsText;
 
         /// <summary>
-        /// The panel which shows information about the current board
+        /// The panel which displays the current board as rich text <para/>
+        /// Used if the displayBoardModel flag of <see cref="HashController"/> is set to false
         /// </summary>
-        public GameObject BoardInfoPanel;
+        public GameObject BoardInfoPanelText;
+
+        /// <summary>
+        /// The panel which displays the current board as a 3D model <para/>
+        /// Used if the displayBoardModel flag of <see cref="HashController"/> is set to true
+        /// </summary>
+        public GameObject BoardInfoPanelModel;
 
         /// <summary>
         /// The panel which shows information about the current node
@@ -157,12 +164,18 @@ namespace MCTS.Visualisation.Hashing
         /// Shows the board info panel and displays information about the current board and the amount of nodes which share it
         /// </summary>
         /// <param name="board">The board to display information about</param>
-        /// <param name="nodeCount">The amount of nodes which share the board state</param>
-        public static void DisplayBoardInfo(Board board, int nodeCount)
+        public static void DisplayBoardInfo(Board board)
         {
-            controller.NodeInfoPanel.SetActive(true);
-
-            controller.BoardInfoText.text = board.ToRichString() + "\n\n <color=ffffff>Nodes: " + nodeCount + "</color>";
+            if (HashController.Controller.displayBoardModel)
+            {
+                controller.BoardInfoPanelModel.SetActive(true);
+                HashController.Controller.boardModelController.SetBoard((GridBasedBoard)board);
+            }
+            else
+            {
+                controller.BoardInfoPanelText.SetActive(true);
+                controller.BoardInfoText.text = board.ToRichString();
+            }
         }
 
         /// <summary>
@@ -171,7 +184,8 @@ namespace MCTS.Visualisation.Hashing
         public static void HideBoardInfo()
         {
             controller.NodeInfoPanel.SetActive(false);
-            controller.BoardInfoPanel.SetActive(false);
+            controller.BoardInfoPanelText.SetActive(false);
+            controller.BoardInfoPanelModel.SetActive(false);
         }
 
         /// <summary>
@@ -179,12 +193,14 @@ namespace MCTS.Visualisation.Hashing
         /// </summary>
         /// <param name="n">The node to display information about</param>
         /// <param name="index">The index of the passed in node in relation to the current hashnode object</param>
-        public static void DisplayNodeInfo(Node n, int index)
+        /// <param name="nodeCount">The amount of nodes contained in the currently selected <see cref="HashNode"/></param>
+        public static void DisplayNodeInfo(Node n, int index, int nodeCount)
         {
             //Show information about the current node
-            controller.BoardInfoPanel.SetActive(true);
+            controller.NodeInfoPanel.SetActive(true);
 
-            controller.NodeInfoText.text = "Node: " + (index + 1) +
+            controller.NodeInfoText.text =  "Nodes: " + nodeCount + 
+                                            "\nCurrent Node: " + (index + 1) +
                                             "\nCurrent Node Depth: " + n.Depth +
                                             "\nCurrent Player: " + n.GameBoard.CurrentPlayer +
                                             "\nTotal Score: " + n.TotalScore +
