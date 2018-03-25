@@ -197,6 +197,7 @@ namespace MCTS.Visualisation.Hashing
             Vector3 rootNodePosition = BoardToPosition(mcts.Root.GameBoard);
             GameObject rootNode = Instantiate(Resources.Load("HashNode"), rootNodePosition, Quaternion.identity) as GameObject;
             rootNode.GetComponent<HashNode>().AddNode(null, mcts.Root, false);
+            rootNode.GetComponent<HashNode>().Initialise(rootNodePosition);
 
             //Add the root node to the position and object map
             nodePositionMap.Add(rootNodePosition, rootNode);

@@ -105,7 +105,7 @@ namespace MCTS.Visualisation.Hashing
                         currentHighlighted.SetColor();
                     }
 
-                    //Make the node being looked at the current highlighted node and set its color to yellow
+                    //Make the node being hovered over the current highlighted node and set its color to yellow
                     currentHighlighted = hitNode;
                     Color highlightedColor = Color.yellow;
                     highlightedColor.a = currentHighlighted.Visibility;
