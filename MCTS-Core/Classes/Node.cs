@@ -172,7 +172,7 @@ namespace MCTS.Core
         /// </summary>
         public float AverageScore
         {
-            get { return TotalScore / Visits; }
+            get { return (Visits == 0? 0 : TotalScore / Visits); }
         }
     }
 }
