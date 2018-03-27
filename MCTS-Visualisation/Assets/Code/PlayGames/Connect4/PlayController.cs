@@ -34,9 +34,10 @@ namespace MCTS.Visualisation.Play
 
         public Text ConnectingText;
         public Text ServerWaitingText;
-        public Text boardDisplayText;
         public Text winnerText;
         public Text aiTurnProgressText;
+
+        public C4BoardModelController modelController;
 
         public InputField InputIPAddress;
         public InputField InputPort;
@@ -60,7 +61,8 @@ namespace MCTS.Visualisation.Play
 
             //Initialise the game board and display
             board = new C4Board();
-            boardDisplayText.text = board.ToRichString();
+            modelController.Initialise();
+            modelController.SetBoard(board);
         }
 
         public void StartLocal()
@@ -292,7 +294,7 @@ namespace MCTS.Visualisation.Play
             }
 
             board.MakeMove(move);
-            boardDisplayText.text = board.ToRichString();
+            modelController.SetBoard(board);
 
             if (board.Winner != -1)
             {
