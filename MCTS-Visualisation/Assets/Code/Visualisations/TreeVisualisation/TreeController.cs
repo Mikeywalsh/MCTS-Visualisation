@@ -14,6 +14,24 @@ namespace MCTS.Visualisation.Tree
     public class TreeController : MonoBehaviour
     {
         /// <summary>
+        /// Flag indicating how the board is displayed to the user <para/>
+        /// True if displaying a board model <para/>
+        /// False if displaying a rich text board display
+        /// </summary>
+        public bool displayBoardModel;
+
+        /// <summary>
+        /// The board model display being used for this visualisation <para/>
+        /// Null if the <see cref="displayBoardModel"/> flag is set to false
+        /// </summary>
+        public BoardModelController boardModelController;
+
+        /// <summary>
+        /// Singleton reference to the active TreeController
+        /// </summary>
+        public static TreeController Controller;
+
+        /// <summary>
         /// The MCTS instance used to create the game tree <para/>
         /// Should be ran on another thread to avoid freezing of the application
         /// </summary>
@@ -61,6 +79,9 @@ namespace MCTS.Visualisation.Tree
         void Start()
         {
             Application.runInBackground = true;
+
+            //Set the singleton reference
+            Controller = this;
         }
 
         /// <summary>
@@ -80,12 +101,20 @@ namespace MCTS.Visualisation.Tree
                 switch (TreeUIController.GetGameChoice)
                 {
                     case 0:
+                        displayBoardModel = false;
                         board = new TTTBoard();
                         break;
                     case 1:
+                        displayBoardModel = true;
                         board = new C4Board();
+
+                        //Create a C4 Board GameObject and obtain a reference to its BoardModelController Component
+                        GameObject boardModel = Instantiate(Resources.Load("C4 Board", typeof(GameObject))) as GameObject;
+                        boardModelController = boardModel.GetComponent<BoardModelController>();
+                        boardModelController.Initialise();
                         break;
                     case 2:
+                        displayBoardModel = false;
                         board = new OthelloBoard();
                         break;
                     default:
@@ -202,7 +231,7 @@ namespace MCTS.Visualisation.Tree
         /// <summary>
         /// Runs MCTS until completion asyncronously and then disables the stop button
         /// </summary>
-        /// <param name="m">The MCTS instance to run</param>
+        /// <param name="mcts">The MCTS instance to run</param>
         private static async void RunMCTS(TreeSearch<NodeObject> mcts)
         {
             await Task.Factory.StartNew(() => { while (!mcts.Finished) { mcts.Step(); } }, TaskCreationOptions.LongRunning);

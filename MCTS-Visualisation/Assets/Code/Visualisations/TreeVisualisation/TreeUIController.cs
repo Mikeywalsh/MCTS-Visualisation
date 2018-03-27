@@ -62,6 +62,12 @@ namespace MCTS.Visualisation.Tree
         public Text CurrentNodeText;
 
         /// <summary>
+        /// The image being used to represent the current board state <para/>
+        /// The image will be inactive if the displayBoardModel flag in <see cref="TreeController"/> is set to false
+        /// </summary>
+        public GameObject BoardModelDisplay;
+
+        /// <summary>
         /// TODO - Dynamic button creation with a Scroll View instead of a predetermined amount of buttons <para/>
         /// The transform of the gameobject that 'holds' the different child select buttons <para/>
         /// Each child of this transform is a buttom for selecting a child
@@ -168,6 +174,9 @@ namespace MCTS.Visualisation.Tree
         /// <param name="n">The node object to display the information of</param>
         public static void DisplayNodeInfo(Node n)
         {
+            //Display an image of the board state the current node represents if the displayBoardModel flag is set on the TreeController
+            uiController.BoardModelDisplay.SetActive(TreeController.Controller.displayBoardModel);
+
             //Show information about the current node
             uiController.CurrentNodeText.text = "Current Node Depth: " + n.Depth +
                                                 "\nCurrent Player: " + n.GameBoard.CurrentPlayer +
@@ -175,7 +184,7 @@ namespace MCTS.Visualisation.Tree
                                                 "\nAverage Score: " + n.AverageScore +
                                                 "\nVisits: " + n.Visits +
                                                 "\nContents: " +
-                                                n.GameBoard.ToRichString();
+                                                (TreeController.Controller.displayBoardModel ? "" : n.GameBoard.ToRichString());
 
             //Get the best child node of this node, if it has children nodes that have been simulated
             Node bestChild = n.GetBestChild();

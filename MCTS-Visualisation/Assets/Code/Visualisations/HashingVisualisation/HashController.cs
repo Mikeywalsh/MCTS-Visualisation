@@ -179,9 +179,8 @@ namespace MCTS.Visualisation.Hashing
 
                     //Create a C4 Board GameObject and obtain a reference to its BoardModelController Component
                     GameObject boardModel = Instantiate(Resources.Load("C4 Board", typeof(GameObject))) as GameObject;
-                    boardModelController = boardModel.GetComponent<C4BoardModelController>();
+                    boardModelController = boardModel.GetComponent<BoardModelController>();
                     boardModelController.Initialise();
-                    boardModelController.SetBoard(new C4Board());
                     break;
                 case 2:
                     board = new OthelloBoard();
