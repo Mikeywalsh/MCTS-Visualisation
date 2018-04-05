@@ -24,12 +24,9 @@ namespace MCTS.Visualisation
                     board[y, x].SetActive(false);
                 }
             }
-
-            C4Board hmm = new C4Board();
-            hmm.MakeMove(new C4Move(3));
-            hmm.MakeMove(new C4Move(3));
-            hmm.MakeMove(new C4Move(4));
-            SetBoard(hmm);
+            
+            //Set the board to represent a new Connect 4 game state
+            SetBoard(new C4Board());
         }
 
         public override void SetBoard(GridBasedBoard boardToSet)

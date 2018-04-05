@@ -177,6 +177,11 @@ namespace MCTS.Visualisation.Tree
             //Display an image of the board state the current node represents if the displayBoardModel flag is set on the TreeController
             uiController.BoardModelDisplay.SetActive(TreeController.Controller.displayBoardModel);
 
+            if(TreeController.Controller.displayBoardModel)
+            {
+                TreeController.Controller.boardModelController.SetBoard((GridBasedBoard)n.GameBoard);
+            }
+
             //Show information about the current node
             uiController.CurrentNodeText.text = "Current Node Depth: " + n.Depth +
                                                 "\nCurrent Player: " + n.GameBoard.CurrentPlayer +
