@@ -9,10 +9,10 @@ Screenshots of various visualisation of Tic Tac Toe, Connect 4 and Othello can b
 ![Alt text](Screenshots/3DConnect4.png?raw=true "3D Connect 4 Visualisation Screenshot")
 
 ## Hashing Connect 4 (1)
-![Alt text](Screenshots/HASHING_1.png?raw=true "Hashing Connect 4 Visualisation Screenshot 1")
+![Alt text](Screenshots/C4_HASHING_1.png?raw=true "Hashing Connect 4 Visualisation Screenshot 1")
 
 ## Hashing Connect 4 (2)
-![Alt text](Screenshots/HASHING_2.png?raw=true "Hashing Connect 4 Visualisation Screenshot 2")
+![Alt text](Screenshots/C4_HASHING_2.png?raw=true "Hashing Connect 4 Visualisation Screenshot 2")
 
 ## 3D Othello
 ![Alt text](Screenshots/3DOthello.png?raw=true "3D Othello Visualisation Screenshot")
