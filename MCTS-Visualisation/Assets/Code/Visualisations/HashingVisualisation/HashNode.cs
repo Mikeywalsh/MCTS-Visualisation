@@ -117,8 +117,8 @@ namespace MCTS.Visualisation.Hashing
             //Initialise the visibility of this node to be opaque
             SetVisibility(1);
 
-            //Set the AudioSource reference to the attached AudioSource script
-            source = GetComponent<AudioSource>();
+			//Set the AudioSource reference to the attached AudioSource script
+			source = AudioSourceManager.GetNextSource(origin);
         }
 
         /// <summary>
@@ -185,7 +185,9 @@ namespace MCTS.Visualisation.Hashing
         private IEnumerator AudioFinished(float time)
         {
             yield return new WaitForSeconds(time);
-            Destroy(source);
+
+			//Ensure the current clip is stopped
+			source.Stop();
         }
 
         /// <summary>

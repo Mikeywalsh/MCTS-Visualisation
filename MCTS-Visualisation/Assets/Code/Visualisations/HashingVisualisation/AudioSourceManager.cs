@@ -3,12 +3,26 @@ using UnityEngine;
 
 public class AudioSourceManager : MonoBehaviour {
 
+	private static AudioSourceManager manager;
+	private static AudioClip cNote;
+
 	private Queue<AudioSource> sources;
 
 	private const int MAX_SOURCES = 6;
 
-	private void Start () {
+	private void Awake () {
+		//Check to see if the singleton reference is already set
+		if(manager != null)
+		{
+			throw new System.Exception("Singleton reference for AudioSourceManager already exists...");
+		}
+
+		//Set the singleton reference
+		manager = this;
+
+		//Initialise the sources queue and load CNote from Resources
 		sources = new Queue<AudioSource>();
+		cNote = Resources.Load<AudioClip>("CNote");
 
 		for(int i = 0; i < MAX_SOURCES; i++)
 		{
@@ -21,6 +35,7 @@ public class AudioSourceManager : MonoBehaviour {
 			AudioSource newSource = newSourceObject.AddComponent<AudioSource>();
 
 			//Set properties of new audiosource
+			newSource.clip = cNote;
 			newSource.priority = 128;
 			newSource.volume = 0.3f;
 			newSource.pitch = 1;
@@ -38,14 +53,14 @@ public class AudioSourceManager : MonoBehaviour {
 		}
 	}
 	
-	public AudioSource GetNextSource(Vector3 positon)
+	public static AudioSource GetNextSource(Vector3 positon)
 	{
 		//Get the next source from the front of the queue and set its position
-		AudioSource nextSource = sources.Dequeue();
+		AudioSource nextSource = manager.sources.Dequeue();
 		nextSource.transform.position = positon;
 
 		//Add the source to the back of the queue and return a reference to it
-		sources.Enqueue(nextSource);
+		manager.sources.Enqueue(nextSource);
 		return nextSource;
 	}
 }
