@@ -195,7 +195,8 @@ namespace MCTS.Visualisation.Hashing
             //Calculate the position of the root node and add an object for it to the scene
             Vector3 rootNodePosition = BoardToPosition(mcts.Root.GameBoard);
             GameObject rootNode = Instantiate(Resources.Load("HashNode"), rootNodePosition, Quaternion.identity) as GameObject;
-            rootNode.GetComponent<HashNode>().AddNode(null, mcts.Root, false);
+			rootNode.transform.parent = transform;
+			rootNode.GetComponent<HashNode>().AddNode(null, mcts.Root, false);
             rootNode.GetComponent<HashNode>().Initialise(rootNodePosition);
 
             //Add the root node to the position and object map
@@ -262,6 +263,9 @@ namespace MCTS.Visualisation.Hashing
             {
                 //Instantiate the new node object at the hashed position
                 GameObject newNodeObject = Instantiate(Resources.Load("HashNode"), fromMenu ? newNodePosition : nodeObjectMap[newestNode.Parent].transform.position, Quaternion.identity) as GameObject;
+
+				//Set the parent of the new node object to be this controller object
+				newNodeObject.transform.parent = transform;
 
                 //Map the newest node to the new node object
                 nodeObjectMap.Add(newestNode, newNodeObject);
