@@ -103,7 +103,7 @@ namespace MCTS.Visualisation.Play
         public void StartClient()
         {
             //Initialise the game client
-            client = new GameClient(board, Connected, ClientConnectionFailed, MakeMoveOnBoard, ResetButtonPressed);
+            client = new GameClient(Connected, ClientConnectionFailed, MakeMoveOnBoard, ResetButtonPressed);
 
             //Set the play mode
             playMode = PlayMode.CLIENT;

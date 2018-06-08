@@ -68,13 +68,21 @@ namespace MCTS.Visualisation.Festival
 		public Button ConnectButton;
 
 		/// <summary>
+		/// Reference to the restart game button
+		/// </summary>
+		public Button RestartGameButton;
+
+		/// <summary>
 		/// Reference to the connecting text
 		/// </summary>
 		public Text ConnectingText;
 
 		void Start() {
+			//Create a new game board
+			board = new C4Board();
+
 			//Initialise the game client
-			client = new GameClient(board, Connected, ClientConnectionFailed, MakeMoveOnBoard, ResetScene);			
+			client = new GameClient(Connected, ClientConnectionFailed, MakeMoveOnBoard, ResetScene);			
 
 			//Show the client waiting panel and hide the gameboard and turn text
 			ClientWaitingPanel.SetActive(true);
@@ -84,13 +92,12 @@ namespace MCTS.Visualisation.Festival
 
 		void Update()
 		{
-
 			//Check to see if the user is hovering over a column
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-			//If the mouse is hovered over a column
-			if (Physics.Raycast(ray, out hit) && hit.transform.GetComponent<C4BoardColumn>() != null)
+			//If the mouse is hovered over a column and it is the local players turn and the current game is not over
+			if (Physics.Raycast(ray, out hit) && hit.transform.GetComponent<C4BoardColumn>() != null && board.CurrentPlayer == 1 && board.Winner == -1)
 			{
 				//Get a reference to the column that was hit and set the current selected column ID
 				C4BoardColumn hitColumn = hit.transform.GetComponent<C4BoardColumn>();
@@ -116,6 +123,10 @@ namespace MCTS.Visualisation.Festival
 			//If it is the local users turn, and they have selected a valid column and clicked, then make a move
 			if(Input.GetMouseButtonDown(0) && selectedColumnID != -1 && validMove)
 			{
+				//Make the move on the client object so that it can be sent to the server
+				client.ClientMove = new C4Move(selectedColumnID);
+
+				//Make the move locally
 				MakeMoveOnBoard(selectedColumnID);
 			}
 		}
@@ -128,7 +139,7 @@ namespace MCTS.Visualisation.Festival
 		private void MakeMoveOnBoard(int col)
 		{
 			//Make a move on the current board
-			board.MakeMove(new C4Move(selectedColumnID));
+			board.MakeMove(new C4Move(col));
 
 			//Update the board model
 			BoardController.SetBoard(board);
@@ -156,6 +167,12 @@ namespace MCTS.Visualisation.Festival
 				{
 					TurnText.text = "AI's Turn...";
 				}
+			}
+
+			//Show the reset game button if the game is over
+			if(board.Winner != -1)
+			{
+				RestartGameButton.gameObject.SetActive(true);
 			}
 		}
 
@@ -195,11 +212,8 @@ namespace MCTS.Visualisation.Festival
 			//Hide the waiting panel
 			ClientWaitingPanel.SetActive(false);
 
-			//Create a new game board
-			board = new C4Board();
-
-			//Set the initial board state
-			BoardController.Initialise();
+			//Start a new game
+			RestartGame();
 
 			//Show the gameboard and turn text
 			BoardController.gameObject.SetActive(true);
@@ -208,8 +222,26 @@ namespace MCTS.Visualisation.Festival
 
 		private void ResetScene()
 		{
-			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+			SceneManager.LoadScene(0);
 		}
 		#endregion
+
+		public void RestartGame()
+		{
+			//Create a new game board
+			board = new C4Board();
+
+			//Set the initial board state
+			BoardController.Initialise();
+
+			//Set the board reference on the client object to the new board
+			client.GameBoard = board;
+
+			//Hide the restart game button
+			RestartGameButton.gameObject.SetActive(false);
+
+			//Reset the turn text
+			TurnText.text = "Your Turn...";
+		}
 	}
 }
