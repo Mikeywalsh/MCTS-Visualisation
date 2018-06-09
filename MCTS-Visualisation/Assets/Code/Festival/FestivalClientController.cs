@@ -77,12 +77,17 @@ namespace MCTS.Visualisation.Festival
 		/// </summary>
 		public Text ConnectingText;
 
+		/// <summary>
+		/// Reference to the disconnect text;
+		/// </summary>
+		public Text DisconnectText;
+
 		void Start() {
 			//Create a new game board
 			board = new C4Board();
 
 			//Initialise the game client
-			client = new GameClient(Connected, ClientConnectionFailed, MakeMoveOnBoard, ResetScene);			
+			client = new GameClient(Connected, ClientConnectionFailed, MakeMoveOnBoard, HandleDisconnect);			
 
 			//Show the client waiting panel and hide the gameboard and turn text
 			ClientWaitingPanel.SetActive(true);
@@ -92,12 +97,22 @@ namespace MCTS.Visualisation.Festival
 
 		void Update()
 		{
+			if(Input.GetKeyDown(KeyCode.P))
+			{
+				//Make the move on the client object so that it can be sent to the server
+				client.ClientMove = new C4Move(0);
+
+				//Make the move locally
+				MakeMoveOnBoard(0);
+			}
+
+
 			//Check to see if the user is hovering over a column
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-			//If the mouse is hovered over a column and it is the local players turn and the current game is not over
-			if (Physics.Raycast(ray, out hit) && hit.transform.GetComponent<C4BoardColumn>() != null && board.CurrentPlayer == 1 && board.Winner == -1)
+			//If the user is hovered over a column and it is the local players turn and the current game is not over
+			if (Physics.Raycast(ray, out hit) && hit.transform.GetComponent<C4BoardColumn>() != null && board.CurrentPlayer == 1 && board.Winner == -1 && Input.touchCount == 1)
 			{
 				//Get a reference to the column that was hit and set the current selected column ID
 				C4BoardColumn hitColumn = hit.transform.GetComponent<C4BoardColumn>();
@@ -121,7 +136,7 @@ namespace MCTS.Visualisation.Festival
 			}
 
 			//If it is the local users turn, and they have selected a valid column and clicked, then make a move
-			if(Input.GetMouseButtonDown(0) && selectedColumnID != -1 && validMove)
+			if(Input.touchCount == 1 && Input.touches[0].phase == TouchPhase.Ended && selectedColumnID != -1 && validMove)
 			{
 				//Make the move on the client object so that it can be sent to the server
 				client.ClientMove = new C4Move(selectedColumnID);
@@ -215,9 +230,23 @@ namespace MCTS.Visualisation.Festival
 			//Start a new game
 			RestartGame();
 
-			//Show the gameboard and turn text
+			//Show the gameboard and turn text, and hide the disconnect text
 			BoardController.gameObject.SetActive(true);
 			TurnText.gameObject.SetActive(true);
+			DisconnectText.gameObject.SetActive(false);
+		}
+
+		private void HandleDisconnect()
+		{
+			//Restart the scene without reloading it
+			Start();
+
+			//Re-enable the connect button
+			ConnectButton.gameObject.SetActive(true);
+			ConnectingText.gameObject.SetActive(false);
+
+			//Alert the user that they were disconnected
+			DisconnectText.gameObject.SetActive(true);
 		}
 
 		private void ResetScene()

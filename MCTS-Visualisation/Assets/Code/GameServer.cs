@@ -241,6 +241,13 @@ namespace MCTS.Visualisation
 						//Wait for the user to select a move
 						while (ServerMove == null)
 						{
+							if (!Connected)
+							{
+								//Close the socket
+								DisconnectClient();
+								disconnectCallback();
+								return;
+							}
 							await Task.Delay(500);
 						}
 
@@ -308,7 +315,27 @@ namespace MCTS.Visualisation
 		/// </summary>
 		public bool Connected
 		{
-			get { return sock == null ? false : sock.Connected; }
+			get
+			{
+				if (sock == null)
+				{
+					return false;
+				}
+
+				// Detect if client disconnected
+				if (sock.Poll(0, SelectMode.SelectRead))
+				{
+					byte[] buff = new byte[1];
+					if (sock.Receive(buff, SocketFlags.Peek) == 0)
+					{
+						//Disconnected
+						return false;
+					}
+				}
+
+				//Still connected
+				return true;
+			}
 		}
 	}
 }

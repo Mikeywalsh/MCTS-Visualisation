@@ -23,7 +23,7 @@ namespace MCTS.Visualisation
 		/// <summary>
 		/// The stream used to communicate with the server
 		/// </summary>
-		private Stream stream;
+		private NetworkStream stream;
 
 		/// <summary>
 		/// A data buffer used for communications with the server
@@ -107,6 +107,9 @@ namespace MCTS.Visualisation
 			//Obtain a reference to the stream used to send data to the server
 			stream = client.GetStream();
 
+			//Set the timeout
+			stream.ReadTimeout = 500;
+
 			//Call the connected callback
 			connectedCallback();
 
@@ -132,6 +135,13 @@ namespace MCTS.Visualisation
 					//Wait for the gameboard to be set
 					while(GameBoard == null)
 					{
+						if (!Connected)
+						{
+							//Close the socket
+							Disconnect();
+							disconnectCallback();
+							return;
+						}
 						await Task.Delay(500);
 					}
 
@@ -148,6 +158,13 @@ namespace MCTS.Visualisation
 						//Wait for the user to select a move
 						while (ClientMove == null)
 						{
+							if (!Connected)
+							{
+								//Close the socket
+								Disconnect();
+								disconnectCallback();
+								return;
+							}
 							await Task.Delay(500);
 						}
 
@@ -155,7 +172,7 @@ namespace MCTS.Visualisation
 						byte[] serializedMove = Serializer.Serialize(ClientMove);
 						Debug.Log("Move serialized...\nLength:" + serializedMove.Length.ToString());
 
-						//Send the serialized client move to the server
+						//Send the serialized client move to the server						
 						await Task.Run(() => stream.Write(serializedMove, 0, serializedMove.Length));
 						Debug.Log("Move sent...");
 
@@ -172,7 +189,24 @@ namespace MCTS.Visualisation
 						Debug.Log("Waiting for move selection from server...");
 
 						//Wait until data is recieved from the server
-						await Task.Run(() => stream.Read(buffer, 0, buffer.Length));
+						while (true)
+						{
+							//Check connection
+							if (!Connected)
+							{
+								//Close the socket
+								Disconnect();
+								disconnectCallback();
+								return;
+							}
+							Debug.Log("Checking for reply from server...");
+							await Task.Delay(500);
+							if (stream.DataAvailable)
+							{
+								stream.Read(buffer, 0, buffer.Length);
+								break;
+							}
+						}
 
 						//Deserialize the data to obtain a move object
 						Move serverMove = (C4Move)Serializer.Deserialize(buffer);
@@ -211,7 +245,6 @@ namespace MCTS.Visualisation
 			if (stream != null)
 			{
 				stream.Dispose();
-
 			}
 		}
 
@@ -231,7 +264,27 @@ namespace MCTS.Visualisation
 		/// </summary>
 		public bool Connected
 		{
-			get { return client == null ? false : client.Connected; }
+			get
+			{
+				if (client == null)
+				{
+					return false;
+				}
+
+				// Detect if client disconnected
+				if (client.Client.Poll(0, SelectMode.SelectRead))
+				{
+					byte[] buff = new byte[1];
+					if (client.Client.Receive(buff, SocketFlags.Peek) == 0)
+					{
+						//Disconnected
+						return false;
+					}
+				}
+
+				//Still connected
+				return true;
+			}
 		}
 	}
 }
