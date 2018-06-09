@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using MCTS.Core;
+using System.Net;
+using System.Net.Sockets;
 
 namespace MCTS.Visualisation.Festival
 {
@@ -17,19 +19,19 @@ namespace MCTS.Visualisation.Festival
 		public GameObject MenuPanel;
 
 		/// <summary>
-		/// The dropdown menu that allows the user to select which game to run MCTS on
+		/// Input field specifying the port that the server will listen on
 		/// </summary>
-		public Dropdown GameChoiceDropdown;
-
-		/// <summary>
-		/// Input field specifying the starting amount amount of nodes to create
-		/// </summary>
-		public InputField StartingNodeAmountField;
+		public InputField ServerPortField;
 
 		/// <summary>
 		/// The panel in which all navigation UI elements are held
 		/// </summary>
 		public GameObject NavigationPanel;
+
+		/// <summary>
+		/// Text which shows the local IPv4 address of this machine
+		/// </summary>
+		public Text IPAddressText;
 
 		/// <summary>
 		/// The text field which displays the total amount of steps that have been performed
@@ -96,6 +98,32 @@ namespace MCTS.Visualisation.Festival
 
 			//Assign the singleton reference
 			controller = this;
+
+			//Set the IP address text
+			SetIPAddressText();
+		}
+
+		/// <summary>
+		/// Sets the IP address text field to the IPv4 address of this machine
+		/// </summary>
+		public static void SetIPAddressText()
+		{
+			//Obtain the IP address of this machine
+			IPAddress[] allLocalIPs = Dns.GetHostAddresses(Dns.GetHostName());
+			IPAddress localIP = IPAddress.Parse("127.0.0.1");
+
+			//Find the IPv4 address of this machine
+			foreach (IPAddress address in allLocalIPs)
+			{
+				if (address.AddressFamily == AddressFamily.InterNetwork)
+				{
+					localIP = address;
+					break;
+				}
+			}
+
+			//Set the text of the IP address field
+			controller.IPAddressText.text = localIP.ToString();
 		}
 
 		/// <summary>
@@ -126,23 +154,12 @@ namespace MCTS.Visualisation.Festival
 		}
 
 		/// <summary>
-		/// Gets the user input amount of starting nodes to create from the <see cref="StartingNodeAmountField"/> input field
+		/// Gets the port to listen on from the <see cref="ServerPortField"/>
 		/// </summary>
 		/// <returns>The user input amount of starting nodes to create</returns>
-		public static int GetStartingNodeInput()
+		public static int GetPortInput()
 		{
-			return int.Parse(controller.StartingNodeAmountField.text);
-		}
-
-		/// <summary>
-		/// Gets the current selected game choice and returns it as an integer index value
-		/// </summary>
-		public static int GetGameChoice
-		{
-			get
-			{
-				return controller.GameChoiceDropdown.value;
-			}
+			return int.Parse(controller.ServerPortField.text);
 		}
 
 		/// <summary>
@@ -150,13 +167,13 @@ namespace MCTS.Visualisation.Festival
 		/// </summary>
 		public void ValidateInput()
 		{
-			if (StartingNodeAmountField.text.Length == 0)
+			if (ServerPortField.text.Length != 0 && GetPortInput() > 0 && GetPortInput() <= ushort.MaxValue)
 			{
-				StartButton.interactable = false;
+				StartButton.interactable = true;
 			}
 			else
 			{
-				StartButton.interactable = true;
+				StartButton.interactable = false;
 			}
 		}
 

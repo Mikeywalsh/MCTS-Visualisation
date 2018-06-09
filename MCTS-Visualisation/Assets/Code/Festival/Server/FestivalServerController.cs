@@ -104,7 +104,7 @@ namespace MCTS.Visualisation.Festival
 			//Allow the user to perform a step with the return key or Y button instead of pressing the step button
 			if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("YButton"))
 			{
-				PerformStep(false);
+				PerformStep();
 			}
 
 			//Allow the user to toggle the play/pause options with the p key or B button instead of pressing the respective buttons
@@ -116,7 +116,7 @@ namespace MCTS.Visualisation.Festival
 
 			if (playing && Time.time - lastSpawn > SPAWN_DELAY)
 			{
-				PerformStep(false);
+				PerformStep();
 				lastSpawn = Time.time;
 			}
 		}
@@ -167,29 +167,15 @@ namespace MCTS.Visualisation.Festival
 			//Create an empty board instance, which will have whatever game the user chooses assigned to it
 			Board board;
 
-			//Assign whatever game board the user has chosen to the board instance
-			switch (FestivalServerUIController.GetGameChoice)
-			{
-				case 0:
-					board = new TTTBoard();
-					displayBoardModel = false;
-					break;
-				case 1:
-					board = new C4Board();
-					displayBoardModel = true;
+			//Create a C4 board to be used
+			board = new C4Board();
+			displayBoardModel = true;
 
-					//Create a C4 Board GameObject and obtain a reference to its BoardModelController Component
-					GameObject boardModel = Instantiate(Resources.Load("C4 Board", typeof(GameObject))) as GameObject;
-					boardModelController = boardModel.GetComponent<BoardModelController>();
-					boardModelController.Initialise();
-					break;
-				case 2:
-					board = new OthelloBoard();
-					displayBoardModel = false;
-					break;
-				default:
-					throw new System.Exception("Unknown game type index has been input");
-			}
+			//Create a C4 Board GameObject and obtain a reference to its BoardModelController Component
+			GameObject boardModel = Instantiate(Resources.Load("C4 Board", typeof(GameObject))) as GameObject;
+			boardModelController = boardModel.GetComponent<BoardModelController>();
+			boardModelController.Initialise();
+
 
 			mcts = new TreeSearch<Node>(board);
 
@@ -203,12 +189,6 @@ namespace MCTS.Visualisation.Festival
 			//Add the root node to the position and object map
 			nodePositionMap.Add(rootNodePosition, rootNode);
 			nodeObjectMap.Add(mcts.Root, rootNode);
-
-			//Create the amount of starting nodes specified by the user
-			for (int i = 0; i < FestivalServerUIController.GetStartingNodeInput(); i++)
-			{
-				PerformStep(true);
-			}
 
 			//Swap out the current menu panels
 			FestivalServerUIController.SetMenuPanelActive(false);
@@ -226,15 +206,14 @@ namespace MCTS.Visualisation.Festival
 				return;
 			}
 
-			PerformStep(false);
+			PerformStep();
 		}
 
 		/// <summary>
 		/// Performs a step of MCTS and creates a gameobject for the new <see cref="Node"/>'s board state if required <para/>
 		/// Also creates any relevant links between related nodes
 		/// </summary>
-		/// <param name="fromMenu">Flag used to indicate whether this step is being performed from the menu or not. Used to prevent the spawning animation if a node is not being added when the visualisation has already been started</param>
-		public void PerformStep(bool fromMenu)
+		public void PerformStep()
 		{
 			//Perform an iteration of MCTS
 			mcts.Step();
@@ -263,7 +242,7 @@ namespace MCTS.Visualisation.Festival
 			else
 			{
 				//Instantiate the new node object at the hashed position
-				GameObject newNodeObject = Instantiate(Resources.Load("HashNode"), fromMenu ? newNodePosition : nodeObjectMap[newestNode.Parent].transform.position, Quaternion.identity) as GameObject;
+				GameObject newNodeObject = Instantiate(Resources.Load("HashNode"), nodeObjectMap[newestNode.Parent].transform.position, Quaternion.identity) as GameObject;
 
 				//Set the parent of the new node object to be this controller object
 				newNodeObject.transform.parent = transform;
@@ -279,7 +258,7 @@ namespace MCTS.Visualisation.Festival
 
 			//Initialise the newest hash node and add a mcts Node to it
 			nodeObjectMap[newestNode].GetComponent<HashNode>().Initialise(newNodePosition);
-			nodeObjectMap[newestNode].GetComponent<HashNode>().AddNode(nodeObjectMap[newestNode.Parent], newestNode, !fromMenu);
+			nodeObjectMap[newestNode].GetComponent<HashNode>().AddNode(nodeObjectMap[newestNode.Parent], newestNode, true);
 
 			FestivalServerUIController.SetTotalNodeText(nodeObjectMap.Count);
 		}
