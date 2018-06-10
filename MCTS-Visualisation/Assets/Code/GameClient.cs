@@ -255,6 +255,7 @@ namespace MCTS.Visualisation
 			if (client.Connected)
 			{
 				client.Close();
+				client.Dispose();
 			}
 		}
 

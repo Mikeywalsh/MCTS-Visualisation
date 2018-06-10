@@ -36,6 +36,11 @@ namespace MCTS.Visualisation
 		private Socket sock;
 
 		/// <summary>
+		/// The stream used to communicate with the client
+		/// </summary>
+		private NetworkStream stream;
+
+		/// <summary>
 		/// A data buffer used for communications with the client
 		/// </summary>
 		private byte[] buffer;
@@ -61,9 +66,14 @@ namespace MCTS.Visualisation
 		private Action disconnectCallback;
 
 		/// <summary>
+		/// A callback which will be called if the client wishes to reset the game
+		/// </summary>
+		private Action resetCallback;
+
+		/// <summary>
 		/// The <see cref="Board"/> reference used by this GameServer to play the game out on
 		/// </summary>
-		public Board GameBoard { get; private set; }
+		public Board GameBoard { get; set; }
 
 		/// <summary>
 		/// A move which can be set directly <para/>
@@ -74,22 +84,20 @@ namespace MCTS.Visualisation
 		/// <summary>
 		/// Creates a GameServer instance and a <see cref="TcpListener"/> on the local IPv4 address of this machine and the provided port
 		/// </summary>
-		/// <param name =board">The board reference that the server will use</param>
 		/// <param name="port">The port which the <see cref="TcpListener"/> will run on</param>
 		/// <param name="fCallback">The callback method to call when the server has failed to listen on a specific port</param>
 		/// <param name="cCallback">The callback method to call when a client has connected</param>
 		/// <param name="mCallback">The callback method to call when a move is made</param>
 		/// <param name="dCallback">The callback method to call when a client has disconnection</param>
-		public GameServer(Board board, short port, Action fCallback, Action cCallback, Action<Move> mCallback, Action dCallback)
+		/// <param name="rCallback">The callback method to call when the client wishes to reset the game</param>
+		public GameServer(short port, Action fCallback, Action cCallback, Action<Move> mCallback, Action dCallback, Action rCallback)
 		{
-			//Set the server board reference
-			GameBoard = board;
-
 			//Set the callbacks
 			failedListenCallback = fCallback;
 			connectedCallback = cCallback;
 			moveCallback = mCallback;
 			disconnectCallback = dCallback;
+			resetCallback = rCallback;
 
 			//Obtain the IP address of this machine
 			IPAddress[] allLocalIPs = Dns.GetHostAddresses(Dns.GetHostName());
@@ -157,6 +165,9 @@ namespace MCTS.Visualisation
 				{
 					//Start a task which listens for a new connection
 					sock = await Task.Run(() => listener.AcceptSocket());
+
+					//Bind the socket to a stream
+					stream = new NetworkStream(sock);
 				}
 				catch (Exception)
 				{
@@ -204,8 +215,8 @@ namespace MCTS.Visualisation
 					//If the client has sent a reset message, then reset the gameboard
 					if(Encoding.ASCII.GetString(buffer).Substring(0,5) == "Reset")
 					{
-						//GameBoard = new C4Board();
-
+						//Reset the game
+						resetCallback();
 					}
 					else
 					{
@@ -221,7 +232,24 @@ namespace MCTS.Visualisation
 						Debug.Log("Waiting for move selection from client...");
 
 						//Wait until data is recieved from the client
-						await Task.Run(() => sock.Receive(buffer));
+						while (true)
+						{
+							//Check connection
+							if (!Connected)
+							{
+								//Close the socket
+								DisconnectClient();
+								disconnectCallback();
+								return;
+							}
+							Debug.Log("Checking for reply from client...");
+							await Task.Delay(500);
+							if(stream.DataAvailable)
+							{
+								stream.Read(buffer, 0, buffer.Length);
+								break;
+							}
+						}
 
 						//Deserialize the data to obtain a move object
 						Move clientMove = (C4Move)Serializer.Deserialize(buffer);
@@ -256,7 +284,7 @@ namespace MCTS.Visualisation
 						Debug.Log("Move serialized...\nLength:" + serializedMove.Length.ToString());
 
 						//Send the serialized server move to the client
-						await Task.Run(() => sock.Send(serializedMove));
+						await Task.Run(() => stream.Write(serializedMove, 0, serializedMove.Length));
 						Debug.Log("Move sent...");
 
 						//Clear the server move
@@ -286,6 +314,11 @@ namespace MCTS.Visualisation
 		{
 			StopListening();
 			DisconnectClient();
+
+			if (stream != null)
+			{
+				stream.Dispose();
+			}
 		}
 
 		/// <summary>
@@ -296,6 +329,7 @@ namespace MCTS.Visualisation
 			if (sock != null && sock.Connected)
 			{
 				sock.Close();
+				sock.Dispose();
 			}
 		}
 

@@ -88,7 +88,8 @@ namespace MCTS.Visualisation.Play
             LineDraw.Lines = new List<ColoredLine>();
 
             //Initialise the game server
-            server = new GameServer(board, 8500, ResetButtonPressed, Connected, MakeMoveOnBoard, ResetButtonPressed);
+            server = new GameServer(8500, ResetButtonPressed, Connected, MakeMoveOnBoard, ResetButtonPressed, ResetGame);
+			server.GameBoard = board;
             server.StartListening();
 
             //Set the play mode
@@ -155,7 +156,13 @@ namespace MCTS.Visualisation.Play
             }
         }
 
-        void Update()
+		private void ResetGame()
+		{
+			board = new C4Board();
+			server.GameBoard = board;
+		}
+
+		void Update()
         {
             if (mcts != null)
             {

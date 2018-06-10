@@ -3,6 +3,7 @@ using MCTS.Core.Games;
 using MCTS.Visualisation.Hashing;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace MCTS.Visualisation.Festival
 {
@@ -29,6 +30,16 @@ namespace MCTS.Visualisation.Festival
 		/// Singleton reference to the active HashController
 		/// </summary>
 		public static FestivalServerController Controller;
+
+		/// <summary>
+		/// The server object used to communicate with a remote client
+		/// </summary>
+		private GameServer server;
+
+		/// <summary>
+		/// The main board being played on
+		/// </summary>
+		private C4Board board;
 
 		/// <summary>
 		/// A dictionary that maps unique positions in world space to their corresponding node gameobjects
@@ -107,13 +118,6 @@ namespace MCTS.Visualisation.Festival
 				PerformStep();
 			}
 
-			//Allow the user to toggle the play/pause options with the p key or B button instead of pressing the respective buttons
-			if (Input.GetKeyDown(KeyCode.P) || Input.GetButtonDown("BButton"))
-			{
-				TogglePlayPause();
-			}
-
-
 			if (playing && Time.time - lastSpawn > SPAWN_DELAY)
 			{
 				PerformStep();
@@ -122,49 +126,61 @@ namespace MCTS.Visualisation.Festival
 		}
 
 		/// <summary>
-		/// Called when the user enters the play/pause input <para/>
-		/// Toggles play/pause depending on which one is currently active
+		/// Called when the start server button is pressed
 		/// </summary>
-		public void TogglePlayPause()
+		public void StartServerButtonPressed()
 		{
-			if (playing)
-			{
-				PauseButtonPressed();
-			}
-			else
-			{
-				PlayButtonPressed();
-			}
+			//Initialise the game server
+			server = new GameServer(FestivalServerUIController.GetPortInput(), ResetScene, ClientConnected, MakeMoveOnBoard, ResetScene, ResetGame);
+			server.StartListening();
+
+			//Alert the user that the server is listening for a client connection
+			FestivalServerUIController.BeginListening();
 		}
 
 		/// <summary>
-		/// Called when the play button is pressed <para/>
-		/// Starts the animation of ndoes being creates and sets the pause button to be active
+		/// Called when the client wishes to reset the game
 		/// </summary>
-		public void PlayButtonPressed()
+		private void ResetGame()
 		{
+			board = new C4Board();
+			server.GameBoard = board;
+		}
+
+		/// <summary>
+		/// Called when a move is made on the board, either locally or by a remote client
+		/// </summary>
+		/// <param name="m">The move to make</param>
+		private void MakeMoveOnBoard(Move m)
+		{
+			Debug.Log(m);
 			playing = true;
-			FestivalServerUIController.PlayButtonPressed();
 		}
 
 		/// <summary>
-		/// Called when the pause button is pressed <para/>
-		/// Pauses the animation of nodes beng created and sets the play button to active again
+		/// Called when a connection has been established to a client
 		/// </summary>
-		public void PauseButtonPressed()
+		private void ClientConnected()
 		{
-			playing = false;
-			FestivalServerUIController.PauseButtonPressed();
+			FestivalServerUIController.StopListening();
+			StartVisualisation();
 		}
 
 		/// <summary>
-		/// Called when the start button is pressed <para/>
-		/// Initialises the <see cref="mcts"/> tree search object and instantiates the root node <para/>
-		/// Also creates as many starting nodes as the user specified
+		/// Resets the scene
 		/// </summary>
-		public void StartButtonPressed()
+		private void ResetScene()
 		{
-			//Create an empty board instance, which will have whatever game the user chooses assigned to it
+			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+		}
+
+		/// <summary>
+		/// Starts a new visualisation <para/>
+		/// Initialises the <see cref="mcts"/> tree search object and instantiates the root node
+		/// </summary>
+		private void StartVisualisation()
+		{
+			//Create an empty board instance for the root node
 			Board board;
 
 			//Create a C4 board to be used
@@ -176,7 +192,7 @@ namespace MCTS.Visualisation.Festival
 			boardModelController = boardModel.GetComponent<BoardModelController>();
 			boardModelController.Initialise();
 
-
+			//Create an MCTS instance
 			mcts = new TreeSearch<Node>(board);
 
 			//Calculate the position of the root node and add an object for it to the scene
@@ -193,6 +209,9 @@ namespace MCTS.Visualisation.Festival
 			//Swap out the current menu panels
 			FestivalServerUIController.SetMenuPanelActive(false);
 			FestivalServerUIController.SetNavigationPanelActive(true);
+
+			//Set playing to false for now
+			playing = false;
 		}
 
 		/// <summary>

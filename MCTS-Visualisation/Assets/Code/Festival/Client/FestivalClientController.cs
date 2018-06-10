@@ -105,8 +105,7 @@ namespace MCTS.Visualisation.Festival
 				//Make the move locally
 				MakeMoveOnBoard(0);
 			}
-
-
+			
 			//Check to see if the user is hovering over a column
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

@@ -66,24 +66,14 @@ namespace MCTS.Visualisation.Festival
 		public Text NodeInfoText;
 
 		/// <summary>
-		/// The start button, which is used to start the hash visualisation
+		/// The text field which alerts the user that the server is listening for a client connection
 		/// </summary>
-		public Button StartButton;
+		public Text ConnectionText;
 
 		/// <summary>
-		/// The play button, which is used to start the playing animation
+		/// The start button, which is used to start listening for a client connection
 		/// </summary>
-		public Button PlayButton;
-
-		/// <summary>
-		/// The pause button, which is used to pause the playing animation
-		/// </summary>
-		public Button PauseButton;
-
-		/// <summary>
-		/// The step button, which is used to perform one MCTS step at a time
-		/// </summary>
-		public Button StepButton;
+		public Button StartServerButton;
 
 		/// <summary>
 		/// Assigns the singleton reference when the scene is loaded, throwing an exception if one already exists
@@ -127,6 +117,26 @@ namespace MCTS.Visualisation.Festival
 		}
 
 		/// <summary>
+		/// Called when the server starts listening, makes the port field uninteractable and swaps the connection button for text
+		/// </summary>
+		public static void BeginListening()
+		{
+			controller.ServerPortField.interactable = false;
+			controller.StartServerButton.gameObject.SetActive(false);
+			controller.ConnectionText.gameObject.SetActive(true);
+		}
+
+		/// <summary>
+		/// Called whenever a connection has been made, or listening has failed
+		/// </summary>
+		public static void StopListening()
+		{
+			controller.ServerPortField.interactable = true;
+			controller.StartServerButton.gameObject.SetActive(true);
+			controller.ConnectionText.gameObject.SetActive(false);
+		}
+
+		/// <summary>
 		/// Set the total node text to the specified amount
 		/// </summary>
 		/// <param name="newTotal">The new total node amount</param>
@@ -157,9 +167,9 @@ namespace MCTS.Visualisation.Festival
 		/// Gets the port to listen on from the <see cref="ServerPortField"/>
 		/// </summary>
 		/// <returns>The user input amount of starting nodes to create</returns>
-		public static int GetPortInput()
+		public static short GetPortInput()
 		{
-			return int.Parse(controller.ServerPortField.text);
+			return short.Parse(controller.ServerPortField.text);
 		}
 
 		/// <summary>
@@ -167,13 +177,13 @@ namespace MCTS.Visualisation.Festival
 		/// </summary>
 		public void ValidateInput()
 		{
-			if (ServerPortField.text.Length != 0 && GetPortInput() > 0 && GetPortInput() <= ushort.MaxValue)
+			if (ServerPortField.text.Length != 0 && GetPortInput() > 0)
 			{
-				StartButton.interactable = true;
+				StartServerButton.interactable = true;
 			}
 			else
 			{
-				StartButton.interactable = false;
+				StartServerButton.interactable = false;
 			}
 		}
 
@@ -223,37 +233,6 @@ namespace MCTS.Visualisation.Festival
 											"\nTotal Score: " + n.TotalScore +
 											"\nAverage Score: " + n.AverageScore +
 											"\nVisits: " + n.Visits;
-		}
-
-		/// <summary>
-		/// Called when the play button is pressed <para/>
-		/// Stops the playing animation, disables the play button and re-enables the pause button
-		/// </summary>
-		public static void PlayButtonPressed()
-		{
-			controller.PlayButton.gameObject.SetActive(false);
-			controller.StepButton.gameObject.SetActive(false);
-			controller.PauseButton.gameObject.SetActive(true);
-		}
-
-		/// <summary>
-		/// Called when the pause button is pressed <para/>
-		/// Stops the playing animation, disables the pause button and re-enables the play button
-		/// </summary>
-		public static void PauseButtonPressed()
-		{
-			controller.PlayButton.gameObject.SetActive(true);
-			controller.StepButton.gameObject.SetActive(true);
-			controller.PauseButton.gameObject.SetActive(false);
-		}
-
-		/// <summary>
-		/// Called when the back to menu button is pressed <para/>
-		/// Changes the current scene to be the main menu
-		/// </summary>
-		public void BackToMenuButtonPressed()
-		{
-			SceneController.LoadMainMenu();
 		}
 
 		/// <summary>
