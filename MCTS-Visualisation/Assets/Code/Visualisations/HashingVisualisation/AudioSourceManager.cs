@@ -8,7 +8,7 @@ public class AudioSourceManager : MonoBehaviour {
 
 	private Queue<AudioSource> sources;
 
-	private const int MAX_SOURCES = 6;
+	private const int MAX_SOURCES = 12;
 
 	private void Awake () {
 		//Check to see if the singleton reference is already set

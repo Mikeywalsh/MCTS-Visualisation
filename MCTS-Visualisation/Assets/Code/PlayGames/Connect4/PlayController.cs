@@ -82,14 +82,16 @@ namespace MCTS.Visualisation.Play
             MenuPanel.SetActive(false);
         }
 
-        public void StartServer()
-        {
-            //Initialise LineDraw
-            LineDraw.Lines = new List<ColoredLine>();
+		public void StartServer()
+		{
+			//Initialise LineDraw
+			LineDraw.Lines = new List<ColoredLine>();
 
-            //Initialise the game server
-            server = new GameServer(8500, ResetButtonPressed, Connected, MakeMoveOnBoard, ResetButtonPressed, ResetGame);
-			server.GameBoard = board;
+			//Initialise the game server
+			server = new GameServer(8500, ResetButtonPressed, Connected, MakeMoveOnBoard, ResetButtonPressed, ResetGame)
+			{
+				GameBoard = board
+			};
             server.StartListening();
 
             //Set the play mode

@@ -26,7 +26,7 @@ namespace MCTS.Visualisation.Hashing
         /// <summary>
         /// The anchorered origin position of this node in world space
         /// </summary>
-        private Vector3 originPosition;
+        public Vector3 OriginPosition { get; private set; }
 
         /// <summary>
         /// The next target position of this nodes <see cref="GameObject"/>, which it will slowly move towards
@@ -109,10 +109,10 @@ namespace MCTS.Visualisation.Hashing
             transform.localScale = Vector3.one * NodeSize;
 
             //Save the origin position for this node
-            originPosition = origin;
+            OriginPosition = origin;
 
             //Set an initial target
-            nextTarget = originPosition + new Vector3(Random.Range(-3, 3), Random.Range(-3, 3), Random.Range(-3, 3));
+            nextTarget = OriginPosition + new Vector3(Random.Range(-3, 3), Random.Range(-3, 3), Random.Range(-3, 3));
 
             //Initialise the visibility of this node to be opaque
             SetVisibility(1);
@@ -329,7 +329,7 @@ namespace MCTS.Visualisation.Hashing
             //If the target position has been reached, assign a new target positon
             if ((transform.position - nextTarget).magnitude <= 0.1f)
             {
-                nextTarget = originPosition + new Vector3(Random.Range(-3, 3), Random.Range(-3, 3), Random.Range(-3, 3));
+                nextTarget = OriginPosition + new Vector3(Random.Range(-3, 3), Random.Range(-3, 3), Random.Range(-3, 3));
             }
 
             //Move closer to the target position via linear interpolation
