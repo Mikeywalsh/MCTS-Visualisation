@@ -119,7 +119,7 @@ namespace MCTS.Visualisation.Hashing
 
 			//Set the AudioSource reference to the attached AudioSource script
 			source = AudioSourceManager.GetNextSource(origin);
-        }
+		}
 
         /// <summary>
         /// Plays the given musical note at the given octave
@@ -279,6 +279,8 @@ namespace MCTS.Visualisation.Hashing
             //If this node contains a terminal node, mark it as such
             if (ContainsTerminalNode)
             {
+				Debug.Log(BoardState.ToString());
+				Debug.Log("Winner: " + BoardState.Winner);
                 nodeColor = Color.green;
                 SetColor();
             }
@@ -388,7 +390,7 @@ namespace MCTS.Visualisation.Hashing
         /// <summary>
         /// Property containing the sum of the total number of visits from each contained node
         /// </summary>
-        private int TotalVisits
+        public int TotalVisits
         {
             get
             {

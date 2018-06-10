@@ -167,9 +167,9 @@ namespace MCTS.Visualisation.Festival
 		/// Gets the port to listen on from the <see cref="ServerPortField"/>
 		/// </summary>
 		/// <returns>The user input amount of starting nodes to create</returns>
-		public static short GetPortInput()
+		public static int GetPortInput()
 		{
-			return short.Parse(controller.ServerPortField.text);
+			return int.Parse(controller.ServerPortField.text);
 		}
 
 		/// <summary>
@@ -177,7 +177,7 @@ namespace MCTS.Visualisation.Festival
 		/// </summary>
 		public void ValidateInput()
 		{
-			if (ServerPortField.text.Length != 0 && GetPortInput() > 0)
+			if (ServerPortField.text.Length != 0 && GetPortInput() > 0 && GetPortInput() < ushort.MaxValue)
 			{
 				StartServerButton.interactable = true;
 			}

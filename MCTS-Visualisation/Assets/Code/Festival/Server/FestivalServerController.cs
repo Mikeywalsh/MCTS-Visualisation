@@ -15,6 +15,11 @@ namespace MCTS.Visualisation.Festival
 	public class FestivalServerController : MonoBehaviour
 	{
 		/// <summary>
+		/// Singleton reference to the active FestivalServerController
+		/// </summary>
+		public static FestivalServerController Controller;
+
+		/// <summary>
 		/// Flag indicating how the board is displayed to the user <para/>
 		/// True if displaying a board model <para/>
 		/// False if displaying a rich text board display
@@ -23,14 +28,18 @@ namespace MCTS.Visualisation.Festival
 
 		/// <summary>
 		/// The board model display being used for this visualisation <para/>
-		/// Null if the <see cref="displayBoardModel"/> flag is set to false
 		/// </summary>
 		public BoardModelController boardModelController;
 
 		/// <summary>
-		/// Singleton reference to the active HashController
+		/// The linerenderer which connects the board model to the last path node
 		/// </summary>
-		public static FestivalServerController Controller;
+		public LineRenderer pathConnection;
+
+		/// <summary>
+		/// The transform used to hold all path nodes
+		/// </summary>
+		public Transform PathNodeHolder;
 
 		/// <summary>
 		/// The server object used to communicate with a remote client
@@ -41,6 +50,11 @@ namespace MCTS.Visualisation.Festival
 		/// The main board being played on
 		/// </summary>
 		private C4Board board;
+
+		/// <summary>
+		/// Buffer for storing result of <see cref="BoardToPosition(Board)"/>, instead of calling every frame
+		/// </summary>
+		private Vector3 boardPosition;
 
 		/// <summary>
 		/// A dictionary that maps unique positions in world space to their corresponding node gameobjects
@@ -57,12 +71,17 @@ namespace MCTS.Visualisation.Festival
 		/// </summary>
 		private List<HashNode> AllNodes = new List<HashNode>();
 
-		private List<C4BoardModelController> FinalNodes = new List<C4BoardModelController>();
+		private List<GameObject> PathNodes = new List<GameObject>();
 
 		/// <summary>
-		/// The MCTS used to provide node data
+		/// The MCTS used to determine the best node to select
 		/// </summary>
-		private TreeSearch<Node> mcts;
+		private TreeSearch<Node> aiMCTS;
+
+		/// <summary>
+		/// The MCTS used to produce the hashing visualisation
+		/// </summary>
+		private TreeSearch<Node> displayMCTS;
 
 		/// <summary>
 		/// An array of evenly distributed points on the surface of a sphere, used for position calculation of <see cref="HashNode"/>'s <para/>
@@ -84,8 +103,6 @@ namespace MCTS.Visualisation.Festival
 
 		private bool runMCTS = false;
 
-		private int currentNodeIndex = 1;
-
 		private float MCTSStartTime = 0f;
 
 		private const int NODE_LIMIT = 50000;
@@ -103,7 +120,7 @@ namespace MCTS.Visualisation.Festival
 		/// <summary>
 		/// The delay in seconds between nodes being created when <see cref="playing"/> is active
 		/// </summary>
-		private const float SPAWN_DELAY = 0.2f;
+		private const float SPAWN_DELAY = 0.25f;
 
 		/// <summary>
 		/// The amount of spacing between each node
@@ -119,6 +136,11 @@ namespace MCTS.Visualisation.Festival
 
 			//Set the singleton reference
 			Controller = this;
+
+			//Reset dictionaries and lists
+			nodeObjectMap = new Dictionary<Node, GameObject>();
+			nodePositionMap = new Dictionary<Vector3, GameObject>();
+			AllNodes = new List<HashNode>();
 		}
 
 		/// <summary>
@@ -128,27 +150,32 @@ namespace MCTS.Visualisation.Festival
 		/// </summary>
 		public void Update()
 		{
-			//If there is a root node, make the camera look at it
-			if(AllNodes != null && AllNodes.Count > 0 && AllNodes[0] != null)
-			{
-				Camera.main.transform.LookAt(Vector3.Lerp(Camera.main.transform.position + Camera.main.transform.forward, AllNodes[0].transform.position, 0.005f));
-			}
+			//Move the board display to where it is supposed to be
+			boardModelController.transform.parent.position = Vector3.Lerp(boardModelController.transform.parent.position, boardPosition, 0.05f);
+			boardModelController.transform.parent.LookAt(Camera.main.transform);
+
+			//Ensure that the board model is attached to the path connection
+			pathConnection.SetPosition(0, boardModelController.transform.parent.position);
+
+			//Make the camera look at the board model
+			Camera.main.transform.LookAt(Vector3.Lerp(Camera.main.transform.position + Camera.main.transform.forward, boardModelController.transform.position, 0.001f));
+			//if ((Camera.main.transform.position - boardModelController.transform.position).magnitude > 150)
+			//{
+				Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, boardModelController.transform.position + new Vector3(150, 0, 0), 0.01f);// ((AllNodes[0].transform.position - Camera.main.transform.position).normalized * 110), 0.001f);
+			//}
 
 			//If starting to make a move, pull all hashnodes into the root as a nice animation, then make the move
-			if(startMakingMove)
+			if (startMakingMove)
 			{
-				for(int i = 0; i < transform.childCount; i++)
+				for (int i = 0; i < transform.childCount; i++)
 				{
 					transform.GetChild(i).position = Vector3.Lerp(transform.GetChild(i).position, AllNodes[0].transform.position, Time.time - makingMoveStartTime);
+					transform.GetChild(i).localScale = Vector3.Lerp(transform.GetChild(i).localScale, Vector3.zero, Time.time - makingMoveStartTime);
 				}
 
-				if(makingMoveStartTime < Time.time - MAKE_MOVE_TIME - 0.5f)
+				if (makingMoveStartTime < Time.time - MAKE_MOVE_TIME - 0.5f)
 				{
-					GameObject temp = Instantiate(Resources.Load<GameObject>("C4 Board"));
-					temp.transform.position = AllNodes[0].transform.position;
-					temp.transform.right = temp.transform.position - Camera.main.transform.position;
-					temp.layer = 0;
-					for(int i = 0; i < transform.childCount; i++)
+					for (int i = 0; i < transform.childCount; i++)
 					{
 						Destroy(transform.GetChild(i).gameObject);
 					}
@@ -160,34 +187,37 @@ namespace MCTS.Visualisation.Festival
 			}
 
 			//Return if there is no tree search happening
-			if (mcts == null)
+			if (aiMCTS == null)
 			{
 				return;
 			}
 
 			//If MCTS has been running too long, or has generated enough nodes, then stop it
-			if(MCTSStartTime < Time.time - 5 || mcts.AllNodes.Count > NODE_LIMIT)
+			if (MCTSStartTime < Time.time - 5 || aiMCTS.AllNodes.Count > NODE_LIMIT)
 			{
 				runMCTS = false;
 			}
 
 			//If the hashnode limit has been reached, make the best move and send it to the client
-			if(AllNodes.Count >= HASHNODE_LIMIT)
+			if (AllNodes.Count >= HASHNODE_LIMIT && !runMCTS)
 			{
 				playing = false;
 				startMakingMove = true;
 				makingMoveStartTime = Time.time;
-				moveToMake = mcts.Root.GetBestChild().GameBoard.LastMoveMade;		
-				mcts = null;
+				moveToMake = displayMCTS.Root.GetBestChild().GameBoard.LastMoveMade; ;// = aiMCTS.Root.GetBestChild().GameBoard.LastMoveMade;		
+				aiMCTS = null;
+				displayMCTS = null;
 			}
 
-			if(Input.GetKeyDown(KeyCode.P))
+			if (Input.GetKeyDown(KeyCode.P))
 			{
 				PerformStep();
-				Debug.Log("MCTS Nodes: " + mcts.AllNodes.Count);
+				Debug.Log("MCTS Nodes: " + aiMCTS.AllNodes.Count);
+				Debug.Log(AllNodes[0].TotalVisits);
+				playing = false;
 			}
 
-			//Perform a step every interval, defined as the SPAWN_DELAY constant
+			////Perform a step every interval, defined as the SPAWN_DELAY constant
 			if (playing && Time.time - lastSpawn > SPAWN_DELAY && AllNodes.Count < HASHNODE_LIMIT)
 			{
 				PerformStep();
@@ -201,7 +231,7 @@ namespace MCTS.Visualisation.Festival
 		public void StartServerButtonPressed()
 		{
 			//Initialise the game server
-			server = new GameServer(FestivalServerUIController.GetPortInput(), ResetScene, ClientConnected, MakeMoveOnBoard, ResetScene, ResetGame);
+			server = new GameServer((short)FestivalServerUIController.GetPortInput(), ResetScene, ClientConnected, MakeMoveOnBoard, ResetScene, ResetGame);
 			server.StartListening();
 
 			//Alert the user that the server is listening for a client connection
@@ -213,9 +243,77 @@ namespace MCTS.Visualisation.Festival
 		/// </summary>
 		private void ResetGame()
 		{
+			//Reset reference objects
 			board = new C4Board();
 			server.GameBoard = board;
-			FinalNodes = new List<C4BoardModelController>();
+			PathNodes = new List<GameObject>();
+
+			//Reset the board model controller
+			boardModelController.transform.parent.position = BoardToPosition(board);
+			boardModelController.Initialise();
+
+			//Reset the path connection
+			pathConnection.SetPosition(0, Vector3.zero);
+			pathConnection.SetPosition(0, Vector3.zero);
+
+			//Randomise its color
+			Color32 newLineColor = new Color32((byte)Random.Range(0, 255), (byte)Random.Range(0, 255), (byte)Random.Range(0, 255), 255);
+			pathConnection.startColor = newLineColor;
+			pathConnection.endColor = newLineColor;
+
+			//Destroy all remaining path nodes
+			for(int i = 0; i < PathNodeHolder.childCount; i++)
+			{
+				Destroy(PathNodeHolder.GetChild(i));
+			}
+
+			//Reset the camera position and rotation
+			Camera.main.GetComponent<FestivalServerCameraControl>().ResetCamera();
+		}
+
+		/// <summary>
+		/// Updates the path nodes, which show a path of moves taken so far
+		/// </summary>
+		private void UpdatePathNodes()
+		{
+			//Create a new path node
+			GameObject pathNode = Instantiate(Resources.Load<GameObject>("PathNode"), boardPosition, Quaternion.identity);
+
+			//Set the new path nodes parent to be the path node holder
+			pathNode.transform.parent = PathNodeHolder;
+
+			//If the pathnodes list is not empty, draw a line from the last pathnode to the new one
+			if (PathNodes.Count > 0)
+			{
+				//Create a new line renderer
+				LineRenderer newLine = PathNodes[PathNodes.Count - 1].AddComponent<LineRenderer>();
+
+				//Set layer to ignore raycast, which has a value of 2
+				newLine.gameObject.layer = 2;
+
+				//Initialise the line renderer starting values
+				newLine.startWidth = 0.2f;
+				newLine.endWidth = 0.2f;
+				Color32 lineColor = pathConnection.startColor;
+				newLine.startColor = lineColor;
+				newLine.endColor = lineColor;
+				newLine.material = Resources.Load<Material>("LineMat");
+
+				//Set the line positions
+				newLine.SetPosition(0, PathNodes[PathNodes.Count - 1].transform.position);
+				newLine.SetPosition(1, pathNode.transform.position);
+
+				//Connect the pathconnection to the newest node
+				pathConnection.SetPosition(1, pathNode.transform.position);
+
+				//Randomise the pathconnection color
+				Color32 newLineColor = new Color32((byte)Random.Range(0, 255), (byte)Random.Range(0, 255), (byte)Random.Range(0, 255), 255);
+				pathConnection.startColor = newLineColor;
+				pathConnection.endColor = newLineColor;
+			}
+
+			//Finally, add the new pathnode to the list of path nodes
+			PathNodes.Add(pathNode);
 		}
 
 		/// <summary>
@@ -227,17 +325,24 @@ namespace MCTS.Visualisation.Festival
 			//Make the move on the board
 			board.MakeMove(m);
 
-			//If the current player is now the client, do nothing and wait
-			if(board.CurrentPlayer == 1)
+			//Update the path nodes
+			UpdatePathNodes();
+
+			//Update the board display
+			boardModelController.SetBoard(board);
+
+			//Update the board position buffer
+			boardPosition = BoardToPosition(board);
+
+			//If the current player is now the client, or the game has finished, do nothing
+			if (board.CurrentPlayer == 1 || board.Winner != -1)
 			{
 				return;
 			}
 
-			//Create an MCTS instance
-			mcts = new TreeSearch<Node>(board);
-
-			//Refresh the current node index
-			currentNodeIndex = 1;
+			//Create new MCTS instances
+			aiMCTS = new TreeSearch<Node>(board.Duplicate());
+			displayMCTS = new TreeSearch<Node>(board.Duplicate());
 
 			//Reset dictionaries and lists
 			nodePositionMap = new Dictionary<Vector3, GameObject>();
@@ -245,15 +350,15 @@ namespace MCTS.Visualisation.Festival
 			AllNodes = new List<HashNode>();
 
 			//Calculate the position of the root node and add an object for it to the scene
-			Vector3 rootNodePosition = BoardToPosition(mcts.Root.GameBoard);
+			Vector3 rootNodePosition = BoardToPosition(displayMCTS.Root.GameBoard);
 			GameObject rootNode = Instantiate(Resources.Load("HashNode"), rootNodePosition, Quaternion.identity) as GameObject;
 			rootNode.transform.parent = transform;
-			rootNode.GetComponent<HashNode>().AddNode(null, mcts.Root, false);
+			rootNode.GetComponent<HashNode>().AddNode(null, displayMCTS.Root, false);
 			rootNode.GetComponent<HashNode>().Initialise(rootNodePosition);
 
 			//Add the root node to the position and object maps and allnodes list
 			nodePositionMap.Add(rootNodePosition, rootNode);
-			nodeObjectMap.Add(mcts.Root, rootNode);
+			nodeObjectMap.Add(displayMCTS.Root, rootNode);
 			AllNodes.Add(rootNode.GetComponent<HashNode>());
 			playing = true;
 
@@ -263,12 +368,13 @@ namespace MCTS.Visualisation.Festival
 			//Start running MCTS
 			MCTSStartTime = Time.time;
 			runMCTS = true;
-			RunMCTS(mcts);
+			RunMCTS(aiMCTS);
 		}
 
 		private async void RunMCTS(TreeSearch<Node> m)
 		{
-			await Task.Factory.StartNew(() => { while (runMCTS && mcts != null) { mcts.Step(); } });
+			return;
+			await Task.Factory.StartNew(() => { while (runMCTS && m != null) { m.Step(); } });
 		}
 
 		/// <summary>
@@ -293,16 +399,12 @@ namespace MCTS.Visualisation.Festival
 		/// </summary>
 		private void StartVisualisation()
 		{
-			//Create an empty board instance for the root node
-			Board board;
-
 			//Create a C4 board to be used
 			board = new C4Board();
 			displayBoardModel = true;
 
-			//Create a C4 Board GameObject and obtain a reference to its BoardModelController Component
-			GameObject boardModel = Instantiate(Resources.Load("C4 Board", typeof(GameObject))) as GameObject;
-			boardModelController = boardModel.GetComponent<BoardModelController>();
+			//Initialise the board model display
+			boardModelController.gameObject.SetActive(true);
 			boardModelController.Initialise();
 
 			//Swap out the current menu panels
@@ -319,16 +421,11 @@ namespace MCTS.Visualisation.Festival
 		/// </summary>
 		public void PerformStep()
 		{
-			//If the current node index is greater than the amount of nodes, do nothing
-			if(currentNodeIndex >= mcts.AllNodes.Count)
-			{
-				Debug.Log("Not enough nodes in current TreeSearch instance to perform a step...");
-				return;
-			}
+			//Perform an iteration of MCTS on the display instance
+			displayMCTS.Step();
 
 			//Get a reference to the newest node
-			Node newestNode = mcts.AllNodes[currentNodeIndex];
-			currentNodeIndex++;
+			Node newestNode = displayMCTS.AllNodes[displayMCTS.AllNodes.Count - 1];
 
 			//Hash the board contents of the newest node to obtain a positon
 			Vector3 newNodePosition = BoardToPosition(newestNode.GameBoard);
@@ -365,13 +462,9 @@ namespace MCTS.Visualisation.Festival
 				AllNodes.Add(newNodeObject.GetComponent<HashNode>());
 			}
 
-			//Initialise the newest hash node and add a mcts Node to it
+			//Initialise the newest hash node and add an mcts Node to it
 			nodeObjectMap[newestNode].GetComponent<HashNode>().Initialise(newNodePosition);
-			if (newestNode.Parent != null)
-			{
-				nodeObjectMap[newestNode].GetComponent<HashNode>().AddNode(nodeObjectMap[newestNode.Parent], newestNode, true);
-			}
-
+			nodeObjectMap[newestNode].GetComponent<HashNode>().AddNode(nodeObjectMap[newestNode.Parent], newestNode, true);
 			FestivalServerUIController.SetTotalNodeText(nodeObjectMap.Count);
 		}
 

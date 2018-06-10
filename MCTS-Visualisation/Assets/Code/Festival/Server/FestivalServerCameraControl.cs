@@ -23,7 +23,23 @@ namespace MCTS.Visualisation.Festival
 		/// </summary>
 		private int currentSelectedNodeIndex;
 
-		void Update()
+		/// <summary>
+		/// The starting position of this gameobject
+		/// </summary>
+		private Vector3 startingPosition;
+
+		/// <summary>
+		/// The starting rotation of this gameobject
+		/// </summary>
+		private Quaternion startingRotation;
+
+		private void Start()
+		{
+			startingPosition = transform.position;
+			startingRotation = transform.rotation;
+		}
+
+		private void Update()
 		{
 			if (Forwards())
 			{
@@ -126,6 +142,15 @@ namespace MCTS.Visualisation.Festival
 				FestivalServerUIController.HideBoardInfo();
 				currentSelectedNodeIndex = 0;
 			}
+		}
+
+		/// <summary>
+		/// Used to reset the position and rotation of the camera to its starting values
+		/// </summary>
+		public void ResetCamera()
+		{
+			transform.position = startingPosition;
+			transform.rotation = startingRotation;
 		}
 
 		/// <summary>
