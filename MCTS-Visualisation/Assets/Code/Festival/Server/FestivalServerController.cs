@@ -3,6 +3,7 @@ using MCTS.Core.Games;
 using MCTS.Visualisation.Hashing;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -42,6 +43,11 @@ namespace MCTS.Visualisation.Festival
 		public Transform PathNodeHolder;
 
 		/// <summary>
+		/// Text mesh which shows the winner, if there is one
+		/// </summary>
+		public TextMeshPro WinnerText;
+
+		/// <summary>
 		/// The server object used to communicate with a remote client
 		/// </summary>
 		private GameServer server;
@@ -71,6 +77,9 @@ namespace MCTS.Visualisation.Festival
 		/// </summary>
 		private List<HashNode> AllNodes = new List<HashNode>();
 
+		/// <summary>
+		/// A list of gameobjects which indicate the current path of the AI's decision making process thus far
+		/// </summary>
 		private List<GameObject> PathNodes = new List<GameObject>();
 
 		/// <summary>
@@ -157,19 +166,16 @@ namespace MCTS.Visualisation.Festival
 			//Ensure that the board model is attached to the path connection
 			pathConnection.SetPosition(0, boardModelController.transform.parent.position);
 
-			//Make the camera look at the board model
+			//Make the camera look at the board model and always be a set distance away from it
 			Camera.main.transform.LookAt(Vector3.Lerp(Camera.main.transform.position + Camera.main.transform.forward, boardModelController.transform.position, 0.001f));
-			//if ((Camera.main.transform.position - boardModelController.transform.position).magnitude > 150)
-			//{
-				Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, boardModelController.transform.position + new Vector3(150, 0, 0), 0.01f);// ((AllNodes[0].transform.position - Camera.main.transform.position).normalized * 110), 0.001f);
-			//}
+			Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, boardModelController.transform.position + new Vector3(150, 0, 0), 0.01f);// ((AllNodes[0].transform.position - Camera.main.transform.position).normalized * 110), 0.001f);
 
 			//If starting to make a move, pull all hashnodes into the root as a nice animation, then make the move
 			if (startMakingMove)
 			{
 				for (int i = 0; i < transform.childCount; i++)
 				{
-					transform.GetChild(i).position = Vector3.Lerp(transform.GetChild(i).position, AllNodes[0].transform.position, Time.time - makingMoveStartTime);
+					transform.GetChild(i).position = Vector3.Lerp(transform.GetChild(i).position, boardPosition, Time.time - makingMoveStartTime);
 					transform.GetChild(i).localScale = Vector3.Lerp(transform.GetChild(i).localScale, Vector3.zero, Time.time - makingMoveStartTime);
 				}
 
@@ -251,6 +257,7 @@ namespace MCTS.Visualisation.Festival
 			//Reset the board model controller
 			boardModelController.transform.parent.position = BoardToPosition(board);
 			boardModelController.Initialise();
+			boardModelController.transform.position = Vector3.zero;
 
 			//Reset the path connection
 			pathConnection.SetPosition(0, Vector3.zero);
@@ -264,8 +271,11 @@ namespace MCTS.Visualisation.Festival
 			//Destroy all remaining path nodes
 			for(int i = 0; i < PathNodeHolder.childCount; i++)
 			{
-				Destroy(PathNodeHolder.GetChild(i));
+				Destroy(PathNodeHolder.GetChild(i).gameObject);
 			}
+
+			//Hide the winner text mesh
+			WinnerText.gameObject.SetActive(false);
 
 			//Reset the camera position and rotation
 			Camera.main.GetComponent<FestivalServerCameraControl>().ResetCamera();
@@ -337,6 +347,25 @@ namespace MCTS.Visualisation.Festival
 			//If the current player is now the client, or the game has finished, do nothing
 			if (board.CurrentPlayer == 1 || board.Winner != -1)
 			{
+				//If there was a winner, set the winner text to be active
+				if(board.Winner != -1)
+				{
+					WinnerText.gameObject.SetActive(true);
+				}
+
+				//If there was a winner, set the winner text accordingly
+				if(board.Winner == 0)
+				{
+					WinnerText.text = "The game has ended in a draw...";
+				}
+				else if(board.Winner == 1)
+				{
+					WinnerText.text = "You have won, congratulations!";
+				}
+				else if(board.Winner == 2)
+				{
+					WinnerText.text = "The AI has won, unlucky...";
+				}
 				return;
 			}
 
@@ -404,7 +433,7 @@ namespace MCTS.Visualisation.Festival
 			displayBoardModel = true;
 
 			//Initialise the board model display
-			boardModelController.gameObject.SetActive(true);
+			boardModelController.transform.parent.gameObject.SetActive(true);
 			boardModelController.Initialise();
 
 			//Swap out the current menu panels
