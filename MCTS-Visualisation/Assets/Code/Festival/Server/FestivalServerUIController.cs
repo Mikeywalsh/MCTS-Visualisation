@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using MCTS.Core;
 using System.Net;
 using System.Net.Sockets;
+using TMPro;
 
 namespace MCTS.Visualisation.Festival
 {
@@ -36,7 +37,7 @@ namespace MCTS.Visualisation.Festival
 		/// <summary>
 		/// The text field which displays the total amount of steps that have been performed
 		/// </summary>
-		public Text TotalStepsText;
+		public TextMeshPro TotalStepsText;
 
 		/// <summary>
 		/// The panel which displays the current board as rich text <para/>

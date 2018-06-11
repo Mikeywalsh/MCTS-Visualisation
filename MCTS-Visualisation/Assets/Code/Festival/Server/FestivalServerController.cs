@@ -221,7 +221,7 @@ namespace MCTS.Visualisation.Festival
 					playing = false;
 					startMakingMove = true;
 					makingMoveStartTime = Time.time;
-					moveToMake = aiMCTS.Root.GetBestChild().GameBoard.LastMoveMade; ;// = aiMCTS.Root.GetBestChild().GameBoard.LastMoveMade;		
+					moveToMake = aiMCTS.Root.GetBestChild().GameBoard.LastMoveMade;
 					aiMCTS = null;
 					displayMCTS = null;
 				}
@@ -236,7 +236,7 @@ namespace MCTS.Visualisation.Festival
 			}
 
 			////Perform a step every interval, defined as the SPAWN_DELAY constant
-			if (playing && Time.time - lastSpawn > SPAWN_DELAY && ((!watchMode && AllNodes.Count < HASHNODE_LIMIT) || (watchMode && AllNodes.Count < HASHNODE_LIMIT_WATCH_MODE)))
+			if (playing && Time.time - lastSpawn > SPAWN_DELAY && ((!watchMode && nodeObjectMap.Count < HASHNODE_LIMIT) || (watchMode && nodeObjectMap.Count < HASHNODE_LIMIT_WATCH_MODE)))
 			{
 				PerformStep();
 				lastSpawn = Time.time;
