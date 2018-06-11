@@ -163,6 +163,14 @@ namespace MCTS.Visualisation.Festival
 		/// </summary>
 		public void Update()
 		{
+			//DEBUG OPTION - ONLY USE TO DEBUG WITHOUT NETWORK CONNECTION
+			if(Input.GetKeyDown(KeyCode.L))
+			{
+				FestivalServerUIController.StopListening();
+				StartVisualisation();
+				EnterWatchMode();
+			}
+
 			//Move the board display to where it is supposed to be
 			boardModelController.transform.parent.position = Vector3.Lerp(boardModelController.transform.parent.position, boardPosition, 0.05f);
 			boardModelController.transform.parent.LookAt(Camera.main.transform);
