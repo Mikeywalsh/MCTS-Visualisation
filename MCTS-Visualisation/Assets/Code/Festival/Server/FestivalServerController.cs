@@ -171,8 +171,8 @@ namespace MCTS.Visualisation.Festival
 			pathConnection.SetPosition(0, boardModelController.transform.parent.position);
 
 			//Make the camera look at the board model and always be a set distance away from it
-			//Only do this if not in watchmode
-			if (!watchMode)
+			//Only do this if not in watchmode and a visualisation is happening
+			if (!watchMode && displayMCTS != null)
 			{
 				Camera.main.transform.LookAt(Vector3.Lerp(Camera.main.transform.position + Camera.main.transform.forward, boardModelController.transform.position, 0.001f));
 				Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, boardModelController.transform.position + new Vector3(150, 0, 0), 0.01f);// ((AllNodes[0].transform.position - Camera.main.transform.position).normalized * 110), 0.001f);
@@ -302,6 +302,10 @@ namespace MCTS.Visualisation.Festival
 			PathNodes = new List<GameObject>();
 
 			//Disable watch mode
+			if (watchMode)
+			{
+				Debug.Log("Exiting watch mode...");
+			}
 			watchMode = false;
 
 			//Reset the board model controller
@@ -318,6 +322,12 @@ namespace MCTS.Visualisation.Festival
 			Color32 newLineColor = new Color32((byte)Random.Range(0, 255), (byte)Random.Range(0, 255), (byte)Random.Range(0, 255), 255);
 			pathConnection.startColor = newLineColor;
 			pathConnection.endColor = newLineColor;
+
+			//Destroy all remaining hash nodes
+			for (int i = 0; i < transform.childCount; i++)
+			{
+				Destroy(transform.GetChild(i).gameObject);
+			}
 
 			//Destroy all remaining path nodes
 			for (int i = 0; i < PathNodeHolder.childCount; i++)

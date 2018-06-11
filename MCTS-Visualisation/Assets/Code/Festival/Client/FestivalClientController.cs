@@ -283,12 +283,13 @@ namespace MCTS.Visualisation.Festival
 
 		public void RestartButtonPressed()
 		{
-			if (board != null && board.Winner == -1 && !client.ResetFlag)
+			if (board != null && board.Winner == -1 && !client.ResetFlag && !client.WatchFlag)
 			{
 				client.ResetFlag = true;
 				return;
 			}
 
+			Debug.Log("Reset Button pressed...");
 			RestartGame();
 		}
 
