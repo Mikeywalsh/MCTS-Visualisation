@@ -326,6 +326,9 @@ namespace MCTS.Visualisation.Festival
 			pathConnection.SetPosition(0, Vector3.zero);
 			pathConnection.SetPosition(1, Vector3.zero);
 
+			//Reset the UI step counter
+			FestivalServerUIController.SetTotalNodeText(0);
+
 			//Randomise its color
 			Color32 newLineColor = new Color32((byte)Random.Range(0, 255), (byte)Random.Range(0, 255), (byte)Random.Range(0, 255), 255);
 			pathConnection.startColor = newLineColor;
