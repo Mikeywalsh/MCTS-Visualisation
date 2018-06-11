@@ -413,6 +413,9 @@ namespace MCTS.Visualisation.Festival
 			//Update the board position buffer
 			boardPosition = BoardToPosition(board);
 
+			//Reset the UI step counter
+			FestivalServerUIController.SetTotalNodeText(0);
+
 			//If the current player is now the client, or the game has finished, do nothing
 			if (board.CurrentPlayer == 1 || board.Winner != -1)
 			{
