@@ -210,7 +210,7 @@ namespace MCTS.Visualisation.Festival
 				playing = false;
 				startMakingMove = true;
 				makingMoveStartTime = Time.time;
-				moveToMake = displayMCTS.Root.GetBestChild().GameBoard.LastMoveMade; ;// = aiMCTS.Root.GetBestChild().GameBoard.LastMoveMade;		
+				moveToMake = aiMCTS.Root.GetBestChild().GameBoard.LastMoveMade; ;// = aiMCTS.Root.GetBestChild().GameBoard.LastMoveMade;		
 				aiMCTS = null;
 				displayMCTS = null;
 			}
@@ -258,10 +258,11 @@ namespace MCTS.Visualisation.Festival
 			boardModelController.transform.parent.position = BoardToPosition(board);
 			boardModelController.Initialise();
 			boardModelController.transform.position = Vector3.zero;
+			boardPosition = Vector3.zero;
 
 			//Reset the path connection
 			pathConnection.SetPosition(0, Vector3.zero);
-			pathConnection.SetPosition(0, Vector3.zero);
+			pathConnection.SetPosition(1, Vector3.zero);
 
 			//Randomise its color
 			Color32 newLineColor = new Color32((byte)Random.Range(0, 255), (byte)Random.Range(0, 255), (byte)Random.Range(0, 255), 255);
@@ -397,13 +398,7 @@ namespace MCTS.Visualisation.Festival
 			//Start running MCTS
 			MCTSStartTime = Time.time;
 			runMCTS = true;
-			RunMCTS(aiMCTS);
-		}
-
-		private async void RunMCTS(TreeSearch<Node> m)
-		{
-			return;
-			await Task.Factory.StartNew(() => { while (runMCTS && m != null) { m.Step(); } });
+			Task.Factory.StartNew(() => { while (runMCTS && m != null) { aiMCTS.Step(); } });
 		}
 
 		/// <summary>
@@ -455,6 +450,9 @@ namespace MCTS.Visualisation.Festival
 
 			//Get a reference to the newest node
 			Node newestNode = displayMCTS.AllNodes[displayMCTS.AllNodes.Count - 1];
+
+			//Display the current state that the AI is considering on the board model display
+			boardModelController.SetBoard((GridBasedBoard)newestNode.GameBoard);
 
 			//Hash the board contents of the newest node to obtain a positon
 			Vector3 newNodePosition = BoardToPosition(newestNode.GameBoard);

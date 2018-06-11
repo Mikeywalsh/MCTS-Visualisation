@@ -87,7 +87,7 @@ namespace MCTS.Visualisation.Festival
 			board = new C4Board();
 
 			//Initialise the game client
-			client = new GameClient(Connected, ClientConnectionFailed, MakeMoveOnBoard, HandleDisconnect);			
+			client = new GameClient(Connected, ClientConnectionFailed, MakeMoveOnBoard, HandleDisconnect, RestartGame);			
 
 			//Show the client waiting panel and hide the gameboard and turn text
 			ClientWaitingPanel.SetActive(true);
@@ -183,10 +183,15 @@ namespace MCTS.Visualisation.Festival
 				}
 			}
 
-			//Show the reset game button if the game is over
-			if(board.Winner != -1)
+			//Show the reset game button if the game is over or it is the local players turn
+			if(board.Winner != -1 || board.CurrentPlayer == 1)
 			{
 				RestartGameButton.gameObject.SetActive(true);
+			}
+			else
+			{
+				RestartGameButton.gameObject.SetActive(false);
+
 			}
 		}
 
@@ -253,6 +258,17 @@ namespace MCTS.Visualisation.Festival
 			SceneManager.LoadScene(0);
 		}
 		#endregion
+
+		public void RestartButtonPressed()
+		{
+			if (board.Winner == -1 && !client.ResetFlag)
+			{
+				client.ResetFlag = true;
+				return;
+			}
+
+			RestartGame();
+		}
 
 		public void RestartGame()
 		{

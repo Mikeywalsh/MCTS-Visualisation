@@ -82,6 +82,11 @@ namespace MCTS.Visualisation
 		public Move ServerMove { get; set; }
 
 		/// <summary>
+		/// Flag used to indicate if an early reset command was received from the client
+		/// </summary>
+		private bool resetFlag = false;
+
+		/// <summary>
 		/// Creates a GameServer instance and a <see cref="TcpListener"/> on the local IPv4 address of this machine and the provided port
 		/// </summary>
 		/// <param name="port">The port which the <see cref="TcpListener"/> will run on</param>
@@ -209,14 +214,18 @@ namespace MCTS.Visualisation
 				//Main loop, never exit
 				while (true)
 				{
-					//Wait until data is recieved from the client
-					await Task.Run(() => sock.Receive(buffer));
+					if (!resetFlag)
+					{
+						//Wait until data is recieved from the client
+						await Task.Run(() => sock.Receive(buffer));
+					}
 
 					//If the client has sent a reset message, then reset the gameboard
-					if(Encoding.ASCII.GetString(buffer).Substring(0,5) == "Reset")
+					if(resetFlag || Encoding.ASCII.GetString(buffer).Substring(0,5) == "Reset")
 					{
 						//Reset the game
 						resetCallback();
+						resetFlag = false;
 					}
 					else
 					{
@@ -249,6 +258,13 @@ namespace MCTS.Visualisation
 								stream.Read(buffer, 0, buffer.Length);
 								break;
 							}
+						}
+
+						//If the data received from the client is a reset command, set the reset flag
+						if(Encoding.ASCII.GetString(buffer).Substring(0, 5) == "Reset")
+						{
+							resetFlag = true;
+							break;
 						}
 
 						//Deserialize the data to obtain a move object
@@ -292,7 +308,14 @@ namespace MCTS.Visualisation
 					}
 
 					//Output an end of game message and set the gameboard to be null
-					Debug.Log("Game over! " + (GameBoard.Winner == 0 ? "Draw!" : "Winner was player " + GameBoard.Winner));
+					if (resetFlag)
+					{
+						Debug.Log("Game was reset early by client...");
+					}
+					else
+					{
+						Debug.Log("Game over! " + (GameBoard.Winner == 0 ? "Draw!" : "Winner was player " + GameBoard.Winner));
+					}
 					GameBoard = null;
 				}
 			}

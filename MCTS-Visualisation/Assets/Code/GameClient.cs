@@ -49,6 +49,8 @@ namespace MCTS.Visualisation
 		/// </summary>
 		private Action disconnectCallback;
 
+		private Action resetCallback;
+
 		/// <summary>
 		/// The <see cref="Board"/> reference used by this GameServer to play the game out on
 		/// </summary>
@@ -61,19 +63,26 @@ namespace MCTS.Visualisation
 		public Move ClientMove { get; set; }
 
 		/// <summary>
+		/// If this flag is set, instead of waiting for a move to be input by the client, the server will be sent a reset command
+		/// </summary>
+		public bool ResetFlag { get; set; }
+
+		/// <summary>
 		/// Creates a GameClient instance
 		/// </summary>
 		/// <param name="cCallback">The callback method to call when a connection with a server has been made</param>
 		/// <param name="fCallback">The callback method to call when a connection with a server failed</param>
 		/// <param name="mCallback">The callback method to call when a move is made</param>
 		/// <param name="dCallback">The callback method to call when a client has disconnection</param>
-		public GameClient(Action cCallback, Action fCallback, Action<Move> mCallback, Action dCallback)
+		/// <param name="rCallback">The callback method to call when a game is being reset early</param>
+		public GameClient(Action cCallback, Action fCallback, Action<Move> mCallback, Action dCallback, Action rCallback)
 		{
 			//Set the callbacks
 			connectedCallback = cCallback;
 			failedConnectionCallback = fCallback;
 			moveCallback = mCallback;
 			disconnectCallback = dCallback;
+			resetCallback = rCallback;
 
 			//Create a TcpClient
 			client = new TcpClient();
@@ -131,31 +140,13 @@ namespace MCTS.Visualisation
 				//Main loop, never exit
 				while (true)
 				{
-					//Wait for the gameboard to be set
-					while(GameBoard == null)
-					{
-						if (!Connected)
-						{
-							//Close the socket
-							Disconnect();
-							disconnectCallback();
-							return;
-						}
-						await Task.Delay(500);
-					}
-
-					//Ouput a message signalling that the board was set
-					Debug.Log("Board set, starting game...");
-
-					//Alert the server that we are resetting the game board
+					//Create a reset message
 					byte[] resetMessage = Encoding.ASCII.GetBytes("Reset");
-					await Task.Run(() => stream.Write(resetMessage, 0, resetMessage.Length));
 
-					//Execute a main loop which waits for a client move to be received before sending a server response, until the game board is terminal
-					while (GameBoard.Winner == -1)
+					if (!ResetFlag)
 					{
-						//Wait for the user to select a move
-						while (ClientMove == null)
+						//Wait for the gameboard to be set
+						while (GameBoard == null)
 						{
 							if (!Connected)
 							{
@@ -165,6 +156,41 @@ namespace MCTS.Visualisation
 								return;
 							}
 							await Task.Delay(500);
+						}
+
+						//Ouput a message signalling that the board was set
+						Debug.Log("Board set, starting game...");
+
+						//Alert the server that we are resetting the game board
+						await Task.Run(() => stream.Write(resetMessage, 0, resetMessage.Length));
+					}
+					else
+					{
+						resetCallback();
+						ResetFlag = false;
+					}
+
+					//Execute a main loop which waits for a client move to be received before sending a server response, until the game board is terminal
+					while (GameBoard.Winner == -1)
+					{
+						//Wait for the user to select a move or set the reset flag
+						while (ClientMove == null && !ResetFlag)
+						{
+							if (!Connected)
+							{
+								//Close the socket
+								Disconnect();
+								disconnectCallback();
+								return;
+							}
+							await Task.Delay(500);
+						}
+
+						//If the reset flag was set, send a reset request to the server and break out of the game loop
+						if (ResetFlag)
+						{
+							await Task.Run(() => stream.Write(resetMessage, 0, resetMessage.Length));
+							break;
 						}
 
 						//Serialize the client move and send it to the server
@@ -218,7 +244,14 @@ namespace MCTS.Visualisation
 					}
 
 					//Output an end of game message and set the gameboard to be null
-					Debug.Log("Game over! " + (GameBoard.Winner == 0 ? "Draw!" : "Winner was player " + GameBoard.Winner));
+					if (ResetFlag)
+					{
+						Debug.Log("Game was reset early by client...");
+					}
+					else
+					{
+						Debug.Log("Game over! " + (GameBoard.Winner == 0 ? "Draw!" : "Winner was player " + GameBoard.Winner));
+					}
 					GameBoard = null;
 				}
 			}

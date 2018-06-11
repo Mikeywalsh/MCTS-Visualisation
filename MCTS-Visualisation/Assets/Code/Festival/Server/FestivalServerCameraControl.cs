@@ -39,110 +39,110 @@ namespace MCTS.Visualisation.Festival
 			startingRotation = transform.rotation;
 		}
 
-		private void Update()
-		{
-			if (Forwards())
-			{
-				transform.Translate(Vector3.forward * 0.1f * Speed);
-			}
+		//private void Update()
+		//{
+		//	if (Forwards())
+		//	{
+		//		transform.Translate(Vector3.forward * 0.1f * Speed);
+		//	}
 
-			if (Backwards())
-			{
-				transform.Translate(Vector3.forward * -0.1f * Speed);
-			}
+		//	if (Backwards())
+		//	{
+		//		transform.Translate(Vector3.forward * -0.1f * Speed);
+		//	}
 
-			if (StrafeLeft())
-			{
-				transform.Translate(Vector3.right * -0.1f * Speed);
-			}
+		//	if (StrafeLeft())
+		//	{
+		//		transform.Translate(Vector3.right * -0.1f * Speed);
+		//	}
 
-			if (StrafeRight())
-			{
-				transform.Translate(Vector3.right * 0.1f * Speed);
-			}
+		//	if (StrafeRight())
+		//	{
+		//		transform.Translate(Vector3.right * 0.1f * Speed);
+		//	}
 
-			if (Upwards())
-			{
-				transform.Translate(Vector3.up * 0.1f * Speed);
-			}
+		//	if (Upwards())
+		//	{
+		//		transform.Translate(Vector3.up * 0.1f * Speed);
+		//	}
 
-			if (Downwards())
-			{
-				transform.Translate(Vector3.up * -0.1f * Speed);
-			}
+		//	if (Downwards())
+		//	{
+		//		transform.Translate(Vector3.up * -0.1f * Speed);
+		//	}
 
-			if (PivotLeft())
-			{
-				transform.Rotate(new Vector3(0, -Speed, 0));
-			}
+		//	if (PivotLeft())
+		//	{
+		//		transform.Rotate(new Vector3(0, -Speed, 0));
+		//	}
 
-			if (PivotRight())
-			{
-				transform.Rotate(new Vector3(0, Speed, 0));
-			}
+		//	if (PivotRight())
+		//	{
+		//		transform.Rotate(new Vector3(0, Speed, 0));
+		//	}
 
-			if (PivotUpwards())
-			{
-				transform.Rotate(new Vector3(-Speed, 0, 0));
-			}
+		//	if (PivotUpwards())
+		//	{
+		//		transform.Rotate(new Vector3(-Speed, 0, 0));
+		//	}
 
-			if (PivotDownwards())
-			{
-				transform.Rotate(new Vector3(Speed, 0, 0));
-			}
+		//	if (PivotDownwards())
+		//	{
+		//		transform.Rotate(new Vector3(Speed, 0, 0));
+		//	}
 
-			if (currentHighlighted != null && NextNode() && currentHighlighted.NodeCount > currentSelectedNodeIndex + 1)
-			{
-				currentSelectedNodeIndex++;
-				FestivalServerUIController.DisplayNodeInfo(currentHighlighted.GetNode(currentSelectedNodeIndex), currentSelectedNodeIndex, currentHighlighted.NodeCount);
-			}
+		//	if (currentHighlighted != null && NextNode() && currentHighlighted.NodeCount > currentSelectedNodeIndex + 1)
+		//	{
+		//		currentSelectedNodeIndex++;
+		//		FestivalServerUIController.DisplayNodeInfo(currentHighlighted.GetNode(currentSelectedNodeIndex), currentSelectedNodeIndex, currentHighlighted.NodeCount);
+		//	}
 
-			if (currentHighlighted != null && PreviousNode() && currentSelectedNodeIndex > 0)
-			{
-				currentSelectedNodeIndex--;
-				FestivalServerUIController.DisplayNodeInfo(currentHighlighted.GetNode(currentSelectedNodeIndex), currentSelectedNodeIndex, currentHighlighted.NodeCount);
-			}
+		//	if (currentHighlighted != null && PreviousNode() && currentSelectedNodeIndex > 0)
+		//	{
+		//		currentSelectedNodeIndex--;
+		//		FestivalServerUIController.DisplayNodeInfo(currentHighlighted.GetNode(currentSelectedNodeIndex), currentSelectedNodeIndex, currentHighlighted.NodeCount);
+		//	}
 
-			//See if there are any Hashnodes in front of the camera
-			RaycastHit hit;
-			Ray ray = GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
+		//	//See if there are any Hashnodes in front of the camera
+		//	RaycastHit hit;
+		//	Ray ray = GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
 
-			//If the mouse is hovered over a HashNode object, highlight it
-			if (Physics.Raycast(ray, out hit) && hit.transform.GetComponent<HashNode>() != null)
-			{
-				//Get a reference to the HashNode that was hit
-				HashNode hitNode = hit.transform.GetComponent<HashNode>();
+		//	//If the mouse is hovered over a HashNode object, highlight it
+		//	if (Physics.Raycast(ray, out hit) && hit.transform.GetComponent<HashNode>() != null)
+		//	{
+		//		//Get a reference to the HashNode that was hit
+		//		HashNode hitNode = hit.transform.GetComponent<HashNode>();
 
-				//If the node being looked at is not the current highlighted node, make it the highlighted node
-				if (currentHighlighted != hitNode)
-				{
-					//Reset the color of the old highlighted node, if there is one
-					if (currentHighlighted != null)
-					{
-						currentHighlighted.SetColor();
-					}
+		//		//If the node being looked at is not the current highlighted node, make it the highlighted node
+		//		if (currentHighlighted != hitNode)
+		//		{
+		//			//Reset the color of the old highlighted node, if there is one
+		//			if (currentHighlighted != null)
+		//			{
+		//				currentHighlighted.SetColor();
+		//			}
 
-					//Make the node being hovered over the current highlighted node and set its color to yellow
-					currentHighlighted = hitNode;
-					Color highlightedColor = Color.yellow;
-					highlightedColor.a = currentHighlighted.Visibility;
-					hitNode.GetComponent<Renderer>().material.color = highlightedColor;
+		//			//Make the node being hovered over the current highlighted node and set its color to yellow
+		//			currentHighlighted = hitNode;
+		//			Color highlightedColor = Color.yellow;
+		//			highlightedColor.a = currentHighlighted.Visibility;
+		//			hitNode.GetComponent<Renderer>().material.color = highlightedColor;
 
-					//Display information about the current node
-					FestivalServerUIController.DisplayBoardInfo(hitNode.BoardState);
-					currentSelectedNodeIndex = 0;
-					FestivalServerUIController.DisplayNodeInfo(hitNode.GetNode(currentSelectedNodeIndex), currentSelectedNodeIndex, hitNode.NodeCount);
-				}
-			}
-			else if (currentHighlighted != null)
-			{
-				//If the camera is not looking at a HashNode object, reset the previously highlighted node and hide the node information panel
-				currentHighlighted.SetColor();
-				currentHighlighted = null;
-				FestivalServerUIController.HideBoardInfo();
-				currentSelectedNodeIndex = 0;
-			}
-		}
+		//			//Display information about the current node
+		//			FestivalServerUIController.DisplayBoardInfo(hitNode.BoardState);
+		//			currentSelectedNodeIndex = 0;
+		//			FestivalServerUIController.DisplayNodeInfo(hitNode.GetNode(currentSelectedNodeIndex), currentSelectedNodeIndex, hitNode.NodeCount);
+		//		}
+		//	}
+		//	else if (currentHighlighted != null)
+		//	{
+		//		//If the camera is not looking at a HashNode object, reset the previously highlighted node and hide the node information panel
+		//		currentHighlighted.SetColor();
+		//		currentHighlighted = null;
+		//		FestivalServerUIController.HideBoardInfo();
+		//		currentSelectedNodeIndex = 0;
+		//	}
+		//}
 
 		/// <summary>
 		/// Used to reset the position and rotation of the camera to its starting values
