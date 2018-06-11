@@ -118,6 +118,8 @@ namespace MCTS.Visualisation.Festival
 
 		private const int HASHNODE_LIMIT = 30;
 
+		private const int HASHNODE_LIMIT_WATCH_MODE = 250;
+
 		private Move moveToMake = null;
 
 		private bool startMakingMove = false;
@@ -125,6 +127,8 @@ namespace MCTS.Visualisation.Festival
 		private float makingMoveStartTime = 0f;
 
 		private const float MAKE_MOVE_TIME = 1f;
+
+		private bool watchMode = false;
 
 		/// <summary>
 		/// The delay in seconds between nodes being created when <see cref="playing"/> is active
@@ -167,8 +171,12 @@ namespace MCTS.Visualisation.Festival
 			pathConnection.SetPosition(0, boardModelController.transform.parent.position);
 
 			//Make the camera look at the board model and always be a set distance away from it
-			Camera.main.transform.LookAt(Vector3.Lerp(Camera.main.transform.position + Camera.main.transform.forward, boardModelController.transform.position, 0.001f));
-			Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, boardModelController.transform.position + new Vector3(150, 0, 0), 0.01f);// ((AllNodes[0].transform.position - Camera.main.transform.position).normalized * 110), 0.001f);
+			//Only do this if not in watchmode
+			if (!watchMode)
+			{
+				Camera.main.transform.LookAt(Vector3.Lerp(Camera.main.transform.position + Camera.main.transform.forward, boardModelController.transform.position, 0.001f));
+				Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, boardModelController.transform.position + new Vector3(150, 0, 0), 0.01f);// ((AllNodes[0].transform.position - Camera.main.transform.position).normalized * 110), 0.001f);
+			}
 
 			//If starting to make a move, pull all hashnodes into the root as a nice animation, then make the move
 			if (startMakingMove)
@@ -192,27 +200,31 @@ namespace MCTS.Visualisation.Festival
 				}
 			}
 
-			//Return if there is no tree search happening
-			if (aiMCTS == null)
+			//Return if there is no tree search happening and watchmode is not active
+			if (aiMCTS == null && !watchMode)
 			{
 				return;
 			}
 
-			//If MCTS has been running too long, or has generated enough nodes, then stop it
-			if (MCTSStartTime < Time.time - 5 || aiMCTS.AllNodes.Count > NODE_LIMIT)
+			//If watchmode is not active, check the AI as usual
+			if (!watchMode)
 			{
-				runMCTS = false;
-			}
+				//If MCTS has been running too long, or has generated enough nodes, then stop it
+				if (MCTSStartTime < Time.time - 5 || aiMCTS.AllNodes.Count > NODE_LIMIT)
+				{
+					runMCTS = false;
+				}
 
-			//If the hashnode limit has been reached, make the best move and send it to the client
-			if (AllNodes.Count >= HASHNODE_LIMIT && !runMCTS)
-			{
-				playing = false;
-				startMakingMove = true;
-				makingMoveStartTime = Time.time;
-				moveToMake = aiMCTS.Root.GetBestChild().GameBoard.LastMoveMade; ;// = aiMCTS.Root.GetBestChild().GameBoard.LastMoveMade;		
-				aiMCTS = null;
-				displayMCTS = null;
+				//If the hashnode limit has been reached, make the best move and send it to the client
+				if (AllNodes.Count >= HASHNODE_LIMIT && !runMCTS)
+				{
+					playing = false;
+					startMakingMove = true;
+					makingMoveStartTime = Time.time;
+					moveToMake = aiMCTS.Root.GetBestChild().GameBoard.LastMoveMade; ;// = aiMCTS.Root.GetBestChild().GameBoard.LastMoveMade;		
+					aiMCTS = null;
+					displayMCTS = null;
+				}
 			}
 
 			if (Input.GetKeyDown(KeyCode.P))
@@ -224,7 +236,7 @@ namespace MCTS.Visualisation.Festival
 			}
 
 			////Perform a step every interval, defined as the SPAWN_DELAY constant
-			if (playing && Time.time - lastSpawn > SPAWN_DELAY && AllNodes.Count < HASHNODE_LIMIT)
+			if (playing && Time.time - lastSpawn > SPAWN_DELAY && ((!watchMode && AllNodes.Count < HASHNODE_LIMIT) || (watchMode && AllNodes.Count < HASHNODE_LIMIT_WATCH_MODE)))
 			{
 				PerformStep();
 				lastSpawn = Time.time;
@@ -237,11 +249,46 @@ namespace MCTS.Visualisation.Festival
 		public void StartServerButtonPressed()
 		{
 			//Initialise the game server
-			server = new GameServer((short)FestivalServerUIController.GetPortInput(), ResetScene, ClientConnected, MakeMoveOnBoard, ResetScene, ResetGame);
+			server = new GameServer((short)FestivalServerUIController.GetPortInput(), ResetScene, ClientConnected, MakeMoveOnBoard, ResetScene, ResetGame, EnterWatchMode);
 			server.StartListening();
 
 			//Alert the user that the server is listening for a client connection
 			FestivalServerUIController.BeginListening();
+		}
+
+		private void EnterWatchMode()
+		{
+			//Enable the watch mode flag
+			watchMode = true;
+
+			//Reset the camera
+			Camera.main.GetComponent<FestivalServerCameraControl>().ResetCamera();
+
+			//Create a new display MCTS instance
+			displayMCTS = new TreeSearch<Node>(board.Duplicate());
+
+			//Reset dictionaries and lists
+			nodePositionMap = new Dictionary<Vector3, GameObject>();
+			nodeObjectMap = new Dictionary<Node, GameObject>();
+			AllNodes = new List<HashNode>();
+
+			//Calculate the position of the root node and add an object for it to the scene
+			Vector3 rootNodePosition = BoardToPosition(displayMCTS.Root.GameBoard);
+			GameObject rootNode = Instantiate(Resources.Load("HashNode"), rootNodePosition, Quaternion.identity) as GameObject;
+			rootNode.transform.parent = transform;
+			rootNode.GetComponent<HashNode>().AddNode(null, displayMCTS.Root, false);
+			rootNode.GetComponent<HashNode>().Initialise(rootNodePosition);
+
+			//Add the root node to the position and object maps and allnodes list
+			nodePositionMap.Add(rootNodePosition, rootNode);
+			nodeObjectMap.Add(displayMCTS.Root, rootNode);
+			AllNodes.Add(rootNode.GetComponent<HashNode>());
+
+			//Adjust the size of the new root
+			rootNode.GetComponent<HashNode>().AdjustSize();
+
+			//Start running MCTS
+			playing = true;
 		}
 
 		/// <summary>
@@ -253,6 +300,9 @@ namespace MCTS.Visualisation.Festival
 			board = new C4Board();
 			server.GameBoard = board;
 			PathNodes = new List<GameObject>();
+
+			//Disable watch mode
+			watchMode = false;
 
 			//Reset the board model controller
 			boardModelController.transform.parent.position = BoardToPosition(board);
@@ -270,7 +320,7 @@ namespace MCTS.Visualisation.Festival
 			pathConnection.endColor = newLineColor;
 
 			//Destroy all remaining path nodes
-			for(int i = 0; i < PathNodeHolder.childCount; i++)
+			for (int i = 0; i < PathNodeHolder.childCount; i++)
 			{
 				Destroy(PathNodeHolder.GetChild(i).gameObject);
 			}
@@ -349,21 +399,21 @@ namespace MCTS.Visualisation.Festival
 			if (board.CurrentPlayer == 1 || board.Winner != -1)
 			{
 				//If there was a winner, set the winner text to be active
-				if(board.Winner != -1)
+				if (board.Winner != -1)
 				{
 					WinnerText.gameObject.SetActive(true);
 				}
 
 				//If there was a winner, set the winner text accordingly
-				if(board.Winner == 0)
+				if (board.Winner == 0)
 				{
 					WinnerText.text = "The game has ended in a draw...";
 				}
-				else if(board.Winner == 1)
+				else if (board.Winner == 1)
 				{
 					WinnerText.text = "You have won, congratulations!";
 				}
-				else if(board.Winner == 2)
+				else if (board.Winner == 2)
 				{
 					WinnerText.text = "The AI has won, unlucky...";
 				}

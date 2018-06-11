@@ -88,7 +88,7 @@ namespace MCTS.Visualisation.Play
 			LineDraw.Lines = new List<ColoredLine>();
 
 			//Initialise the game server
-			server = new GameServer(8500, ResetButtonPressed, Connected, MakeMoveOnBoard, ResetButtonPressed, ResetGame)
+			server = new GameServer(8500, ResetButtonPressed, Connected, MakeMoveOnBoard, ResetButtonPressed, ResetGame, () => { })
 			{
 				GameBoard = board
 			};

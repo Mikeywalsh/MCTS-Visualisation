@@ -49,6 +49,9 @@ namespace MCTS.Visualisation
 		/// </summary>
 		private Action disconnectCallback;
 
+		/// <summary>
+		/// A callback which will be called if the client requests a game reset early
+		/// </summary>
 		private Action resetCallback;
 
 		/// <summary>
@@ -66,6 +69,11 @@ namespace MCTS.Visualisation
 		/// If this flag is set, instead of waiting for a move to be input by the client, the server will be sent a reset command
 		/// </summary>
 		public bool ResetFlag { get; set; }
+
+		/// <summary>
+		/// If this flag is set, instead of waiting for a move to be input by the client, the server will be send a request to change to watch mode
+		/// </summary>
+		public bool WatchFlag { get; set; }
 
 		/// <summary>
 		/// Creates a GameClient instance
@@ -143,6 +151,7 @@ namespace MCTS.Visualisation
 					//Create a reset message
 					byte[] resetMessage = Encoding.ASCII.GetBytes("Reset");
 
+					//If the game has not been reset early, wait for the board to be set locally
 					if (!ResetFlag)
 					{
 						//Wait for the gameboard to be set
@@ -163,9 +172,13 @@ namespace MCTS.Visualisation
 
 						//Alert the server that we are resetting the game board
 						await Task.Run(() => stream.Write(resetMessage, 0, resetMessage.Length));
+
+						//Set the watchmode flag to false
+						WatchFlag = false;
 					}
 					else
 					{
+						//If the game has been reset early, immediately reset the game
 						resetCallback();
 						ResetFlag = false;
 					}
@@ -173,8 +186,8 @@ namespace MCTS.Visualisation
 					//Execute a main loop which waits for a client move to be received before sending a server response, until the game board is terminal
 					while (GameBoard.Winner == -1)
 					{
-						//Wait for the user to select a move or set the reset flag
-						while (ClientMove == null && !ResetFlag)
+						//Wait for the user to select a move or set the reset/watch flag
+						while (ClientMove == null && !ResetFlag && !WatchFlag)
 						{
 							if (!Connected)
 							{
@@ -186,10 +199,21 @@ namespace MCTS.Visualisation
 							await Task.Delay(500);
 						}
 
-						//If the reset flag was set, send a reset request to the server and break out of the game loop
-						if (ResetFlag)
+						//If the reset or watch flag was set, send the request to the server and break out of the game loop
+						if (ResetFlag || WatchFlag)
 						{
-							await Task.Run(() => stream.Write(resetMessage, 0, resetMessage.Length));
+							if (ResetFlag)
+							{
+								await Task.Run(() => stream.Write(resetMessage, 0, resetMessage.Length));
+							}
+							else if(WatchFlag)
+							{
+								//Create a watch request message
+								byte[] watchMessage = Encoding.ASCII.GetBytes("Watch");
+								
+								//Send the watch message
+								await Task.Run(() => stream.Write(watchMessage, 0, watchMessage.Length));
+							}
 							break;
 						}
 
@@ -247,6 +271,10 @@ namespace MCTS.Visualisation
 					if (ResetFlag)
 					{
 						Debug.Log("Game was reset early by client...");
+					}
+					else if(WatchFlag)
+					{
+						Debug.Log("Game was ended early, watch mode entered...");
 					}
 					else
 					{

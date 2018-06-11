@@ -71,6 +71,11 @@ namespace MCTS.Visualisation
 		private Action resetCallback;
 
 		/// <summary>
+		/// A callback which will be called if the client wishes to enter watch mode
+		/// </summary>
+		private Action watchCallback;
+
+		/// <summary>
 		/// The <see cref="Board"/> reference used by this GameServer to play the game out on
 		/// </summary>
 		public Board GameBoard { get; set; }
@@ -95,7 +100,8 @@ namespace MCTS.Visualisation
 		/// <param name="mCallback">The callback method to call when a move is made</param>
 		/// <param name="dCallback">The callback method to call when a client has disconnection</param>
 		/// <param name="rCallback">The callback method to call when the client wishes to reset the game</param>
-		public GameServer(short port, Action fCallback, Action cCallback, Action<Move> mCallback, Action dCallback, Action rCallback)
+		/// <param name="wCallback">The callback method to call when the client wishes to enter watch mode</param>
+		public GameServer(short port, Action fCallback, Action cCallback, Action<Move> mCallback, Action dCallback, Action rCallback, Action wCallback)
 		{
 			//Set the callbacks
 			failedListenCallback = fCallback;
@@ -103,6 +109,7 @@ namespace MCTS.Visualisation
 			moveCallback = mCallback;
 			disconnectCallback = dCallback;
 			resetCallback = rCallback;
+			watchCallback = wCallback;
 
 			//Obtain the IP address of this machine
 			IPAddress[] allLocalIPs = Dns.GetHostAddresses(Dns.GetHostName());
@@ -221,7 +228,7 @@ namespace MCTS.Visualisation
 					}
 
 					//If the client has sent a reset message, then reset the gameboard
-					if(resetFlag || Encoding.ASCII.GetString(buffer).Substring(0,5) == "Reset")
+					if (resetFlag || Encoding.ASCII.GetString(buffer).Substring(0, 5) == "Reset")
 					{
 						//Reset the game
 						resetCallback();
@@ -240,7 +247,7 @@ namespace MCTS.Visualisation
 					{
 						Debug.Log("Waiting for move selection from client...");
 
-						//Wait until data is recieved from the client
+						//Wait until data is received from the client
 						while (true)
 						{
 							//Check connection
@@ -253,7 +260,7 @@ namespace MCTS.Visualisation
 							}
 							Debug.Log("Checking for reply from client...");
 							await Task.Delay(500);
-							if(stream.DataAvailable)
+							if (stream.DataAvailable)
 							{
 								stream.Read(buffer, 0, buffer.Length);
 								break;
@@ -261,9 +268,15 @@ namespace MCTS.Visualisation
 						}
 
 						//If the data received from the client is a reset command, set the reset flag
-						if(Encoding.ASCII.GetString(buffer).Substring(0, 5) == "Reset")
+						if (Encoding.ASCII.GetString(buffer).Substring(0, 5) == "Reset")
 						{
 							resetFlag = true;
+							break;
+						}
+						//If the data received from the client was a watch mode command, call the watch mode callback and break
+						else if (Encoding.ASCII.GetString(buffer).Substring(0, 5) == "Watch")
+						{
+							watchCallback();
 							break;
 						}
 
@@ -311,6 +324,10 @@ namespace MCTS.Visualisation
 					if (resetFlag)
 					{
 						Debug.Log("Game was reset early by client...");
+					}
+					else if(GameBoard.Winner == -1)
+					{
+						Debug.Log("Watch mode entered...");
 					}
 					else
 					{

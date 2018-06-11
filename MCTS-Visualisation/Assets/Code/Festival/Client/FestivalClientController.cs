@@ -68,6 +68,11 @@ namespace MCTS.Visualisation.Festival
 		public Button ConnectButton;
 
 		/// <summary>
+		/// Reference to the watch button
+		/// </summary>
+		public Button WatchButton;
+
+		/// <summary>
 		/// Reference to the restart game button
 		/// </summary>
 		public Button RestartGameButton;
@@ -89,10 +94,12 @@ namespace MCTS.Visualisation.Festival
 			//Initialise the game client
 			client = new GameClient(Connected, ClientConnectionFailed, MakeMoveOnBoard, HandleDisconnect, RestartGame);			
 
-			//Show the client waiting panel and hide the gameboard and turn text
+			//Show the client waiting panel and hide the gameboard, turn text, watch mode and reset buttons
 			ClientWaitingPanel.SetActive(true);
 			BoardController.gameObject.SetActive(false);
 			TurnText.gameObject.SetActive(false);
+			RestartGameButton.gameObject.SetActive(false);
+			WatchButton.gameObject.SetActive(false);
 		}
 
 		void Update()
@@ -191,8 +198,10 @@ namespace MCTS.Visualisation.Festival
 			else
 			{
 				RestartGameButton.gameObject.SetActive(false);
-
 			}
+
+			//Disable the watchmode button, as it should only be available on the first turn
+			WatchButton.gameObject.SetActive(false);
 		}
 
 		public void AttemptClientConnection()
@@ -259,9 +268,22 @@ namespace MCTS.Visualisation.Festival
 		}
 		#endregion
 
+		public void WatchButtonPressed()
+		{
+			//Disable all UI elements other than the restart game button
+			BoardController.gameObject.SetActive(false);
+			TurnText.gameObject.SetActive(false);
+			DisconnectText.gameObject.SetActive(false);
+			WatchButton.gameObject.SetActive(false);
+			RestartGameButton.gameObject.SetActive(true);
+
+			//Set the watchmode flag on the client
+			client.WatchFlag = true;
+		}
+
 		public void RestartButtonPressed()
 		{
-			if (board.Winner == -1 && !client.ResetFlag)
+			if (board != null && board.Winner == -1 && !client.ResetFlag)
 			{
 				client.ResetFlag = true;
 				return;
@@ -286,6 +308,12 @@ namespace MCTS.Visualisation.Festival
 
 			//Reset the turn text
 			TurnText.text = "Your Turn...";
+
+			//Show the gameboard, turn text and watch mode button, and hide the disconnect text
+			BoardController.gameObject.SetActive(true);
+			TurnText.gameObject.SetActive(true);
+			DisconnectText.gameObject.SetActive(false);
+			WatchButton.gameObject.SetActive(true);
 		}
 	}
 }
