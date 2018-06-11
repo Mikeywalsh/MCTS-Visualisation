@@ -172,7 +172,7 @@ namespace MCTS.Visualisation.Festival
 
 			//Make the camera look at the board model and always be a set distance away from it
 			//Only do this if not in watchmode and a visualisation is happening
-			if (!watchMode && displayMCTS != null)
+			if (!watchMode && PathNodes.Count > 0)
 			{
 				Camera.main.transform.LookAt(Vector3.Lerp(Camera.main.transform.position + Camera.main.transform.forward, boardModelController.transform.position, 0.001f));
 				Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, boardModelController.transform.position + new Vector3(150, 0, 0), 0.01f);// ((AllNodes[0].transform.position - Camera.main.transform.position).normalized * 110), 0.001f);
