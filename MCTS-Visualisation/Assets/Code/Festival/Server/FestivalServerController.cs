@@ -608,6 +608,8 @@ namespace MCTS.Visualisation.Festival
 				}
 			}
 
+			finalPos.x *= 1.4f;
+			finalPos.z *= 1.4f;
 			return finalPos * NODE_SPACING;
 		}
 

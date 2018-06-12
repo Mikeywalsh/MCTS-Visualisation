@@ -81,7 +81,7 @@ namespace MCTS.Visualisation.Hashing
         /// <summary>
         /// The maximum line thickness that an attached <see cref="LineRenderer"/> can have
         /// </summary>
-        private const float MAXIMUM_LINE_THICKNESS = 0.5f;
+        private const float MAXIMUM_LINE_THICKNESS = 0.4f;
 
         /// <summary>
         /// The rate at which a <see cref="HashNode"/> object scales with its amount of visits

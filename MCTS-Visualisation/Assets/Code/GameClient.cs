@@ -205,7 +205,6 @@ namespace MCTS.Visualisation
 							if (ResetFlag)
 							{
 								await Task.Run(() => stream.Write(resetMessage, 0, resetMessage.Length));
-								Debug.Log("SENT RESET AHHH");
 							}
 							else if(WatchFlag)
 							{
